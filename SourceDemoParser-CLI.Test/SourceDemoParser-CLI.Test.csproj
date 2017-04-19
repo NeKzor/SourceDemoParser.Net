@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9093E5AF-D84B-4F05-8332-D61B45391CA0}</ProjectGuid>
+    <ProjectGuid>{8A2AA073-FB1A-49FB-AE59-B5E5CBD2FC0D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SourceDemoParser_CLI</RootNamespace>
-    <AssemblyName>SourceDemoParser-CLI</AssemblyName>
+    <RootNamespace>SourceDemoParser_CLI.Test</RootNamespace>
+    <AssemblyName>SourceDemoParser-CLI.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,34 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SourceDemoProtocolVersion.cs" />
-    <Compile Include="Frames\ConsoleCommandFrame.cs" />
-    <Compile Include="Frames\IFrame.cs" />
-    <Compile Include="Frames\PacketFrame.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="Handlers\ApertureTagHandler.cs" />
-    <Compile Include="Handlers\BaseGameHandler.cs" />
-    <Compile Include="Handlers\HL2Handler.cs" />
-    <Compile Include="Handlers\InfraHandler.cs" />
-    <Compile Include="Handlers\OrangeBoxHandler.cs" />
-    <Compile Include="Handlers\Portal2CooperativeDlcHandler.cs" />
-    <Compile Include="Handlers\Portal2CooperativeHandler.cs" />
-    <Compile Include="Handlers\Portal2SinglePlayerHandler.cs" />
-    <Compile Include="Handlers\PortalHandler.cs" />
-    <Compile Include="Handlers\PortalStoriesMelHandler.cs" />
-    <Compile Include="Helpers\Point3D.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="SourceDemo.cs" />
-    <Compile Include="SourceDemoParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Results\ConsoleCmdResult.cs" />
-    <Compile Include="Results\PacketResult.cs" />
-    <Compile Include="SupportedGames.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
