@@ -1,30 +1,25 @@
-#pragma warning disable CS0649
 using System.IO;
-using SourceDemoParser_CLI.Helpers;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Helpers;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI.Handlers
+namespace SourceDemoParser.Net.Handlers
 {
-	internal class InfraHandler : OrangeBoxHandler
+	internal class ApertureTagHandler : OrangeBoxHandler
 	{
 		private int _startTick = -1;
 		private int _endTick = -1;
 		private string _startAdjustType;
 		private string _endAdjustType;
-		private const string _mainStartAdjustmentType = "Movement Gain";
-		private const string _mainEndAdjustmentType = "Ending Credits";
-		private readonly Point3D _startPosition = new Point3D(-723.00f, -2481.00f, 17.00f);
 		private Point3D _lastPosition;
-		private Game _gameInfo;
+		private readonly Point3D _startPosition = new Point3D(-723.00f, -2481.00f, 17.00f);
+		private readonly Game _gameInfo;
 
-		public InfraHandler(Game supportedGame)
+		public ApertureTagHandler(Game supportedGame)
 			=> _gameInfo = supportedGame;
 
-		private bool Moving(Point3D position)
-		{
-			return (_startPosition.Equals(_lastPosition))
-				&& (!(_startPosition.Equals(position)));
-		}
+		private bool IsMoving(Point3D position)
+			=> (_startPosition.Equals(_lastPosition))
+			&& (!(_startPosition.Equals(position)));
 
 		public override SourceDemo GetResult()
 		{
@@ -39,7 +34,6 @@ namespace SourceDemoParser_CLI.Handlers
 				result.EndAdjustmentType = _endAdjustType;
 				result.EndAdjustmentTick = _endTick;
 			}
-			result.GameInfo = _gameInfo;
 			return result;
 		}
 
@@ -52,20 +46,26 @@ namespace SourceDemoParser_CLI.Handlers
 				_endAdjustType = "#SAVE# Flag";
 				_endTick = CurrentTick;
 			}
+			else if ((_endAdjustType == null)
+				&& (MapName == "gg_stage_theend")
+				&& (result.Command == "playvideo_exitcommand_nointerrupt at_credits end_movie credits_video"))
+			{
+				_endAdjustType = "Ending Credits";
+				_endTick = CurrentTick;
+			}
 			return result;
 		}
 
-		// TODO: wait for part 3
 		protected override PacketResult ProcessPacket(BinaryReader br)
 		{
 			var result = base.ProcessPacket(br);
-			//if ((_startAdjustType == null)
-			//	&& (string.Equals(MapName, "infra_c1_m1_office", System.StringComparison.CurrentCultureIgnoreCase))
-			//	&& (Moving(result.CurrentPosition)))
-			//{
-			//	_startAdjustType = _mainStartAdjustmentType;
-			//	_startTick = CurrentTick;
-			//}
+			if ((_startAdjustType == null)
+				&& (MapName == "gg_intro_wakeup")
+				&& (IsMoving(result.CurrentPosition)))
+			{
+				_startAdjustType = "Gain Control";
+				_startTick = CurrentTick;
+			}
 			_lastPosition = result.CurrentPosition;
 			return result;
 		}

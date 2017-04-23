@@ -1,24 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI
+namespace SourceDemoParser.Net
 {
-	public class SourceDemo : ICloneable
+	public partial class SourceDemo : ICloneable
 	{
 		public SourceDemoProtocolVersion DemoProtocol { get; set; }
 		public int NetworkProtocol { get; set; }
 		public string FilePath { get; set; }
 		public string GameDirectory { get; set; }
 		public string MapName { get; set; }
+		public string Server { get; set; }
 		public string Client { get; set; }
 		public float PlaybackTime { get; set; }
 		public int PlaybackTicks { get; set; }
 		public int FrameCount { get; set; }
 		public int SignOnLength { get; set; }
 		public Game GameInfo { get; set; }
-		// Fixing the changelevel bug
 		public int StartAdjustmentTick { get; set; }
 		public string StartAdjustmentType { get; set; }
 		public int EndAdjustmentTick { get; set; }
@@ -37,8 +37,8 @@ namespace SourceDemoParser_CLI
 			}
 		}
 		// Processed data
-		public List<ConsoleCommandFrame> ConsoleCommands { get; set; } = new List<ConsoleCommandFrame>();
-		public List<PacketFrame> Packets { get; set; } = new List<PacketFrame>();
+		public List<ConsoleCommandFrame> ConsoleCommands { get; set; }
+		public List<PacketFrame> Packets { get; set; }
 		// Extensions
 		public string GetFileName()
 			=> Path.GetFileName(FilePath);
@@ -55,6 +55,8 @@ namespace SourceDemoParser_CLI
 		{
 			StartAdjustmentTick = -1;
 			EndAdjustmentTick = -1;
+			ConsoleCommands = new List<ConsoleCommandFrame>();
+			Packets = new List<PacketFrame>();
 		}
 
 		public object Clone()
@@ -65,6 +67,7 @@ namespace SourceDemoParser_CLI
 				NetworkProtocol = NetworkProtocol,
 				FilePath = FilePath,
 				MapName = MapName,
+				Server = Server,
 				Client = Client,
 				GameDirectory = GameDirectory,
 				PlaybackTime = PlaybackTime,

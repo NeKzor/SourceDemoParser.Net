@@ -2,10 +2,10 @@
 using System;
 using System.IO;
 using System.Text;
-using SourceDemoParser_CLI.Helpers;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Helpers;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI.Handlers
+namespace SourceDemoParser.Net.Handlers
 {
 	internal class OrangeBoxHandler : BaseGameHandler
 	{
@@ -22,7 +22,8 @@ namespace SourceDemoParser_CLI.Handlers
 				NetworkProtocol = NetworkProtocol,
 				FilePath = FilePath,
 				MapName = MapName,
-				Client = PlayerName,
+				Server = Server,
+				Client = Client,
 				GameDirectory = GameDirectory,
 				PlaybackTime = Time,
 				PlaybackTicks = TotalTicks,
@@ -65,7 +66,7 @@ namespace SourceDemoParser_CLI.Handlers
 			if (command == 9)
 				return ProcessStringTables(br);
 			if (command != 8)
-				throw new Exception(string.Concat("Unknown command: 0x", command.ToString("x")));
+				throw new Exception($"Unknown command: 0x{command.ToString("X")}");
 			return ProcessCustomData(br);
 		}
 
@@ -98,27 +99,10 @@ namespace SourceDemoParser_CLI.Handlers
 
 		protected override PacketResult ProcessPacket(BinaryReader br)
 		{
-			var num = default(int);
 			var position = br.BaseStream.Position;
 			br.BaseStream.Seek(4, SeekOrigin.Current);
 			var playerpos = new Point3D(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
-			if (NetworkProtocol != 2001)
-			{
-				// Some developers seem to change the network protocol after every update, try to parse it anyway
-				if ((NetworkProtocol != 7108) && (NetworkProtocol != 1028))
-				{
-					num = 144;	// throw new Exception("unknown protocol");
-				}
-				else
-				{
-					num = 296;
-				}
-			}
-			else
-			{
-				num = 144;
-			}
-
+			var num = (NetworkProtocol != 2001) && ((NetworkProtocol == 7108) || (NetworkProtocol == 1028)) ? 296 : 144;
 			br.BaseStream.Seek(num, SeekOrigin.Current);
 			num = br.ReadInt32();
 			br.BaseStream.Seek(num, SeekOrigin.Current);

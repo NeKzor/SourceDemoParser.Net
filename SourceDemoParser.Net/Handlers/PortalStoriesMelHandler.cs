@@ -1,29 +1,25 @@
 using System.IO;
-using SourceDemoParser_CLI.Helpers;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Helpers;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI.Handlers
+namespace SourceDemoParser.Net.Handlers
 {
-	internal class ApertureTagHandler : OrangeBoxHandler
+	internal class PortalStoriesMelHandler : OrangeBoxHandler
 	{
 		private int _startTick = -1;
 		private int _endTick = -1;
 		private string _startAdjustType;
 		private string _endAdjustType;
-		private const string _mainStartAdjustmentType = "Movement Gain";
-		private const string _mainEndAdjustmentType = "Ending Credits";
-		private readonly Point3D _startPosition = new Point3D(-723.00f, -2481.00f, 17.00f);
+		private readonly Point3D _startPosition = new Point3D(-4592.00f, -4475.4052734375f, 108.683975219727f);
 		private Point3D _lastPosition;
-		private Game _gameInfo;
+		private readonly Game _gameInfo;
 
-		public ApertureTagHandler(Game supportedGame)
-			=> _gameInfo = supportedGame;
+		public PortalStoriesMelHandler()
+			=> _gameInfo = SupportedGames.PortalStoriesMel;
 
-		private bool Moving(Point3D position)
-		{
-			return (_startPosition.Equals(_lastPosition))
-				&& (!(_startPosition.Equals(position)));
-		}
+		private bool Teleported(Point3D position)
+			=> (_startPosition.Equals(_lastPosition))
+			&& (!(_startPosition.Equals(position)));
 
 		public override SourceDemo GetResult()
 		{
@@ -38,6 +34,7 @@ namespace SourceDemoParser_CLI.Handlers
 				result.EndAdjustmentType = _endAdjustType;
 				result.EndAdjustmentTick = _endTick;
 			}
+			result.GameInfo = _gameInfo;
 			return result;
 		}
 
@@ -51,10 +48,10 @@ namespace SourceDemoParser_CLI.Handlers
 				_endTick = CurrentTick;
 			}
 			else if ((_endAdjustType == null)
-				&& (MapName == "gg_stage_theend")
-				&& (result.Command == "playvideo_exitcommand_nointerrupt at_credits end_movie credits_video"))
+				&& ((MapName == "sp_a4_finale") || (MapName == "st_a4_finale"))
+				&& (result.Command == "playvideo_exitcommand_nointerrupt aegis_interior.bik end_movie movie_aegis_interior"))
 			{
-				_endAdjustType = _mainEndAdjustmentType;
+				_endAdjustType = "Ending Credits";
 				_endTick = CurrentTick;
 			}
 			return result;
@@ -64,10 +61,10 @@ namespace SourceDemoParser_CLI.Handlers
 		{
 			var result = base.ProcessPacket(br);
 			if ((_startAdjustType == null)
-				&& (MapName == "gg_intro_wakeup")
-				&& (Moving(result.CurrentPosition)))
+				&& ((MapName == "sp_a1_tramride") || (MapName == "st_a1_tramride"))
+				&& (Teleported(result.CurrentPosition)))
 			{
-				_startAdjustType = _mainStartAdjustmentType;
+				_startAdjustType = "Tram Teleportation";
 				_startTick = CurrentTick;
 			}
 			_lastPosition = result.CurrentPosition;

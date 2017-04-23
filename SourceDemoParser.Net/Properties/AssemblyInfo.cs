@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SourceDemoParser-CLI.Test")]
-[assembly: AssemblyDescription("yo³")]
+[assembly: AssemblyTitle("SourceDemoParser.Net")]
+[assembly: AssemblyDescription("yo")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NeKz")]
-[assembly: AssemblyProduct("SourceDemoParser-CLI.Test")]
+[assembly: AssemblyProduct("SourceDemoParser.Net")]
 [assembly: AssemblyCopyright("Copyright © NeKz 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("502770e4-4228-4bc1-a90e-46c1afae0587")]
+[assembly: Guid("da365f45-8512-4725-afd4-5e6eee17a7bd")]
 
 // Version information for an assembly consists of the following four values:
 //

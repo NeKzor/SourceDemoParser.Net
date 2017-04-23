@@ -1,8 +1,8 @@
 using System.IO;
-using SourceDemoParser_CLI.Helpers;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Helpers;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI.Handlers
+namespace SourceDemoParser.Net.Handlers
 {
 	internal class PortalHandler : HL2Handler
 	{
@@ -10,12 +10,10 @@ namespace SourceDemoParser_CLI.Handlers
 		private int _endTick = -1;
 		private string _startAdjustType;
 		private string _endAdjustType;
-		private const string _mainStartAdjustmentType = "Crosshair Appear";
-		private const string _mainEndAdjustmentType = "Crosshair Disappear";
-		private Game _gameInfo;
+		private readonly Game _gameInfo;
 
 		public PortalHandler()
-			=> _gameInfo = Game.Portal;
+			=> _gameInfo = SupportedGames.Portal;
 
 		public override SourceDemo GetResult()
 		{
@@ -38,10 +36,16 @@ namespace SourceDemoParser_CLI.Handlers
 		{
 			var result = base.ProcessConsoleCmd(br);
 			if ((_endAdjustType == null)
+				&& (result.Command == "echo #SAVE#"))
+			{
+				_endAdjustType = "#SAVE# Flag";
+				_endTick = CurrentTick;
+			}
+			else if ((_endAdjustType == null)
 				&& (MapName == "escape_02")
 				&& (result.Command == "startneurotoxins 99999"))
 			{
-				_endAdjustType = _mainEndAdjustmentType;
+				_endAdjustType = "Beat GLaDOS";
 				_endTick = CurrentTick + 1;
 			}
 			return result;
@@ -54,7 +58,7 @@ namespace SourceDemoParser_CLI.Handlers
 				&& (MapName == "testchmb_a_00")
 				&& (result.CurrentPosition.Equals(new Point3D(-544f, -368.75f, 160f))))
 			{
-				_startAdjustType = _mainStartAdjustmentType;
+				_startAdjustType = "Gain Control";
 				_startTick = CurrentTick + 1;
 			}
 			return result;

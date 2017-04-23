@@ -2,10 +2,10 @@
 using System;
 using System.IO;
 using System.Text;
-using SourceDemoParser_CLI.Helpers;
-using SourceDemoParser_CLI.Results;
+using SourceDemoParser.Net.Helpers;
+using SourceDemoParser.Net.Results;
 
-namespace SourceDemoParser_CLI.Handlers
+namespace SourceDemoParser.Net.Handlers
 {
 	internal class HL2Handler : BaseGameHandler
 	{
@@ -22,7 +22,8 @@ namespace SourceDemoParser_CLI.Handlers
 				NetworkProtocol = NetworkProtocol,
 				FilePath = FilePath,
 				MapName = MapName,
-				Client = PlayerName,
+				Server = Server,
+				Client = Client,
 				GameDirectory = GameDirectory,
 				PlaybackTime = Time,
 				PlaybackTicks = TotalTicks,
@@ -62,7 +63,7 @@ namespace SourceDemoParser_CLI.Handlers
 			if (command == 6)
 				throw new NotImplementedException();
 			if (command != 8)
-				throw new Exception(string.Concat("Unknown command: 0x", command.ToString("x")));
+				throw new Exception($"Unknown command: 0x{command.ToString("X")}");
 			return ProcessStringTables(br);
 		}
 

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace SourceDemoParser_CLI.Helpers
+namespace SourceDemoParser.Net.Helpers
 {
 	[DebuggerDisplay("{X}, {Y}, {Z}")]
 	public struct Point3D

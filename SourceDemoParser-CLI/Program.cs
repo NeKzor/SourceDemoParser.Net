@@ -1,121 +1,108 @@
 ﻿using System;
 using System.Linq;
+using SourceDemoParser.Net;
 
 namespace SourceDemoParser_CLI
 {
 	internal static class Program
 	{
+		private static SourceDemo _demo;
+
 		private static void Main(string[] args)
 		{
 			if ((args != null) && (args?.Length >= 2))
 			{
-				try
+				if (SourceDemo.TryParse(string.Join(" ", args.Skip(1)), out _demo).GetAwaiter().GetResult())
 				{
-					var demo = SourceDemoParser.Parse(string.Join(" ", args.Skip(1))).GetAwaiter().GetResult();
-					if (demo != default(SourceDemo))
+					var output = string.Empty;
+					foreach (var command in args[0].Split(';'))
 					{
-						switch (args[0])
-						{
-							case "parse":
-								Console.Write($"GameInfo\t{demo.GameInfo}\n" +
-									$"DemoProtocol\t{demo.DemoProtocol}\n" +
-									$"NetworkProtocol\t{demo.NetworkProtocol}\n" +
-									$"GameDir\t{demo.GameDirectory}\n" +
-									$"FilePath\t{demo.FilePath}\n" +
-									$"GameDirectory\t{demo.GameDirectory}\n" +
-									$"MapName\t{demo.MapName}\n" +
-									$"PlayerName\t{demo.Client}\n" +
-									$"PlaybackTime\t{demo.PlaybackTime}\n" +
-									$"PlaybackTicks\t{demo.PlaybackTicks}\n" +
-									$"FrameCount\t{demo.FrameCount}\n" +
-									$"StartAdjustmentTick\t{demo.StartAdjustmentTick}\n" +
-									$"EndAdjustmentTick\t{demo.EndAdjustmentTick}\n" +
-									$"StartAdjustmentType\t{demo.StartAdjustmentType}\n" +
-									$"EndAdjustmentType\t{demo.EndAdjustmentType}\n" +
-									$"AdjustedTicks\t{demo.AdjustedTicks}");
-								break;
-							case "version":
-								Console.Write($"DemoProtocol\t{demo.DemoProtocol}");
-								break;
-							case "netproc":
-								Console.Write($"NetworkProtocol\t{demo.NetworkProtocol}");
-								break;
-							case "path":
-								Console.Write($"FilePath\t{demo.FilePath}");
-								break;
-							case "dir":
-								Console.Write($"GameDirectory\t{demo.GameDirectory}");
-								break;
-							case "map":
-								Console.Write($"MapName\t{demo.MapName}");
-								break;
-							case "client":
-								Console.Write($"Client\t{demo.Client}");
-								break;
-							case "time":
-								Console.Write($"PlaybackTime\t{demo.PlaybackTime.ToString("N3")}");
-								break;
-							case "ticks":
-								Console.Write($"PlaybackTicks\t{demo.PlaybackTicks}");
-								break;
-							case "frames":
-								Console.Write($"FrameCount\t{demo.FrameCount}");
-								break;
-							case "signon":
-								Console.Write($"SignOnLength\t{demo.SignOnLength}");
-								break;
-							case "tickstart":
-								Console.Write($"StartAdjustmentTick\t{demo.StartAdjustmentTick}");
-								break;
-							case "tickend":
-								Console.Write($"EndAdjustmentTick\t{demo.EndAdjustmentTick}");
-								break;
-							case "starttype":
-								Console.Write($"StartAdjustmentType\t{demo.StartAdjustmentType}");
-								break;
-							case "endtype":
-								Console.Write($"EndAdjustmentType\t{demo.EndAdjustmentType}");
-								break;
-							case "adjusted":
-								Console.Write($"AdjustedTicks\t{demo.AdjustedTicks}");
-								break;
-							case "tickrate":
-								Console.Write($"Tickrate\t{demo.Tickrate}");
-								break;
-							case "tps":
-								Console.Write($"TicksPerSecond\t{demo.TicksPerSecond.ToString("N3")}");
-								break;
-							case "commands":
-								Console.Write($"ConsoleCommands\n{string.Join("\n", demo.ConsoleCommands)}");
-								break;
-							case "packets":
-								Console.Write($"Packets\n{string.Join("\n", demo.Packets)}");
-								break;
-							case "game":
-								Console.Write($"GameInfo\t{demo.GameInfo}");
-								break;
-							case "gamename":
-								Console.Write($"GameInfo.Name\t{demo.GameInfo.Name}");
-								break;
-							case "gamemode":
-								Console.Write($"GameInfo.Mode\t{demo.GameInfo.Mode}");
-								break;
-							case "gametickrate":
-								Console.Write($"GameInfo.DefaultTickrate\t{demo.GameInfo.DefaultTickrate}");
-								break;
-							case "gamemaps":
-								Console.Write($"GameInfo.Maps\n{string.Join("\n", demo.GameInfo.Maps)}");
-								break;
-							default:
-								Console.WriteLine("Unknown command!");
-								break;
-						}
+						var temp = ParseCommand(command);
+						output += (temp != default(string)) ? $"{temp}\n" : string.Empty;
 					}
+					Console.Write((output != string.Empty) ? output.Substring(0, output.Length - 1) : "Could not parse any commands!");
 				}
-				catch
+				else
 				{
-					// Unsupported demo file (probably)
+					Console.Write("Could not parse the demo file!");
 				}
+			}
+		}
+
+		private static string ParseCommand(string command)
+		{
+			switch (command)
+			{
+				case "parse":
+					return $"GameInfo\t{_demo.GameInfo}\n" +
+						$"_demoProtocol\t{_demo.DemoProtocol}\n" +
+						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
+						$"GameDirectory\t{_demo.GameDirectory}\n" +
+						$"FilePath\t{_demo.FilePath}\n" +
+						$"GameDirectory\t{_demo.GameDirectory}\n" +
+						$"MapName\t{_demo.MapName}\n" +
+						$"Server\t{_demo.Server}\n" +
+						$"Client\t{_demo.Client}\n" +
+						$"PlaybackTime\t{_demo.PlaybackTime}\n" +
+						$"PlaybackTicks\t{_demo.PlaybackTicks}\n" +
+						$"FrameCount\t{_demo.FrameCount}\n" +
+						$"StartAdjustmentTick\t{_demo.StartAdjustmentTick}\n" +
+						$"EndAdjustmentTick\t{_demo.EndAdjustmentTick}\n" +
+						$"StartAdjustmentType\t{_demo.StartAdjustmentType}\n" +
+						$"EndAdjustmentType\t{_demo.EndAdjustmentType}\n" +
+						$"AdjustedTicks\t{_demo.AdjustedTicks}";
+				case "version":
+					return $"_demoProtocol\t{_demo.DemoProtocol}";
+				case "netproc":
+					return $"NetworkProtocol\t{_demo.NetworkProtocol}";
+				case "path":
+					return $"FilePath\t{_demo.FilePath}";
+				case "dir":
+					return $"GameDirectory\t{_demo.GameDirectory}";
+				case "map":
+					return $"MapName\t{_demo.MapName}";
+				case "server":
+					return $"Server\t{_demo.Server}";
+				case "client":
+					return $"Client\t{_demo.Client}";
+				case "time":
+					return $"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}";
+				case "ticks":
+					return $"PlaybackTicks\t{_demo.PlaybackTicks}";
+				case "frames":
+					return $"FrameCount\t{_demo.FrameCount}";
+				case "signon":
+					return $"SignOnLength\t{_demo.SignOnLength}";
+				case "tickstart":
+					return $"StartAdjustmentTick\t{_demo.StartAdjustmentTick}";
+				case "tickend":
+					return $"EndAdjustmentTick\t{_demo.EndAdjustmentTick}";
+				case "starttype":
+					return $"StartAdjustmentType\t{_demo.StartAdjustmentType}";
+				case "endtype":
+					return $"EndAdjustmentType\t{_demo.EndAdjustmentType}";
+				case "adjusted":
+					return $"AdjustedTicks\t{_demo.AdjustedTicks}";
+				case "tickrate":
+					return $"Tickrate\t{_demo.Tickrate}";
+				case "tps":
+					return $"TicksPerSecond\t{_demo.TicksPerSecond.ToString("N3")}";
+				case "commands":
+					return $"ConsoleCommands\n{string.Join("\n", _demo.ConsoleCommands)}";
+				case "packets":
+					return $"Packets\n{string.Join("\n", _demo.Packets)}";
+				case "game":
+					return $"GameInfo\t{_demo.GameInfo}";
+				case "gamename":
+					return $"GameInfo.Name\t{_demo.GameInfo.Name}";
+				case "gamemode":
+					return $"GameInfo.Mode\t{_demo.GameInfo.Mode}";
+				case "gametickrate":
+					return $"GameInfo.DefaultTickrate\t{_demo.GameInfo.DefaultTickrate}";
+				case "gamemaps":
+					return $"GameInfo.Maps\n{string.Join("\n", _demo.GameInfo.Maps)}";
+				default:
+					return default(string);
 			}
 		}
 	}

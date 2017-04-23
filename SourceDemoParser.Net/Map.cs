@@ -1,4 +1,4 @@
-﻿namespace SourceDemoParser_CLI
+﻿namespace SourceDemoParser.Net
 {
 	public class Map
 	{

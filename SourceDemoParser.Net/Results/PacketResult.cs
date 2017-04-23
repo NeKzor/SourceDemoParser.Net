@@ -1,6 +1,6 @@
-using SourceDemoParser_CLI.Helpers;
+using SourceDemoParser.Net.Helpers;
 
-namespace SourceDemoParser_CLI.Results
+namespace SourceDemoParser.Net.Results
 {
 	public class PacketResult
 	{

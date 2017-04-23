@@ -1,4 +1,4 @@
-﻿namespace SourceDemoParser_CLI.Results
+﻿namespace SourceDemoParser.Net.Results
 {
 	public interface IFrame
 	{

@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9093E5AF-D84B-4F05-8332-D61B45391CA0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>SourceDemoParser_CLI</RootNamespace>
-    <AssemblyName>SourceDemoParser-CLI</AssemblyName>
+    <ProjectGuid>{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SourceDemoParser.Net</RootNamespace>
+    <AssemblyName>SourceDemoParser.Net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,18 +40,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Frames\ConsoleCommandFrame.cs" />
+    <Compile Include="Frames\IFrame.cs" />
+    <Compile Include="Frames\PacketFrame.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Handlers\ApertureTagHandler.cs" />
+    <Compile Include="Handlers\BaseGameHandler.cs" />
+    <Compile Include="Handlers\HL2Handler.cs" />
+    <Compile Include="Handlers\InfraHandler.cs" />
+    <Compile Include="Handlers\OrangeBoxHandler.cs" />
+    <Compile Include="Handlers\Portal2CooperativeDlcHandler.cs" />
+    <Compile Include="Handlers\Portal2CooperativeHandler.cs" />
+    <Compile Include="Handlers\Portal2SinglePlayerHandler.cs" />
+    <Compile Include="Handlers\PortalHandler.cs" />
+    <Compile Include="Handlers\PortalStoriesMelHandler.cs" />
+    <Compile Include="Helpers\Point3D.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\ConsoleCmdResult.cs" />
+    <Compile Include="Results\PacketResult.cs" />
+    <Compile Include="SourceDemo.cs" />
+    <Compile Include="SourceDemoParser.cs" />
+    <Compile Include="SourceDemoProtocolVersion.cs" />
+    <Compile Include="SupportedGames.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SourceDemoParser.Net\SourceDemoParser.Net.csproj">
-      <Project>{da365f45-8512-4725-afd4-5e6eee17a7bd}</Project>
-      <Name>SourceDemoParser.Net</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
