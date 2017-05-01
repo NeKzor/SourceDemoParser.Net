@@ -37,6 +37,7 @@ namespace SourceDemoParser.Net
 				handler = BaseGameHandler.GetGameHandler(dir, map, protocol);
 				handler.FilePath = filePath;
 				handler.NetworkProtocol = netproc;
+				handler.Server = server;
 				handler.Client = client;
 				handler.MapName = map;
 				handler.GameDirectory = dir;

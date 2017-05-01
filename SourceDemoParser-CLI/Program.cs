@@ -35,24 +35,27 @@ namespace SourceDemoParser_CLI
 			{
 				case "parse":
 					return $"GameInfo\t{_demo.GameInfo}\n" +
-						$"_demoProtocol\t{_demo.DemoProtocol}\n" +
+						$"DemoProtocol\t{_demo.DemoProtocol}\n" +
 						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
-						$"GameDirectory\t{_demo.GameDirectory}\n" +
 						$"FilePath\t{_demo.FilePath}\n" +
 						$"GameDirectory\t{_demo.GameDirectory}\n" +
 						$"MapName\t{_demo.MapName}\n" +
 						$"Server\t{_demo.Server}\n" +
 						$"Client\t{_demo.Client}\n" +
-						$"PlaybackTime\t{_demo.PlaybackTime}\n" +
+						$"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}\n" +
 						$"PlaybackTicks\t{_demo.PlaybackTicks}\n" +
 						$"FrameCount\t{_demo.FrameCount}\n" +
+						$"SignOnLength\t{_demo.SignOnLength}\n" +
 						$"StartAdjustmentTick\t{_demo.StartAdjustmentTick}\n" +
 						$"EndAdjustmentTick\t{_demo.EndAdjustmentTick}\n" +
 						$"StartAdjustmentType\t{_demo.StartAdjustmentType}\n" +
 						$"EndAdjustmentType\t{_demo.EndAdjustmentType}\n" +
-						$"AdjustedTicks\t{_demo.AdjustedTicks}";
+						$"AdjustedTime\t{_demo.AdjustedTime.ToString("N3")}\n" +
+						$"AdjustedTicks\t{_demo.AdjustedTicks}\n" +
+						$"Tickrate\t{_demo.Tickrate}\n" +
+						$"TicksPerSecond\t{_demo.TicksPerSecond.ToString("N3")}";
 				case "version":
-					return $"_demoProtocol\t{_demo.DemoProtocol}";
+					return $"DemoProtocol\t{_demo.DemoProtocol}";
 				case "netproc":
 					return $"NetworkProtocol\t{_demo.NetworkProtocol}";
 				case "path":
@@ -81,7 +84,9 @@ namespace SourceDemoParser_CLI
 					return $"StartAdjustmentType\t{_demo.StartAdjustmentType}";
 				case "endtype":
 					return $"EndAdjustmentType\t{_demo.EndAdjustmentType}";
-				case "adjusted":
+				case "timeadj":
+					return $"AdjustedTicks\t{_demo.AdjustedTime.ToString("N3")}";
+				case "ticksadj":
 					return $"AdjustedTicks\t{_demo.AdjustedTicks}";
 				case "tickrate":
 					return $"Tickrate\t{_demo.Tickrate}";

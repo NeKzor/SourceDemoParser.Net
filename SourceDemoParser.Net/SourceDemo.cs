@@ -44,6 +44,8 @@ namespace SourceDemoParser.Net
 			=> Path.GetFileName(FilePath);
 		public string GetFileNameWithoutExtension()
 			=> Path.GetFileNameWithoutExtension(FilePath);
+		public float AdjustedTime
+			=> AdjustedTicks * TicksPerSecond;
 		public float AdjustTime(float ticksPerSecond)
 			=> AdjustedTicks * ticksPerSecond;
 		public int Tickrate

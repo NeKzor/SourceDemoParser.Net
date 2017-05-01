@@ -10,7 +10,7 @@ namespace SourceDemoParser_CLI.Test
 			var result = Process.Start(new ProcessStartInfo
 			{
 				FileName = @"..\..\..\SourceDemoParser-CLI\bin\Debug\SourceDemoParser-CLI.exe",
-				Arguments = @"game;tickrate;ticks;time ..\..\LaserOverGoo_NeKz_0p.dem",
+				Arguments = @"time;ticks;timeadj;ticksadj ..\..\LaserOverGoo_NeKz_0p.dem",
 				UseShellExecute = false,
 				RedirectStandardOutput = true
 			}).StandardOutput.ReadToEnd();
