@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using SourceDemoParser.Net.Results;
 
 namespace SourceDemoParser.Net
@@ -24,17 +25,16 @@ namespace SourceDemoParser.Net
 		public int EndAdjustmentTick { get; set; }
 		public string EndAdjustmentType { get; set; }
 		public int AdjustedTicks
+			=> AdjustTicks(StartAdjustmentTick, EndAdjustmentTick);
+		public int AdjustTicks(int start, int end)
 		{
-			get
-			{
-				if ((StartAdjustmentTick > -1) && (EndAdjustmentTick > -1))
-					return EndAdjustmentTick - StartAdjustmentTick;
-				if (StartAdjustmentTick > -1)
-					return PlaybackTicks - StartAdjustmentTick;
-				if (EndAdjustmentTick > -1)
-					return EndAdjustmentTick;
-				return PlaybackTicks;
-			}
+			if ((start > -1) && (end > -1))
+				return end - start;
+			if (start > -1)
+				return (ConsoleCommands.Last()?.CurrentTick ?? 0) - start;
+			if (end > -1)
+				return end;
+			return ConsoleCommands.Last()?.CurrentTick ?? 0;
 		}
 		// Processed data
 		public List<ConsoleCommandFrame> ConsoleCommands { get; set; }
