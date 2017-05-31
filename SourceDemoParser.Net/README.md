@@ -13,9 +13,9 @@ using SourceDemoParser.Net;
 try
 {
     // Async
-    var demo = await SourceDemo.Parse("path/just-a-demo-file.dem");
+    var demo = await SourceDemo.ParseFileAsync("path/just-a-demo-file.dem");
     // Sync
-    demo = SourceDemo.Parse("file-with-valid-contents.idk").GetAwaiter().GetResult();
+    demo = SourceDemo.ParseFileAsync("file-with-valid-contents.idk").GetAwaiter().GetResult();
 }
 catch
 {
@@ -25,11 +25,11 @@ catch
 #### 2.b)
 ```cs
 // Async
-if (await SourceDemo.TryParse("rank2.dem", out var demo))
+if (await SourceDemo.TryParseFile("rank2.dem", out var demo))
 {
 }
 // Sync
-if (SourceDemo.TryParse("almost-wr.dem", out demo).GetAwaiter().GetResult())
+if (SourceDemo.TryParseFile("almost-wr.dem", out demo).GetAwaiter().GetResult())
 {
 }
 ```

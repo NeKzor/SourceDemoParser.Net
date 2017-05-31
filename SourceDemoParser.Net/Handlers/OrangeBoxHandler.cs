@@ -20,7 +20,6 @@ namespace SourceDemoParser.Net.Handlers
 			{
 				DemoProtocol = DemoProtocol,
 				NetworkProtocol = NetworkProtocol,
-				FilePath = FilePath,
 				MapName = MapName,
 				Server = Server,
 				Client = Client,

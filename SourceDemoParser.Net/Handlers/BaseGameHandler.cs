@@ -7,7 +7,6 @@ namespace SourceDemoParser.Net.Handlers
 	public abstract class BaseGameHandler
 	{
 		public abstract SourceDemoProtocolVersion DemoProtocol { get; protected set; }
-		public string FilePath { get; set; }
 		public string GameDirectory { get; set; }
 		public string MapName { get; set; }
 		public int NetworkProtocol { get; set; }

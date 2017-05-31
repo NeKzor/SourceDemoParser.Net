@@ -8,11 +8,20 @@ namespace SourceDemoParser.Net
 {
 	public partial class SourceDemo
 	{
-		public static Task<SourceDemo> Parse(string filePath)
+		public static async Task<SourceDemo> ParseFileAsync(string filePath)
+		{
+			using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+				return await Parse(fs).ConfigureAwait(false);
+		}
+		public static async Task<SourceDemo> ParseContentAsync(byte[] demoContent)
+		{
+			using (var ms = new MemoryStream(demoContent))
+				return await Parse(ms).ConfigureAwait(false);
+		}
+		public static Task<SourceDemo> Parse(Stream input)
 		{
 			var handler = default(BaseGameHandler);
-			using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-			using (var br = new BinaryReader(fs))
+			using (var br = new BinaryReader(input))
 			{
 				if (Encoding.ASCII.GetString(br.ReadBytes(8)).TrimEnd(new char[1]) != "HL2DEMO")
 					throw new Exception("Not a demo!");
@@ -35,7 +44,6 @@ namespace SourceDemoParser.Net
 				var signon = br.ReadInt32();
 
 				handler = BaseGameHandler.GetGameHandler(dir, map, protocol);
-				handler.FilePath = filePath;
 				handler.NetworkProtocol = netproc;
 				handler.Server = server;
 				handler.Client = client;
@@ -58,12 +66,40 @@ namespace SourceDemoParser.Net
 			return Task.FromResult(handler.GetResult());
 		}
 
-		public static Task<bool> TryParse(string filePath, out SourceDemo demo)
+		public static Task<bool> TryParse(Stream input, out SourceDemo demo)
 		{
 			demo = default(SourceDemo);
 			try
 			{
-				demo = Parse(filePath).GetAwaiter().GetResult();
+				demo = Parse(input).ConfigureAwait(false).GetAwaiter().GetResult();
+				return Task.FromResult(true);
+			}
+			catch
+			{
+			}
+			return Task.FromResult(false);
+		}
+		public static Task<bool> TryParseFile(string filePath, out SourceDemo demo)
+		{
+			demo = default(SourceDemo);
+			try
+			{
+				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+					demo = Parse(fs).ConfigureAwait(false).GetAwaiter().GetResult();
+				return Task.FromResult(true);
+			}
+			catch
+			{
+			}
+			return Task.FromResult(false);
+		}
+		public static Task<bool> TryParseContent(byte[] demoContent, out SourceDemo demo)
+		{
+			demo = default(SourceDemo);
+			try
+			{
+				using (var ms = new MemoryStream(demoContent))
+					demo = Parse(ms).ConfigureAwait(false).GetAwaiter().GetResult();
 				return Task.FromResult(true);
 			}
 			catch

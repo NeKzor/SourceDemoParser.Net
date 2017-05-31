@@ -10,7 +10,6 @@ namespace SourceDemoParser.Net
 	{
 		public SourceDemoProtocolVersion DemoProtocol { get; set; }
 		public int NetworkProtocol { get; set; }
-		public string FilePath { get; set; }
 		public string GameDirectory { get; set; }
 		public string MapName { get; set; }
 		public string Server { get; set; }
@@ -40,17 +39,13 @@ namespace SourceDemoParser.Net
 		public List<ConsoleCommandFrame> ConsoleCommands { get; set; }
 		public List<PacketFrame> Packets { get; set; }
 		// Extensions
-		public string GetFileName()
-			=> Path.GetFileName(FilePath);
-		public string GetFileNameWithoutExtension()
-			=> Path.GetFileNameWithoutExtension(FilePath);
-		public float AdjustedTime
-			=> AdjustedTicks * TicksPerSecond;
-		public float AdjustTime(float ticksPerSecond)
+		public float GetAdjustedTime()
+			=> AdjustedTicks * GetTicksPerSecond();
+		public float GetAdjustTime(float ticksPerSecond)
 			=> AdjustedTicks * ticksPerSecond;
-		public int Tickrate
+		public int GetTickrate()
 			=> (int)Math.Round(PlaybackTicks / PlaybackTime);
-		public float TicksPerSecond
+		public float GetTicksPerSecond()
 			=> PlaybackTime / PlaybackTicks;
 
 		public SourceDemo()
@@ -67,7 +62,6 @@ namespace SourceDemoParser.Net
 			{
 				DemoProtocol = DemoProtocol,
 				NetworkProtocol = NetworkProtocol,
-				FilePath = FilePath,
 				MapName = MapName,
 				Server = Server,
 				Client = Client,

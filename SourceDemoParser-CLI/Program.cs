@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using SourceDemoParser.Net;
 
@@ -10,21 +11,43 @@ namespace SourceDemoParser_CLI
 
 		private static void Main(string[] args)
 		{
-			if ((args != null) && (args?.Length >= 2))
+			if (args != null)
 			{
-				if (SourceDemo.TryParse(string.Join(" ", args.Skip(1)), out _demo).GetAwaiter().GetResult())
+				if (args.Length == 1)
 				{
-					var output = string.Empty;
-					foreach (var command in args[0].Split(';'))
+					if (File.Exists(args[0]))
 					{
-						var temp = ParseCommand(command);
-						output += (temp != default(string)) ? $"{temp}\n" : string.Empty;
+						if (SourceDemo.TryParseFile(args[0], out _demo).GetAwaiter().GetResult())
+						{
+							Console.Write(ParseCommand("parse"));
+						}
+						else
+						{
+							Console.Write("Could not parse the demo file!");
+						}
+						Console.Read();
 					}
-					Console.Write((output != string.Empty) ? output.Substring(0, output.Length - 1) : "Could not parse any commands!");
 				}
-				else
+				else if (args.Length >= 2)
 				{
-					Console.Write("Could not parse the demo file!");
+					var file = string.Join(" ", args.Skip(1));
+					if (File.Exists(file))
+					{
+						if (SourceDemo.TryParseFile(file, out _demo).GetAwaiter().GetResult())
+						{
+							var output = string.Empty;
+							foreach (var command in args[0].Split(';'))
+							{
+								var temp = ParseCommand(command);
+								output += (temp != default(string)) ? $"{temp}\n" : string.Empty;
+							}
+							Console.Write((output != string.Empty) ? output.Substring(0, output.Length - 1) : "Could not parse any commands!");
+						}
+						else
+						{
+							Console.Write("Could not parse the demo file!");
+						}
+					}
 				}
 			}
 		}
@@ -37,7 +60,6 @@ namespace SourceDemoParser_CLI
 					return $"GameInfo\t{_demo.GameInfo}\n" +
 						$"DemoProtocol\t{_demo.DemoProtocol}\n" +
 						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
-						$"FilePath\t{_demo.FilePath}\n" +
 						$"GameDirectory\t{_demo.GameDirectory}\n" +
 						$"MapName\t{_demo.MapName}\n" +
 						$"Server\t{_demo.Server}\n" +
@@ -50,16 +72,14 @@ namespace SourceDemoParser_CLI
 						$"EndAdjustmentTick\t{_demo.EndAdjustmentTick}\n" +
 						$"StartAdjustmentType\t{_demo.StartAdjustmentType}\n" +
 						$"EndAdjustmentType\t{_demo.EndAdjustmentType}\n" +
-						$"AdjustedTime\t{_demo.AdjustedTime.ToString("N3")}\n" +
+						$"AdjustedTime\t{_demo.GetAdjustedTime().ToString("N3")}\n" +
 						$"AdjustedTicks\t{_demo.AdjustedTicks}\n" +
-						$"Tickrate\t{_demo.Tickrate}\n" +
-						$"TicksPerSecond\t{_demo.TicksPerSecond.ToString("N3")}";
+						$"Tickrate\t{_demo.GetTickrate()}\n" +
+						$"TicksPerSecond\t{_demo.GetTicksPerSecond().ToString("N3")}";
 				case "version":
 					return $"DemoProtocol\t{_demo.DemoProtocol}";
 				case "netproc":
 					return $"NetworkProtocol\t{_demo.NetworkProtocol}";
-				case "path":
-					return $"FilePath\t{_demo.FilePath}";
 				case "dir":
 					return $"GameDirectory\t{_demo.GameDirectory}";
 				case "map":
@@ -85,13 +105,13 @@ namespace SourceDemoParser_CLI
 				case "endtype":
 					return $"EndAdjustmentType\t{_demo.EndAdjustmentType}";
 				case "timeadj":
-					return $"AdjustedTicks\t{_demo.AdjustedTime.ToString("N3")}";
+					return $"AdjustedTicks\t{_demo.GetAdjustedTime().ToString("N3")}";
 				case "ticksadj":
 					return $"AdjustedTicks\t{_demo.AdjustedTicks}";
 				case "tickrate":
-					return $"Tickrate\t{_demo.Tickrate}";
+					return $"Tickrate\t{_demo.GetTickrate()}";
 				case "tps":
-					return $"TicksPerSecond\t{_demo.TicksPerSecond.ToString("N3")}";
+					return $"TicksPerSecond\t{_demo.GetTicksPerSecond().ToString("N3")}";
 				case "commands":
 					return $"ConsoleCommands\n{string.Join("\n", _demo.ConsoleCommands)}";
 				case "packets":
