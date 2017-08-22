@@ -1,0 +1,6 @@
+language: csharp
+solution: SourceDemoParser.Net.sln
+mono: none
+dotnet: 1.0.3
+script:
+ - dotnet restore
