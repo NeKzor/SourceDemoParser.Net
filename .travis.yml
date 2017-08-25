@@ -1,6 +1,8 @@
 language: csharp
-solution: SourceDemoParser.Net.sln
-mono: none
-dotnet: 1.0.3
 script:
- - dotnet restore
+  - nuget restore SourceDemoParser.Net.sln
+  - msbuild /p:Configuration=Release SourceDemoParser.Net.sln
+  - cp SourceDemoParser.Net/bin/Release/SourceDemoParser.Net.dll SourceDemoParser-CLI.Test/bin/Release/
+  - cp SourceDemoParser-CLI/bin/Release/SourceDemoParser-CLI.exe SourceDemoParser-CLI.Test/bin/Release/
+  - cp SourceDemoParser-CLI.Test/LaserOverGoo_NeKz_0p.dem SourceDemoParser-CLI.Test/bin/Release/
+  - mono SourceDemoParser-CLI.Test/bin/Release/SourceDemoParser-CLI.Test.exe
