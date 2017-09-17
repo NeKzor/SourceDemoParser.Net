@@ -4,5 +4,5 @@ script:
   - msbuild /p:Configuration=Release SourceDemoParser.Net.sln
   - cp SourceDemoParser.Net/bin/Release/SourceDemoParser.Net.dll SourceDemoParser-CLI.Test/bin/Release/
   - cp SourceDemoParser-CLI/bin/Release/SourceDemoParser-CLI.exe SourceDemoParser-CLI.Test/bin/Release/
-  - cp SourceDemoParser-CLI.Test/LaserOverGoo_NeKz_0p.dem SourceDemoParser-CLI.Test/bin/Release/
+  - cp SourceDemoParser-CLI.Test/lasercrusher1338.dem SourceDemoParser-CLI.Test/bin/Release/
   - mono SourceDemoParser-CLI.Test/bin/Release/SourceDemoParser-CLI.Test.exe
