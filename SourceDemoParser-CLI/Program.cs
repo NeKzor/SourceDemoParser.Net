@@ -156,14 +156,14 @@ namespace SourceDemoParser_CLI
 					return (filter == default(string[]))
 						? (count == 0) ? $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd))}"
 								: $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd).Take(count))}"
-								: $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd).Where(m =>
+								: "ConsoleCommands\n" + string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd).Where(m =>
 								{
 									var cmd = (m.Frame as ConsoleCmdFrame).ConsoleCommand;
 									foreach (var f in filter)
 										if (cmd.StartsWith(f))
 											return false;
 									return true;
-								}))}";
+								}));
 				case "packets":
 					return (count > 0) ? $"Packets\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.Packet).Take(count))}"
 							   : $"Packets\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.Packet))}";
