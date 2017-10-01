@@ -3,19 +3,22 @@
 [![Release Status](https://img.shields.io/github/release/NeKzor/SourceDemoParser.Net.svg)](https://github.com/NeKzor/SourceDemoParser.Net/releases)
 
 # SourceDemoParser.Net
-Todo
+Parse any demo with protocol version 2, 3 or 4.
+Main features:
+- Parse demo header
+- Parse data beyond the header
+- Fix negative time in demo header (called adjustment)
+- Adjustment for special demo rules, defined by speedrunning communities
 
 # Overview
 |Namespace|Status|Description|
 |---|:-:|---|
-|[SourceDemoParser.Net](https://github.com/NeKzor/SourceDemoParser.Net/tree/dev/SourceDemoParser.Net)|✖|SourceDemo, SourceParser etc.|
-|[SourceDemoParser.Net.Extensions](https://github.com/NeKzor/SourceDemoParser.Net/tree/dev/SourceDemoParser.Net/Extensions)|✖|Adjustment, exporting etc.|
-|[SourceDemoParser.Net.Extensions.Demos](https://github.com/NeKzor/SourceDemoParser.Net/tree/dev/SourceDemoParser.Net/Extensions/Demos)|✖|Supported, default adjustments.|
+|[SourceDemoParser.Net](SourceDemoParser.Net)|✖|SourceDemo, SourceParser etc.|
+|[SourceDemoParser.Net.Extensions](SourceDemoParser.Net/Extensions)|✖|Adjustment, exporting etc.|
+|[SourceDemoParser.Net.Extensions.Demos](SourceDemoParser.Net/Extensions/Demos)|✖|Supported, default adjustments.|
 
-# [C# Docs](https://github.com/NeKzor/SourceDemoParser.Net/blob/dev/DOCS.md#how-to-use-in-c-hashtag-aka-docs)
+# [C# Docs](DOCS.md)
 
-# [CLI Tool](https://github.com/NeKzor/SourceDemoParser.Net/tree/dev/SourceDemoParser-CLI#notes)
-Todo
-
-# Credits
-Todo
+# [CLI Tool](SourceDemoParser-CLI)
+Simple tool for command line interfaces.
+Example: `SourceDemoParser-CLI.exe header segment_42.dem`.

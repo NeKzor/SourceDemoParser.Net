@@ -1,26 +1,27 @@
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public class DemoMessage : IDemoMessage
 	{
 		public DemoMessageType Type { get; set; }
 		public int CurrentTick { get; set; }
-		public byte? Optional { get; set; }
+		public byte? Tag { get; set; }
 		public IFrame Frame { get; set; }
-		
+
 		public DemoMessage()
 		{
 		}
-		public DemoMessage(DemoMessageType type, int tick, byte? optional, IFrame frame)
+		public DemoMessage(DemoMessageType type, int tick, byte? tag, IFrame frame)
 		{
 			Type = type;
 			CurrentTick = tick;
-			Optional = optional;
+			Tag = tag;
 			Frame = frame;
 		}
-		
+
 		public override string ToString()
 		{
-			return $"{Type}\t[{CurrentTick}{((Optional != null) ? $":{(int)Optional}" : string.Empty)}]\t{(Frame?.ToString() ?? "NULL")}";
+			// Eh, wrong type for protocol version != 4
+			return $"{Type}\t[{CurrentTick}:{Frame?.RawData?.Length ?? 0}]\t{(Frame?.ToString() ?? "NULL")}";
 		}
 	}
 }

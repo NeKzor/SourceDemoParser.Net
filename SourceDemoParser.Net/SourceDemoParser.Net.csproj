@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>SourceDemoParser.Net</RootNamespace>
+    <RootNamespace>SourceDemoParser</RootNamespace>
     <AssemblyName>SourceDemoParser.Net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -58,6 +58,7 @@
     <Compile Include="Parser\Frames\CustomDataFrame.cs" />
     <Compile Include="Parser\Frames\DataTablesFrame.cs" />
     <Compile Include="Parser\Frames\IFrame.cs" />
+    <Compile Include="Parser\Frames\InternalExtensions.cs" />
     <Compile Include="Parser\Frames\PacketFrame.cs" />
     <Compile Include="Parser\Frames\StringTablesFrame.cs" />
     <Compile Include="Parser\Frames\UserCmdFrame.cs" />

@@ -1,24 +1,21 @@
-using System;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public class UserCmdFrame : IFrame
 	{
 		public byte[] RawData { get; set; }
-		public byte[] Unknown { get; set; }
-		
+		public int CmdNumber { get; set; }
+
 		public UserCmdFrame()
 		{
 		}
-		public UserCmdFrame(byte[] idk, byte[] data)
+		public UserCmdFrame(int cmd, byte[] data)
 		{
-			Unknown = idk;
+			CmdNumber = cmd;
 			RawData = data;
 		}
-		
+
 		Task IFrame.ParseData()
 		{
 			// Todo
@@ -28,18 +25,13 @@ namespace SourceDemoParser.Net
 		{
 			if (RawData == null)
 				return Task.FromResult(default(byte[]));
-			
-			var bytes = Unknown;
-			var data = BitConverter.GetBytes(RawData.Length);
-			if (!BitConverter.IsLittleEndian)
-    				Array.Reverse(data);
-			
-			bytes.Concat(data);
-			bytes.Concat(RawData);
+
+			var bytes = CmdNumber.GetBytes();
+			RawData.GetBytes().AppendTo(ref bytes);
 			return Task.FromResult(bytes);
 		}
-		
+
 		public override string ToString()
-			=> "TODO";
+			=> $"{CmdNumber}";
 	}
 }

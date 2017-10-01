@@ -1,10 +1,10 @@
-namespace SourceDemoParser.Net.Extensions.Demos
+namespace SourceDemoParser.Extensions.Demos
 {
 	public class PortalStoriesMelDemo : ISourceDemo
 	{
 		public string GameDirectory => "portal_stories";
 		public uint DefaultTickrate => 60u;
-		
+
 		[StartAdjustment("sp_a1_tramride")]
 		public bool StartA(PlayerPosition pos) => TramrideStart(pos);
 		[StartAdjustment("st_a1_tramride")]
@@ -13,13 +13,12 @@ namespace SourceDemoParser.Net.Extensions.Demos
 		public bool EndingA(PlayerCommand cmd) => FinaleEnding(cmd);
 		[EndAdjustment("st_a4_finale")]
 		public bool EndingB(PlayerCommand cmd) => FinaleEnding(cmd);
-		
+
 		public bool TramrideStart(PlayerPosition pos)
 		{
-			var destination = new Vector3f(-4592.00f, -4475.4052734375f, 108.683975219727f);
-			if (Vector3f.Equals(pos.Old, destination))
-				if (!(Vector3f.Equals(pos.Current, destination)))
-					return true;
+			var destination = new Vector(-4592.00f, -4475.4052734375f, 108.683975219727f);
+			if ((pos.Old == destination) && (pos.Current != destination))
+				return true;
 			return false;
 		}
 		public bool FinaleEnding(PlayerCommand cmd)

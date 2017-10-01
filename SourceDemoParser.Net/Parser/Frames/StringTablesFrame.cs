@@ -1,14 +1,11 @@
-using System;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public class StringTablesFrame : IFrame
 	{
 		public byte[] RawData { get; set; }
-		
+
 		public StringTablesFrame()
 		{
 		}
@@ -16,7 +13,7 @@ namespace SourceDemoParser.Net
 		{
 			RawData = data;
 		}
-		
+
 		Task IFrame.ParseData()
 		{
 			// Todo
@@ -26,15 +23,12 @@ namespace SourceDemoParser.Net
 		{
 			if (RawData == null)
 				return Task.FromResult(default(byte[]));
-			
-			var bytes = BitConverter.GetBytes(RawData.Length);
-			if (!BitConverter.IsLittleEndian)
-    				Array.Reverse(bytes);
-			bytes.Concat(RawData);
+
+			var bytes = RawData.GetBytes();
 			return Task.FromResult(bytes);
 		}
-		
+
 		public override string ToString()
-			=> "TODO";
+			=> "NULL";
 	}
 }

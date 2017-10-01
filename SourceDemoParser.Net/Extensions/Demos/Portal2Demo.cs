@@ -1,28 +1,27 @@
 using System;
 
-namespace SourceDemoParser.Net.Extensions.Demos
+namespace SourceDemoParser.Extensions.Demos
 {
 	public class Portal2Demo : ISourceDemo
 	{
 		public string GameDirectory => "portal2";
 		public uint DefaultTickrate => 60u;
-		
+
 		[StartAdjustment("sp_a1_intro1", 1)]
 		public bool SpA1Intro1_Start(PlayerPosition pos)
 		{
-			var destination = new Vector3f(-8709.20f, 1690.07f, 28.00f);
-			var tolerance = new Vector3f(0.02f, 0.02f, 0.5f);
-			return	   !(Math.Abs(pos.Current.X - destination.X) > tolerance.X)
+			var destination = new Vector(-8709.20f, 1690.07f, 28.00f);
+			var tolerance = new Vector(0.02f, 0.02f, 0.5f);
+			return !(Math.Abs(pos.Current.X - destination.X) > tolerance.X)
 				&& !(Math.Abs(pos.Current.Y - destination.Y) > tolerance.Y)
 				&& !(Math.Abs(pos.Current.Z - destination.Z) > tolerance.Z);
 		}
 		[StartAdjustment("e1912", -2)]
 		public bool E1912_Start(PlayerPosition pos)
 		{
-			var destination = new Vector3f(-655.748779296875f, -918.37353515625f, -4.96875f);
-			if (Vector3f.Equals(pos.Old, destination))
-				if (!(Vector3f.Equals(pos.Current, destination)))
-					return true;
+			var destination = new Vector(-655.748779296875f, -918.37353515625f, -4.96875f);
+			if ((pos.Old == destination) && (pos.Current != destination))
+				return true;
 			return false;
 		}
 		[StartAdjustment]
@@ -36,24 +35,21 @@ namespace SourceDemoParser.Net.Extensions.Demos
 		[StartAdjustment("mp_coop_start")]
 		public bool MpCoopStart_Start(PlayerPosition pos)
 		{
-			var atlas = new Vector3f(-9896f, -4400f, 3048f);
-			var pbody = new Vector3f(-11168f, -4384f, 3040.03125f);
-			if (Vector3f.Equals(pos.Current, atlas))
-				return true;
-			if (Vector3f.Equals(pos.Current, pbody))
+			var atlas = new Vector(-9896f, -4400f, 3048f);
+			var pbody = new Vector(-11168f, -4384f, 3040.03125f);
+			if ((pos.Current == atlas) || (pos.Current == pbody))
 				return true;
 			return false;
 		}
-		
+
 		[EndAdjustment("sp_a4_finale4", -852)]
 		public bool SpA4Finale4_Ending(PlayerPosition pos)
 		{
-			var destination = new Vector3f(54.1f, 159.2f, -201.4f);
+			var destination = new Vector(54.1f, 159.2f, -201.4f);
 			var aa = Math.Pow(pos.Current.X - destination.X, 2);
 			var bb = Math.Pow(pos.Current.Y - destination.Y, 2);
 			var cc = Math.Pow(50, 2);
-			return	   ((aa + bb) < cc)
-				&& (pos.Current.Z < destination.Z);
+			return (((aa + bb) < cc) && (pos.Current.Z < destination.Z));
 		}
 		[EndAdjustment]
 		public bool Mp_Ending(PlayerCommand cmd)

@@ -2,29 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace SourceDemoParser.Net.Extensions
+namespace SourceDemoParser.Extensions
 {
-	public enum AdjustmentType
+	internal enum AdjustmentType
 	{
 		Start,
 		End
 	}
-	
-	public enum PlayerStructType
+
+	internal enum PlayerStructType
 	{
 		Position,
 		Command
 	}
-	
-	public class AdjustmentCache
+
+	internal class AdjustmentCache
 	{
 		public ISourceDemo Demo { get; set; }
 		public string GameDirectory => Demo.GameDirectory;
 		public uint DefaultTickrate => Demo.DefaultTickrate;
 		public List<Adjustment> Adjustments { get; set; }
 	}
-	
-	public class Adjustment
+
+	internal class Adjustment
 	{
 		public Type Root { get; set; }
 		public AdjustmentType Type { get; set; }
@@ -34,8 +34,8 @@ namespace SourceDemoParser.Net.Extensions
 		public MethodInfo Method { get; set; }
 		public AdjustmentResult Result { get; set; }
 	}
-	
-	public class AdjustmentResult
+
+	internal class AdjustmentResult
 	{
 		public bool Found { get; set; }
 		public int FoundTickAt { get; set; }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public class SourceDemo
 	{
@@ -17,6 +17,7 @@ namespace SourceDemoParser.Net
 		public int PlaybackFrames { get; set; }
 		public int SignOnLength { get; set; }
 		// Data
+		public byte[] SignOnData { get; set; }
 		public List<IDemoMessage> Messages { get; set; }
 	}
 }

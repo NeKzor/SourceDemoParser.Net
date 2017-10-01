@@ -1,4 +1,4 @@
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public enum DemoMessageType
 	{
@@ -9,7 +9,7 @@ namespace SourceDemoParser.Net
 		UserCmd,
 		DataTables,
 		Stop,
-		CustomData,	// >= 4
-		StringTables	// >= 4
+		CustomData,     // >= 4
+		StringTables    // >= 4
 	}
 }

@@ -1,13 +1,11 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser.Extensions;
 
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	internal static class InternalParser
 	{
-		// Todo: parse everything
 		internal static Task<ConsoleCmdFrame> ProcessConsoleCmd(BinaryReader br)
 		{
 			var length = br.ReadInt32();
@@ -21,20 +19,36 @@ namespace SourceDemoParser.Net
 			var data = br.ReadBytes(length);
 			return Task.FromResult(new CustomDataFrame(idk, data));
 		}
-		internal static Task<PacketFrame> ProcessPacket(BinaryReader br, int netProc)
+		internal static Task<PacketFrame> ProcessPacket(BinaryReader br)
 		{
-			// Todo
-			
-			var idk = br.ReadBytes(4);
-			//br.BaseStream.Seek(4, SeekOrigin.Current);
-			var playerpos = new Vector3f(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
-			var length = (netProc != 2001) && ((netProc == 7108) || (netProc == 1028)) ? 296 : 144;
-			var data = br.ReadBytes(length);
-			//br.BaseStream.Seek(length, SeekOrigin.Current);
-			var length2 = br.ReadInt32();
-			var data2 = br.ReadBytes(length2);
-			//br.BaseStream.Seek(num, SeekOrigin.Current);
-			return Task.FromResult(new PacketFrame(playerpos));
+			var frame = new PacketFrame();
+			// 84 bytes
+			frame.Players.Add(new PacketInfo
+			{
+				Flags = br.ReadInt32(),
+				ViewOrigin = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewAngles = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				LocalViewAngles = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewOrigin2 = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewAngles2 = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				LocalViewAngles2 = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				InSequence = br.ReadInt32(),
+				OutSequence = br.ReadInt32()
+			});
+			// 76 bytes
+			frame.Players.Add(new PacketInfo
+			{
+				Flags = br.ReadInt32(),
+				ViewOrigin = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewAngles = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				LocalViewAngles = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewOrigin2 = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				ViewAngles2 = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
+				LocalViewAngles2 = new QAngle(br.ReadSingle(), br.ReadSingle(), br.ReadSingle())
+			});
+			var length = br.ReadInt32();
+			frame.RawData = br.ReadBytes(length);
+			return Task.FromResult(frame);
 		}
 		internal static Task<StringTablesFrame> ProcessStringTables(BinaryReader br)
 		{
@@ -44,17 +58,11 @@ namespace SourceDemoParser.Net
 		}
 		internal static Task<UserCmdFrame> ProcessUserCmd(BinaryReader br)
 		{
-			var idk = br.ReadBytes(4);
-			//br.BaseStream.Seek(4, SeekOrigin.Current);
+			var cmd = br.ReadInt32();
 			var length = br.ReadInt32();
 			var data = br.ReadBytes(length);
-			return Task.FromResult(new UserCmdFrame(idk, data));
+			return Task.FromResult(new UserCmdFrame(cmd, data));
 		}
-		//internal static Task<int> ProcessSignOn(BinaryReader br, int signOnLength)
-		//{
-		//	br.BaseStream.Seek(signOnLength, SeekOrigin.Current);
-		//	return Task.FromResult(signOnLength);
-		//}
 		//internal static Task<bool> ProcessDataTables(BinaryReader br)
 		//{
 		//	return Task.FromResult(0);

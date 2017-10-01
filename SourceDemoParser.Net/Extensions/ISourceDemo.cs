@@ -1,4 +1,4 @@
-namespace SourceDemoParser.Net.Extensions
+namespace SourceDemoParser.Extensions
 {
 	public interface ISourceDemo
 	{

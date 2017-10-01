@@ -5,12 +5,14 @@
 - [Extensions](#extensions)
 - [Adjustments](#adjustments)
 - [Custom Adjustments](#custom-adjustments)
+ - [ISourceDemo](#isourcedemo)
+ - [Discover, Load & Adjust](#discover-load--adjust)
 - [Parse, Edit & Export](#parse-edit--export)
 - [Data Simulation](#data-simulation)
 
 # Parsing
 ```cs
-using SourceDemoParser.Net;
+using SourceDemoParser;
 
 var parser = new SourceParser(headerOnly: true);
 var demo = await parser.ParseFileAsync("rank2.dem");
@@ -18,7 +20,7 @@ var demo = await parser.ParseFileAsync("rank2.dem");
 
 # Events
 ```cs
-using SourceDemoParser.Net;
+using SourceDemoParser;
 
 Task Log_onMessage(object sender, DemoMessage msg)
 {
@@ -37,7 +39,7 @@ await parser.ParseFileAsync("new_route.dem");
 
 # Extensions
 ```cs
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser.Extensions;
 
 var tickrate = demo.GetTickrate();
 var tps = demo.GetTicksPerSecond();
@@ -45,24 +47,26 @@ var tps = demo.GetTicksPerSecond();
 
 # Adjustments
 ```cs
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser.Extensions;
 
 // Some games and mods (Portal 2 etc.) have issues when ending a demo
 // through a changelevel. To fix the incorrect header (PlaybackTime and
 // PlaybackTicks) we take the last positive tick of the parsed messages
 await demo.AdjustExact();
 
-// Adjustments for specific maps with special rules
-await demo.AdjustAsync();
-
 // Adjusts demo until a special command. Default standard is from
 // the SourceRuns community (echo #SAVE#)
 await demo.AdjustFlagAsync(saveFlag: "echo #IDEEDIT#");
+
+// Adjustments for specific maps with special rules (see below [Custom Adjustments](#custom-adjustments))
+await demo.AdjustAsync();
 ```
 
 # Custom Adjustments
+
+## ISourceDemo
 ```cs
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser.Extensions;
 
 // Implement ISourceDemo
 public class Portal2CustomMapDemo : ISourceDemo
@@ -77,10 +81,9 @@ public class Portal2CustomMapDemo : ISourceDemo
 	public bool SpGudMape_Start(PlayerPosition pos)
 	{
 		// Search logic with: PlayerPosition
-		var destination = new Vector3f(-723.00f, -2481.00f, 17.00f);
-		if (Vector3f.Equals(pos.Old, destination))
-			if (!(Vector3f.Equals(pos.Current, destination)))
-				return true;
+		var destination = new Vector(-723.00f, -2481.00f, 17.00f);
+		if ((pos.Old != destination) && (pos.Current != destination))
+			return true;
 		return false;
 	}
 	
@@ -101,23 +104,31 @@ public class Portal2CustomMapDemo : ISourceDemo
 		return (cmd.Current.StartsWitch(command));
 	}
 }
+```
+##### [More Demo Examples](SourceDemoParser.Net/Extensions/Demos)
 
-// Somewhere else:
-await demo.AdjustAsync<Portal2CustomMapDemo>();
+## Discover, Load & Adjust
+```cs
+// Stuff will be cached automatically on success
+// Load all default adjustments
+await SourceExtensions.DiscoverAsync();
 
-// Stuff will be cached automatically afterwards
-// Or search and load all demos with Reflection:
-await demo.AdjustAsync(System.Reflection.Assembly.GetCurrentAssembly());
+// Or search and load all demo classes with System.Reflection:
+var result = await SourceExtensions.DiscoverAsync(Assembly.GetCurrentAssembly());
+if (result) Console.WriteLine("Loaded at least one new adjustment.");
 
-// Optionally use this alone if everything got cached anyway
+// Or load manually
+result = await SourceExtensions.LoadAsync(Portal2CustomMapDemo);
+if (result) Console.WriteLine("Loaded " + nameof(Portal2CustomMapDemo));
+
+// Finally use:
 await demo.AdjustAsync();
 ```
-##### [More Demo Examples](https://github.com/NeKzor/SourceDemoParser.Net/tree/dev/SourceDemoParser.Net/Extensions/Demos)
 
 # Parse, Edit & Export
 ```cs
-using SourceDemoParser.Net;
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser;
+using SourceDemoParser.Extensions;
 
 var parser = new SourceParser();
 var demo = await parser.ParseFileAsync("just_a_wr_by_zypeh.dem");
@@ -127,5 +138,6 @@ await demo.ExportFileAsync("zypeh_copied_me_hahaha.dem");
 
 # Data Simulation
 ```cs
+// Generates data from parsed demo messages
 // Todo
 ```

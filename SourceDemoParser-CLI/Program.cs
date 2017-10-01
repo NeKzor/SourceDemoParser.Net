@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using SourceDemoParser.Net;
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser;
+using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser_CLI
 {
-	internal class Program
+	internal static class Program
 	{
 		private static SourceParser _parser;
 		private static SourceDemo _demo;
-		
+		private static bool _discovered;
+
 		private static void Main(string[] args)
 		{
 			if (args != null)
@@ -56,7 +57,7 @@ namespace SourceDemoParser_CLI
 				}
 			}
 		}
-		
+
 		private static string ParseCommand(string command)
 		{
 			var count = 0;
@@ -104,7 +105,7 @@ namespace SourceDemoParser_CLI
 			switch (command.ToLower())
 			{
 				case "header":
-					return	$"FileStamp\t{_demo.FileStamp}\n" +
+					return $"FileStamp\t{_demo.FileStamp}\n" +
 						$"Protocol\t{_demo.Protocol}\n" +
 						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
 						$"GameDirectory\t{_demo.GameDirectory}\n" +
@@ -178,6 +179,11 @@ namespace SourceDemoParser_CLI
 					break;
 				case "adj2":
 				case "adjust2":
+					if (!_discovered)
+					{
+						SourceExtensions.DiscoverAsync().GetAwaiter().GetResult();
+						_discovered = true;
+					}
 					_demo.AdjustAsync().GetAwaiter().GetResult();
 					break;
 			}

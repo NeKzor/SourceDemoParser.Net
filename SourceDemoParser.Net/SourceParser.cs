@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using SourceDemoParser.Net.Extensions;
+using SourceDemoParser.Extensions;
 
-namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public class SourceParser
 	{
@@ -21,13 +21,13 @@ namespace SourceDemoParser.Net
 		public event Func<object, DemoMessage, Task> OnStop;
 		public event Func<object, DemoMessage, Task> OnCustomData;
 		public event Func<object, DemoMessage, Task> OnStringTables;
-		
+
 		public SourceParser(bool headerOnly = false, bool autoAdjustment = false)
 		{
 			HeaderOnly = headerOnly;
 			AutoAdjustment = autoAdjustment;
 		}
-		
+
 		public async Task<SourceDemo> ParseFileAsync(string filePath)
 		{
 			using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
@@ -47,12 +47,12 @@ namespace SourceDemoParser.Net
 				demo.FileStamp = Encoding.ASCII.GetString(br.ReadBytes(8));
 				if (demo.FileStamp != "HL2DEMO\0")
 					throw new SourceException(demo.FileStamp);
-				
+
 				// DEMO_PROTOCOL
 				demo.Protocol = br.ReadInt32();
 				if ((demo.Protocol > 4) || (demo.Protocol < 2))
 					throw new ProtocolException(demo.Protocol);
-				
+
 				demo.NetworkProtocol = br.ReadInt32();
 				// MAX_OSPATH (260)
 				demo.ServerName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
@@ -64,41 +64,37 @@ namespace SourceDemoParser.Net
 				demo.PlaybackFrames = br.ReadInt32();
 				demo.SignOnLength = br.ReadInt32();
 				demo.Messages = new List<IDemoMessage>();
-				
+
 				if (HeaderOnly)
 					return demo;
-				
+
 				var message = default(DemoMessage);
 				var type = default(DemoMessageType);
 				var tick = default(int);
-				var optional = default(byte?);
+				var tag = default(byte?);
 				var frame = default(IFrame);
-				
+
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
 					type = (DemoMessageType)br.ReadByte();
 					tick = br.ReadInt32();
-					
+
 					// Also try to read tick bytes even when it's stop
 					if (type == DemoMessageType.Stop)
 						break;
-					
-					optional = (demo.Protocol == 4) ? br.ReadByte() : default(byte?);
+
+					tag = (demo.Protocol == 4) ? br.ReadByte() : default(byte?);
 					frame = default(IFrame);
-					
+
 					var e = default(Func<object, DemoMessage, Task>);
 					switch (type)
 					{
 						case DemoMessageType.SignOn:
-						{
-							//var length = demo.SignOnLength;
-							//var bytes = br.ReadBytes(length);
-							br.BaseStream.Seek(demo.SignOnLength, SeekOrigin.Current);
-							e = OnSignOn;
-							break;
-						}
+								demo.SignOnData = br.ReadBytes(demo.SignOnLength);
+								e = OnSignOn;
+								break;
 						case DemoMessageType.Packet:
-							frame = await InternalParser.ProcessPacket(br, demo.NetworkProtocol).ConfigureAwait(false);
+							frame = await InternalParser.ProcessPacket(br).ConfigureAwait(false);
 							e = OnPacket;
 							break;
 						case DemoMessageType.SyncTick:
@@ -110,31 +106,31 @@ namespace SourceDemoParser.Net
 							e = OnConsoleCmd;
 							break;
 						case DemoMessageType.UserCmd:
-							await InternalParser.ProcessUserCmd(br).ConfigureAwait(false);
+							frame = await InternalParser.ProcessUserCmd(br).ConfigureAwait(false);
 							e = OnUserCmd;
 							break;
 						case DemoMessageType.DataTables:
-							//await InternalParser.ProcessDataTables(br).ConfigureAwait(false);
+							//frame = await InternalParser.ProcessDataTables(br).ConfigureAwait(false);
 							e = OnDataTables;
 							break;
 						//case DemoMessageType.Stop:
-							//break;
+						//break;
 						case DemoMessageType.CustomData:
 							if (demo.Protocol != 4)
 							{
-								await InternalParser.ProcessStringTables(br).ConfigureAwait(false);
+								frame = await InternalParser.ProcessStringTables(br).ConfigureAwait(false);
 								e = OnStringTables;
 							}
 							else
 							{
-								await InternalParser.ProcessCustomData(br).ConfigureAwait(false);
+								frame = await InternalParser.ProcessCustomData(br).ConfigureAwait(false);
 								e = OnCustomData;
 							}
 							break;
 						case DemoMessageType.StringTables:
 							if (demo.Protocol == 4)
 							{
-								await InternalParser.ProcessStringTables(br).ConfigureAwait(false);
+								frame = await InternalParser.ProcessStringTables(br).ConfigureAwait(false);
 								e = OnStringTables;
 							}
 							else
@@ -143,14 +139,14 @@ namespace SourceDemoParser.Net
 						default:
 							throw new MessageTypeException(tick, type);
 					}
-					
+
 					// Parse data frame
 					if (frame != null)
 						await frame.ParseData().ConfigureAwait(false);
-					
-					message = new DemoMessage(type, tick, optional, frame);
+
+					message = new DemoMessage(type, tick, tag, frame);
 					demo.Messages.Add(message);
-					
+
 					// Send events
 					if (e != null) await e.Invoke(this, message).ConfigureAwait(false);
 					if (OnDemoMessage != null) await OnDemoMessage.Invoke(this, message).ConfigureAwait(false);
@@ -159,7 +155,7 @@ namespace SourceDemoParser.Net
 				message = new DemoMessage(type, tick, null, null);
 				demo.Messages.Add(message);
 				if (OnStop != null) await OnStop.Invoke(this, message).ConfigureAwait(false);
-				
+
 				if (AutoAdjustment)
 					await demo.AdjustExact().ConfigureAwait(false);
 			}

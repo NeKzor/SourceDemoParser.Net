@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-﻿namespace SourceDemoParser.Net
+namespace SourceDemoParser
 {
 	public interface IFrame
 	{
