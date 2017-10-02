@@ -8,8 +8,8 @@ namespace SourceDemoParser.Extensions
 {
 	public static class SourceExtensions
 	{
-		private static Dictionary<Type, object> _instanceCache = new Dictionary<Type, object>();
-		private static List<AdjustmentCache> _adjustmentCache = new List<AdjustmentCache>();
+		private static readonly Dictionary<TypeInfo, object> _instanceCache = new Dictionary<TypeInfo, object>();
+		private static readonly List<AdjustmentCache> _adjustmentCache = new List<AdjustmentCache>();
 
 		// Header
 		public static int GetTickrate(this SourceDemo demo)
@@ -117,7 +117,7 @@ namespace SourceDemoParser.Extensions
 				// Adjust ending
 				var endtick = default(int?);
 				var ends = adjustments.Where(a => a.Type == AdjustmentType.End && a.MapName == demo.MapName);
-				iscommon = default(bool);
+				iscommon = default;
 
 				if (!ends.Any())
 				{
@@ -149,12 +149,11 @@ namespace SourceDemoParser.Extensions
 			return demo;
 		}
 		// Returns true if new adjustments have been loaded
-		public static async Task<bool> DiscoverAsync(Assembly asm = null)
+		public static async Task<bool> DiscoverAsync(Assembly asm = default)
 		{
-			asm = asm ?? Assembly.GetExecutingAssembly();
-
+			asm = asm ?? typeof(SourceExtensions).GetTypeInfo().Assembly;
 			var loaded = 0u;
-			foreach (var type in asm.GetTypes())
+			foreach (var type in asm.DefinedTypes)
 			{
 				if (!IsValidClass(type))
 					continue;
@@ -164,12 +163,12 @@ namespace SourceDemoParser.Extensions
 				await AddToCache(type).ConfigureAwait(false);
 				++loaded;
 			}
-			return (loaded != 0u);
+			return loaded != 0u;
 		}
 		// Returns true on success
-		public static async Task<bool> LoadAsync<T>(T iDemo)
+		public static async Task<bool> LoadAsync<T>()
 		{
-			var type = typeof(T);
+			var type = typeof(T).GetTypeInfo();
 			if (_instanceCache.ContainsKey(type))
 				return false;
 
@@ -180,7 +179,7 @@ namespace SourceDemoParser.Extensions
 			return true;
 		}
 		// Internal stuff
-		internal static Task<object> GetInstance(Type t)
+		internal static Task<object> GetInstance(TypeInfo t)
 		{
 			if (_instanceCache.TryGetValue(t, out object instance))
 				return Task.FromResult(instance);
@@ -210,7 +209,7 @@ namespace SourceDemoParser.Extensions
 			// 2.a) For multiple end adjustments, the lowest tick will be taken
 			// 2.b) For multiple end adjustments, the highest offset tick will be taken
 
-			var results = adjustments.Where(s => s.Result.Found == true);
+			var results = adjustments.Where(s => s.Result.Found);
 			var count = results.Count();
 			if (count > 0)
 			{
@@ -270,7 +269,7 @@ namespace SourceDemoParser.Extensions
 				}
 				catch (Exception e)
 				{
-					throw new Exception($"[{message.CurrentTick}] Exception occured when invoking method: {adjustment.Method.Name}.\n" + e.ToString());
+					throw new Exception($"[{message.CurrentTick}] Exception occured when invoking method: {adjustment.Method.Name}.\n{e}");
 				}
 
 				if (!result)
@@ -284,9 +283,10 @@ namespace SourceDemoParser.Extensions
 			}
 			return Task.FromResult(new AdjustmentResult());
 		}
-		internal static Task AddToCache(Type iDemo)
+		internal static Task AddToCache(TypeInfo iDemo)
 		{
-			var instance = Activator.CreateInstance(iDemo, null);
+			// Note: ctor has to be public
+			var instance = Activator.CreateInstance(iDemo.AsType(), null);
 			if (instance == null)
 				throw new Exception($"Failed to create instance of type: {iDemo}.");
 
@@ -303,9 +303,9 @@ namespace SourceDemoParser.Extensions
 			});
 			return Task.FromResult(0);
 		}
-		internal static IEnumerable<Adjustment> ConvertToAdjustment(Type iDemo)
+		internal static IEnumerable<Adjustment> ConvertToAdjustment(TypeInfo iDemo)
 		{
-			foreach (var method in iDemo.GetMethods())
+			foreach (var method in iDemo.DeclaredMethods)
 			{
 				if (!IsValidMethod(method))
 					continue;
@@ -313,22 +313,16 @@ namespace SourceDemoParser.Extensions
 				var builder = new AdjustmentBuilder(method);
 				yield return builder.Build(iDemo);
 			}
-			yield break;
 		}
-		internal static bool IsValidClass(Type type)
+		internal static bool IsValidClass(TypeInfo info)
 		{
 			// Check interface
-			if (type.GetInterfaces().Contains(typeof(ISourceDemo)))
+			if ((typeof(ISourceDemo).GetTypeInfo().IsAssignableFrom(info)) && (info.IsClass) && (info.IsPublic) && !(info.IsAbstract))
 			{
-				// Check info
-				var info = type.GetTypeInfo();
-				if ((info.IsClass) && (info.IsPublic) && !(info.IsAbstract))
-				{
-					// Check methods
-					var methods = info.GetMethods().Where(m => IsValidMethod(m));
-					if (methods.Any())
-						return true;
-				}
+				// Check methods
+				var methods = info.DeclaredMethods.Where(m => IsValidMethod(m));
+				if (methods.Any())
+					return true;
 			}
 			return false;
 		}
@@ -341,20 +335,12 @@ namespace SourceDemoParser.Extensions
 				var parameters = method.GetParameters();
 				if (parameters.Length == 1)
 				{
-					var parameter = parameters[0];
-					if ((parameter.ParameterType == typeof(PlayerPosition))
-					|| (parameter.ParameterType == typeof(PlayerCommand)))
+					var parameter = parameters[0].ParameterType;
+					if ((parameter == typeof(PlayerPosition)) || (parameter == typeof(PlayerCommand)))
 					{
 						// [StartAdjustment] or [EndAdjustment]
 						var attributes = method.GetCustomAttributes()
-						.Where(attribute =>
-						{
-							var type = attribute.GetType();
-							if ((type == typeof(StartAdjustmentAttribute))
-							|| (type == typeof(EndAdjustmentAttribute)))
-								return true;
-							return false;
-						});
+							.Where(attribute => (attribute is StartAdjustmentAttribute) || (attribute is EndAdjustmentAttribute));
 						if (attributes.Count() == 1)
 							return true;
 					}

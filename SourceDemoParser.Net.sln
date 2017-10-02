@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceDemoParser-CLI", "SourceDemoParser-CLI\SourceDemoParser-CLI.csproj", "{9093E5AF-D84B-4F05-8332-D61B45391CA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser.Net", "SourceDemoParser.Net\SourceDemoParser.Net.csproj", "{F348B62F-B624-43E4-A130-3699B188EFD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceDemoParser.Net", "SourceDemoParser.Net\SourceDemoParser.Net.csproj", "{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser.Net.Test", "SourceDemoParser.Net.Test\SourceDemoParser.Net.Test.csproj", "{DB629690-AF20-4AA1-9BCB-43C56B063B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceDemoParser.Net.Test", "SourceDemoParser.Net.Test\SourceDemoParser.Net.Test.csproj", "{9737EC49-F81F-46CC-B8EB-4D8818B7D0E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser-CLI", "SourceDemoParser_CLI\SourceDemoParser-CLI.csproj", "{285DCB75-3796-4FE4-A648-74B3D2DDE196}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{988A9A23-0400-4ED5-9381-7F4639E433C8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EAE882C6-F9E1-4550-B3D0-1C36771536CD}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		DOCS.md = DOCS.md
@@ -22,23 +22,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9093E5AF-D84B-4F05-8332-D61B45391CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9093E5AF-D84B-4F05-8332-D61B45391CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9093E5AF-D84B-4F05-8332-D61B45391CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9093E5AF-D84B-4F05-8332-D61B45391CA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA365F45-8512-4725-AFD4-5E6EEE17A7BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9737EC49-F81F-46CC-B8EB-4D8818B7D0E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9737EC49-F81F-46CC-B8EB-4D8818B7D0E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9737EC49-F81F-46CC-B8EB-4D8818B7D0E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9737EC49-F81F-46CC-B8EB-4D8818B7D0E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F348B62F-B624-43E4-A130-3699B188EFD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F348B62F-B624-43E4-A130-3699B188EFD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F348B62F-B624-43E4-A130-3699B188EFD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F348B62F-B624-43E4-A130-3699B188EFD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB629690-AF20-4AA1-9BCB-43C56B063B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB629690-AF20-4AA1-9BCB-43C56B063B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB629690-AF20-4AA1-9BCB-43C56B063B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB629690-AF20-4AA1-9BCB-43C56B063B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{285DCB75-3796-4FE4-A648-74B3D2DDE196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285DCB75-3796-4FE4-A648-74B3D2DDE196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285DCB75-3796-4FE4-A648-74B3D2DDE196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285DCB75-3796-4FE4-A648-74B3D2DDE196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3025A968-07A8-469D-98B3-55BB4E9B2397}
+		SolutionGuid = {292A6B72-47E3-4DC9-9C2D-C3F7737B40CD}
 	EndGlobalSection
 EndGlobal

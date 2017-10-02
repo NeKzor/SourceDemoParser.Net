@@ -83,8 +83,8 @@ namespace SourceDemoParser
 					if (type == DemoMessageType.Stop)
 						break;
 
-					tag = (demo.Protocol == 4) ? br.ReadByte() : default(byte?);
-					frame = default(IFrame);
+					tag = (demo.Protocol == 4) ? br.ReadByte() : default;
+					frame = default;
 
 					var e = default(Func<object, DemoMessage, Task>);
 					switch (type)

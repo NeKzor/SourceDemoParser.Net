@@ -15,20 +15,13 @@ namespace SourceDemoParser
 		}
 
 		// Generated
-		public MessageTypeException()
-			: base()
+		public MessageTypeException() : base()
 		{
 		}
-		public MessageTypeException(string message)
-			: base(message)
+		public MessageTypeException(string message) : base(message)
 		{
 		}
-		public MessageTypeException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
-		protected MessageTypeException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-			: base(info, context)
+		public MessageTypeException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
 	}

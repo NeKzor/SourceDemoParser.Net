@@ -8,7 +8,7 @@ namespace SourceDemoParser.Extensions
 		public string MapName { get; }
 		public int Offset { get; }
 
-		public StartAdjustmentAttribute(string map = default(string), int offset = default(int))
+		public StartAdjustmentAttribute(string map = default, int offset = default)
 		{
 			MapName = map;
 			Offset = offset;

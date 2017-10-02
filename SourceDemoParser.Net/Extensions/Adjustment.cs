@@ -26,7 +26,7 @@ namespace SourceDemoParser.Extensions
 
 	internal class Adjustment
 	{
-		public Type Root { get; set; }
+		public TypeInfo Root { get; set; }
 		public AdjustmentType Type { get; set; }
 		public string MapName { get; set; }
 		public int Offset { get; set; }

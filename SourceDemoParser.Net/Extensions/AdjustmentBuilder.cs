@@ -16,27 +16,30 @@ namespace SourceDemoParser.Extensions
 			Method = method;
 		}
 
-		public Adjustment Build(Type id)
+		public Adjustment Build(TypeInfo id)
 		{
-			var adjustment = new Adjustment();
-
-			var attribute = Method.GetCustomAttributes().FirstOrDefault(a => a is StartAdjustmentAttribute || a is EndAdjustmentAttribute);
+			var attribute = Method.GetCustomAttributes().FirstOrDefault(a => (a is StartAdjustmentAttribute) || (a is EndAdjustmentAttribute));
 			if (attribute == null)
 				throw new Exception("Attribute is null!");
 
-			if (attribute.GetType() == typeof(StartAdjustmentAttribute))
+			var adjustment = default(Adjustment);
+			if (attribute is StartAdjustmentAttribute start)
 			{
-				var start = attribute as StartAdjustmentAttribute;
-				adjustment.Type = AdjustmentType.Start;
-				adjustment.MapName = start.MapName;
-				adjustment.Offset = start.Offset;
+				adjustment = new Adjustment
+				{
+					Type = AdjustmentType.Start,
+					MapName = start.MapName,
+					Offset = start.Offset
+				};
 			}
-			else if (attribute.GetType() == typeof(EndAdjustmentAttribute))
+			else if (attribute is EndAdjustmentAttribute end)
 			{
-				var end = attribute as EndAdjustmentAttribute;
-				adjustment.Type = AdjustmentType.End;
-				adjustment.MapName = end.MapName;
-				adjustment.Offset = end.Offset;
+				adjustment = new Adjustment
+				{
+					Type = AdjustmentType.End,
+					MapName = end.MapName,
+					Offset = end.Offset
+				};
 			}
 
 			var parameter = Method.GetParameters().FirstOrDefault()?.ParameterType;

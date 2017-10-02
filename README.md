@@ -4,6 +4,7 @@
 
 # SourceDemoParser.Net
 Parse any demo with protocol version 2, 3 or 4.
+
 Main features:
 - Parse demo header
 - Parse data beyond the header
@@ -21,4 +22,5 @@ Main features:
 
 # [CLI Tool](SourceDemoParser-CLI)
 Simple tool for command line interfaces.
+
 Example: `SourceDemoParser-CLI.exe header segment_42.dem`.

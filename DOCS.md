@@ -5,8 +5,8 @@
 - [Extensions](#extensions)
 - [Adjustments](#adjustments)
 - [Custom Adjustments](#custom-adjustments)
- - [ISourceDemo](#isourcedemo)
- - [Discover, Load & Adjust](#discover-load--adjust)
+  - [ISourceDemo](#isourcedemo)
+  - [Discover, Load & Adjust](#discover-load--adjust)
 - [Parse, Edit & Export](#parse-edit--export)
 - [Data Simulation](#data-simulation)
 
@@ -113,12 +113,12 @@ public class Portal2CustomMapDemo : ISourceDemo
 // Load all default adjustments
 await SourceExtensions.DiscoverAsync();
 
-// Or search and load all demo classes with System.Reflection:
-var result = await SourceExtensions.DiscoverAsync(Assembly.GetCurrentAssembly());
+// Load all adjustments of an assembly using System.Reflection:
+var result = await SourceExtensions.DiscoverAsync(Assembly.GetEntryAssembly());
 if (result) Console.WriteLine("Loaded at least one new adjustment.");
 
 // Or load manually
-result = await SourceExtensions.LoadAsync(Portal2CustomMapDemo);
+result = await SourceExtensions.LoadAsync<Portal2CustomMapDemo>();
 if (result) Console.WriteLine("Loaded " + nameof(Portal2CustomMapDemo));
 
 // Finally use:
