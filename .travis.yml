@@ -1,5 +1,19 @@
 language: csharp
+mono: none
+dotnet: 2.0.0
+dist: trusty
+solution: SourceDemoParser.Net.sln
 script:
-  - nuget restore SourceDemoParser.Net.sln
-  - msbuild /p:Configuration=Release SourceDemoParser.Net.sln
-  - mono SourceDemoParser-CLI/bin/Release/SourceDemoParser-CLI.exe "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "Test/lasercrusher1338.dem"
+  - cd SourceDemoParser.Net/
+  - dotnet restore
+  - dotnet build --configuration Release
+# Test
+  - cd ../SourceDemoParser.Net.Test
+  - dotnet restore
+  - dotnet build --configuration Release /p:DefineConstants="DIRECT"
+  - dotnet run --project SourceDemoParser.Net.Test.csproj --configuration Release
+# CLI Test
+  - cd ../SourceDemoParser-CLI
+  - dotnet restore
+  - dotnet build --configuration Release
+  - dotnet run --project SourceDemoParser-CLI.csproj --configuration Release "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../Test/lasercrusher1338.dem"

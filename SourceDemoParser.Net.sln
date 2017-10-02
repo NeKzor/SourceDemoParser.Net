@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser.Net", "Sou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser.Net.Test", "SourceDemoParser.Net.Test\SourceDemoParser.Net.Test.csproj", "{DB629690-AF20-4AA1-9BCB-43C56B063B2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser-CLI", "SourceDemoParser_CLI\SourceDemoParser-CLI.csproj", "{285DCB75-3796-4FE4-A648-74B3D2DDE196}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceDemoParser-CLI", "SourceDemoParser-CLI\SourceDemoParser-CLI.csproj", "{285DCB75-3796-4FE4-A648-74B3D2DDE196}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EAE882C6-F9E1-4550-B3D0-1C36771536CD}"
 	ProjectSection(SolutionItems) = preProject

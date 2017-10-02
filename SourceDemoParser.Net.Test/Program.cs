@@ -1,9 +1,11 @@
 ﻿//#define EDIT
-#define DISCOVER_2
+//#define DISCOVER_2
 //#define DIRECT
 using System;
 using System.Diagnostics;
+#if DISCOVER_2
 using System.Reflection;
+#endif
 using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser.Test
@@ -55,7 +57,6 @@ namespace SourceDemoParser.Test
 			{
 				Console.WriteLine(ex.ToString());
 			}
-			Console.ReadLine();
 		}
 
 		[Conditional("DISCOVER"), Conditional("DISCOVER_2")]
@@ -83,7 +84,6 @@ namespace SourceDemoParser.Test
 			{
 				Console.WriteLine(ex.ToString());
 			}
-			Console.ReadLine();
 		}
 
 		[Conditional("DIRECT")]
@@ -107,7 +107,6 @@ namespace SourceDemoParser.Test
 			{
 				Console.WriteLine(ex.ToString());
 			}
-			Console.ReadLine();
 		}
 	}
 
