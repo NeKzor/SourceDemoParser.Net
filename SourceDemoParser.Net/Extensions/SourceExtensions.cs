@@ -26,7 +26,7 @@ namespace SourceDemoParser.Extensions
 		public static IDemoMessage FindMessage(this SourceDemo demo, string command)
 			=> demo.GetMessagesByType(DemoMessageType.ConsoleCmd).FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
 		public static IDemoMessage FindMessage(this SourceDemo demo, Vector position)
-			=> demo.GetMessagesByType(DemoMessageType.Packet).FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Players[0].ViewOrigin, position));
+			=> demo.GetMessagesByType(DemoMessageType.Packet).FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
 
 		// Adjustments
 		public static Task<SourceDemo> AdjustExact(this SourceDemo demo, int endTick = 0, int startTick = 0)
@@ -249,7 +249,7 @@ namespace SourceDemoParser.Extensions
 					parameter = new PlayerPosition
 					{
 						Old = cpos,
-						Current = (cpos = ((PacketFrame)message.Frame).Players[0].ViewOrigin)
+						Current = (cpos = ((PacketFrame)message.Frame).Infos[0].ViewOrigin)
 					};
 				}
 				else if (adjustment.Parameter == PlayerStructType.Command)

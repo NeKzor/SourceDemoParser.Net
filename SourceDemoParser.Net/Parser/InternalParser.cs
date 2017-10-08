@@ -19,11 +19,15 @@ namespace SourceDemoParser
 			var data = br.ReadBytes(length);
 			return Task.FromResult(new CustomDataFrame(idk, data));
 		}
+		//internal static Task<bool> ProcessDataTables(BinaryReader br)
+		//{
+		//	return Task.FromResult(false);
+		//}
 		internal static Task<PacketFrame> ProcessPacket(BinaryReader br)
 		{
 			var frame = new PacketFrame();
 			// 84 bytes
-			frame.Players.Add(new PacketInfo
+			frame.Infos.Add(new PacketInfo
 			{
 				Flags = br.ReadInt32(),
 				ViewOrigin = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
@@ -35,8 +39,8 @@ namespace SourceDemoParser
 				InSequence = br.ReadInt32(),
 				OutSequence = br.ReadInt32()
 			});
-			// 76 bytes
-			frame.Players.Add(new PacketInfo
+			// 76 bytes (160 bytes)
+			frame.Infos.Add(new PacketInfo
 			{
 				Flags = br.ReadInt32(),
 				ViewOrigin = new Vector(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
@@ -63,9 +67,5 @@ namespace SourceDemoParser
 			var data = br.ReadBytes(length);
 			return Task.FromResult(new UserCmdFrame(cmd, data));
 		}
-		//internal static Task<bool> ProcessDataTables(BinaryReader br)
-		//{
-		//	return Task.FromResult(0);
-		//}
 	}
 }

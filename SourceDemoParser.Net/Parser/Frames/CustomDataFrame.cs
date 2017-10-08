@@ -18,7 +18,7 @@ namespace SourceDemoParser
 
 		Task IFrame.ParseData()
 		{
-			// Todo
+			// No idea lol
 			return Task.FromResult(false);
 		}
 		Task<byte[]> IFrame.ExportData()
@@ -32,6 +32,6 @@ namespace SourceDemoParser
 		}
 
 		public override string ToString()
-			=> "NULL";
+			=> "TODO";
 	}
 }

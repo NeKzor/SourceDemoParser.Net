@@ -54,11 +54,10 @@ namespace SourceDemoParser
 					throw new ProtocolException(demo.Protocol);
 
 				demo.NetworkProtocol = br.ReadInt32();
-				// MAX_OSPATH (260)
-				demo.ServerName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.ClientName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.MapName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.GameDirectory = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
+				demo.ServerName = Encoding.ASCII.GetString(br.ReadBytes(Const.MAX_OSPATH)).TrimEnd(new char[1]);
+				demo.ClientName = Encoding.ASCII.GetString(br.ReadBytes(Const.MAX_OSPATH)).TrimEnd(new char[1]);
+				demo.MapName = Encoding.ASCII.GetString(br.ReadBytes(Const.MAX_OSPATH)).TrimEnd(new char[1]);
+				demo.GameDirectory = Encoding.ASCII.GetString(br.ReadBytes(Const.MAX_OSPATH)).TrimEnd(new char[1]);
 				demo.PlaybackTime = br.ReadSingle();
 				demo.PlaybackTicks = br.ReadInt32();
 				demo.PlaybackFrames = br.ReadInt32();

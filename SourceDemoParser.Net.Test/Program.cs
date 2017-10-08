@@ -1,8 +1,11 @@
-﻿//#define EDIT
+﻿#define PARSE
+//#define EDIT
 //#define DISCOVER_2
 //#define DIRECT
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 #if DISCOVER_2
 using System.Reflection;
 #endif
@@ -14,9 +17,45 @@ namespace SourceDemoParser.Test
 	{
 		private static void Main()
 		{
+			ParsingTest();
 			ModificationTest();
 			DiscoverTest();
 			DirectLoadTest();
+		}
+
+		[Conditional("PARSE")]
+		private static void ParsingTest()
+		{
+			const string path = @"..\Test\";
+			const string source = "LaserIntro_Zypeh_1190.dem";
+
+			var parser = new SourceParser(autoAdjustment: false);
+			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
+
+			var count = 0;
+			foreach (var frame in demo.Messages.Select(m => m.Frame))
+			{
+				if (frame is UserCmdFrame uf)
+				{
+					count++;
+					var data = frame.RawData;
+					var export = frame.ExportData().GetAwaiter().GetResult();
+
+					using (var br = new BinaryReader(new MemoryStream(export)))
+					{
+						var num = br.ReadInt32();
+						var length = br.ReadInt32();
+						var raw = br.ReadBytes(length);
+
+						var compare = new UserCmdFrame(num, raw);
+
+						_ = (compare as IFrame).ParseData();
+
+						Debug.WriteLineIf(uf.RawData.Length == compare.RawData.Length, $"[{count}] Same size!");
+						Debug.WriteLineIf(uf.RawData.Length != compare.RawData.Length, $"[{count}] Shortened size!");
+					}
+				}
+			}
 		}
 
 		[Conditional("EDIT")]
@@ -41,7 +80,7 @@ namespace SourceDemoParser.Test
 
 					// Lmao
 					if (message.Frame is PacketFrame pf)
-						pf.Players[0].Flags = (int)DemoFlags.FDEMO_USE_ANGLES2;
+						pf.Infos[0].Flags = (int)DemoFlags.FDEMO_USE_ANGLES2;
 				}
 
 				_ = demo.ExportFileAsync(path + destination);

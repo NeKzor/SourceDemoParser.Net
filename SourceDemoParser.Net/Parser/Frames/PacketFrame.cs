@@ -28,18 +28,23 @@ namespace SourceDemoParser
 
 	public class PacketFrame : IFrame
 	{
-		// Actually "rest data" because other properties are parsed first
-		public byte[] RawData { get; set; }
-		public List<PacketInfo> Players { get; set; }
+		public byte[] RawData { get; set; }				// NET Data
+		public List<PacketInfo> Infos { get; set; }
 
 		public PacketFrame()
 		{
-			Players = new List<PacketInfo>();
+			Infos = new List<PacketInfo>(Const.MAX_SPLITSCREEN_CLIENTS);
 		}
 
 		Task IFrame.ParseData()
 		{
-			// Todo
+			var buf = new BitBuffer(RawData);
+			while (buf.BitsLeft > 6)
+			{
+				var type = buf.ReadBits(6);
+				// TODO: Parse NET messages (game specific)
+			}
+
 			return Task.FromResult(false);
 		}
 		Task<byte[]> IFrame.ExportData()
@@ -48,7 +53,7 @@ namespace SourceDemoParser
 				return Task.FromResult(default(byte[]));
 
 			var bytes = new byte[0];
-			foreach (var player in Players)
+			foreach (var player in Infos)
 			{
 				player.Flags.GetBytes().AppendTo(ref bytes);
 				player.ViewOrigin.GetBytes().AppendTo(ref bytes);
@@ -67,6 +72,6 @@ namespace SourceDemoParser
 		}
 
 		public override string ToString()
-			=> Players.FirstOrDefault()?.ViewOrigin?.ToString() ?? "NULL";
+			=> Infos.FirstOrDefault()?.ViewOrigin?.ToString() ?? "NULL";
 	}
 }
