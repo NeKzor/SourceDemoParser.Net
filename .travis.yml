@@ -4,7 +4,7 @@ dotnet: 1.0.3
 dist: trusty
 solution: SourceDemoParser.Net.sln
 script:
-  - cd SourceDemoParser.Net/
+  - cd src/SourceDemoParser.Net/
   - dotnet restore
   - dotnet build --configuration Release
 # Test

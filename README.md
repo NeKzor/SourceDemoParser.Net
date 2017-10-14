@@ -3,13 +3,14 @@
 [![Release Status](https://img.shields.io/github/release/NeKzor/SourceDemoParser.Net.svg)](https://github.com/NeKzor/SourceDemoParser.Net/releases)
 
 # SourceDemoParser.Net
-Parse any demo with protocol version 2, 3 or 4.
+Parse any demo with protocol version 4.
 
 Main features:
 - Parse demo header
 - Parse data beyond the header
 - Fix negative time in demo header (called adjustment)
 - Adjustment for special demo rules, defined by speedrunning communities
+- Modifications
 
 # Overview
 |Namespace|Status|Description|
