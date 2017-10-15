@@ -6,14 +6,14 @@ solution: SourceDemoParser.Net.sln
 script:
   - cd src/SourceDemoParser.Net/
   - dotnet restore
-  - dotnet build --configuration Release
+  - dotnet build -c Release -f netstandard1.4
 # Test
   - cd ../SourceDemoParser.Net.Test
   - dotnet restore
-  - dotnet build --configuration Release /p:DefineConstants="DIRECT"
-  - dotnet run --project SourceDemoParser.Net.Test.csproj --configuration Release
+  - dotnet build -c Release /p:DefineConstants="DIRECT" -f netcoreapp1.1
+  - dotnet run -p SourceDemoParser.Net.Test.csproj -c Release -f netcoreapp1.1
 # CLI Test
   - cd ../SourceDemoParser-CLI
   - dotnet restore
-  - dotnet build --configuration Release
-  - dotnet run --project SourceDemoParser-CLI.csproj --configuration Release "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../../demos/portal2_coop.dem"
+  - dotnet build -c Release -f netcoreapp1.1
+  - dotnet run -p SourceDemoParser-CLI.csproj -c Release -f netcoreapp1.1 "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../../demos/portal2_coop.dem"
