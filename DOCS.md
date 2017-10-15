@@ -8,7 +8,6 @@
   - [ISourceDemo](#isourcedemo)
   - [Discover, Load & Adjust](#discover-load--adjust)
 - [Parse, Edit & Export](#parse-edit--export)
-- [Data Simulation](#data-simulation)
 
 # Parsing
 ```cs
@@ -134,10 +133,4 @@ var parser = new SourceParser();
 var demo = await parser.ParseFileAsync("just_a_wr_by_zypeh.dem");
 demo.ClientName = "NeKz";
 await demo.ExportFileAsync("zypeh_copied_me_hahaha.dem");
-```
-
-# Data Simulation
-```cs
-// Generates data from parsed demo messages
-// Todo
 ```
