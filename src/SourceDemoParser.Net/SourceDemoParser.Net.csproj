@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
     <RootNamespace>SourceDemoParser</RootNamespace>
     <Version>1.0.0-alpha</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -9,6 +9,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD1_4</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -24,4 +24,4 @@ Main features:
 # [CLI Tool](src/SourceDemoParser-CLI)
 Simple tool for command line interfaces.
 
-Example: `SourceDemoParser-CLI.exe header segment_42.dem`.
+Example: `dotnet SourceDemoParser-CLI.dll header segment_42.dem`.
