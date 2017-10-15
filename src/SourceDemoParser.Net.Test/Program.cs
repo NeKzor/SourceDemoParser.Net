@@ -16,7 +16,7 @@ namespace SourceDemoParser.Test
 {
 	internal static class Program
 	{
-		private const string path = @"..\..\Demos\";
+		private const string path = @"..\..\demos\";
 
 		private static void Main()
 		{
