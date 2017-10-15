@@ -104,7 +104,7 @@ public class Portal2CustomMapDemo : ISourceDemo
 	}
 }
 ```
-##### [More Demo Examples](SourceDemoParser.Net/Extensions/Demos)
+##### [More Demo Examples](src/SourceDemoParser.Net/Extensions/Demos)
 
 ## Discover, Load & Adjust
 ```cs

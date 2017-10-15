@@ -129,7 +129,7 @@ namespace SourceDemoParser.Test
 				}
 
 				//_ = demo.ExportFileAsync(path + destination + "_fast_export.dem", fastExport: true);
-				//_ = demo.ExportFileAsync(path + destination + "_export.dem");
+				_ = demo.ExportFileAsync(path + destination + "_export.dem");
 
 				/*	Results when removing messages (tested with Portal 2)
 
@@ -149,7 +149,7 @@ namespace SourceDemoParser.Test
 				*/
 
 				// Parse again
-				var edit = parser.ParseFileAsync(path + destination + "_so.dem").GetAwaiter().GetResult();
+				var edit = parser.ParseFileAsync(path + destination + "_export.dem").GetAwaiter().GetResult();
 
 				// Print result
 				Console.WriteLine("After: " + demo.PlaybackTicks);
