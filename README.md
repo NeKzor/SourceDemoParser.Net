@@ -25,3 +25,7 @@ Main features:
 Simple tool for command line interfaces.
 
 Example: `dotnet SourceDemoParser-CLI.dll header segment_42.dem`.
+
+# Examples
+##### [SourceDemoParser-DS](src/SourceDemoParser-DS)
+[![Showcase](showcase.gif)](src/SourceDemoParser-DS)
