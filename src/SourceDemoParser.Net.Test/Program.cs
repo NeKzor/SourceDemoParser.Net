@@ -1,8 +1,9 @@
 ﻿//#define PARSE
 //#define PARSE_T
-#define EDIT
+//#define EDIT
 //#define DISCOVER_2
 //#define DIRECT
+#define CLEANUP
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +26,7 @@ namespace SourceDemoParser.Test
 			ModificationTest();
 			DiscoverTest();
 			DirectLoadTest();
+			Cleanup();
 		}
 
 		[Conditional("PARSE")]
@@ -60,7 +62,7 @@ namespace SourceDemoParser.Test
 				}
 			}
 #endif
-		}
+				}
 
 		[Conditional("PARSE_T")]
 		private static void TimingTest()
@@ -100,6 +102,44 @@ namespace SourceDemoParser.Test
 				Fast: 3.6232ms (33 times faster)
 				Header only: 0.0785ms (46 times faster)
 			*/
+		}
+
+		[Conditional("CLEANUP")]
+		private static void Cleanup()
+		{
+			const string source = "portal2_pausing.dem";
+
+			var parser = new SourceParser(autoAdjustment: false);
+			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
+
+			bool RemovePacket = false;
+			var copy = demo.Messages.ToArray();
+			demo.Messages.CopyTo(copy);
+
+			var index = 0;
+			foreach (var msg in copy)
+			{
+				if (msg.CurrentTick > 0)
+				{
+					if (msg.Frame is ConsoleCmdFrame ccf)
+					{
+						if (ccf.ConsoleCommand == "gameui_activate")
+							RemovePacket = true;
+						else if (ccf.ConsoleCommand == "gameui_hide")
+							RemovePacket = false;
+					}
+					else if ((msg.Frame is UserCmdFrame) || (msg.Frame is PacketFrame))
+					{
+						if (RemovePacket)
+						{
+							demo.Messages.RemoveAt(index);
+							index--;
+						}
+					}
+				}
+				index++;
+			}
+			_ = demo.ExportFileAsync(path + "portal2_cleanup.dem");
 		}
 
 		[Conditional("EDIT")]

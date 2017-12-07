@@ -2,7 +2,6 @@
 [![Build Version](https://img.shields.io/badge/version-v1.0-yellow.svg)](https://github.com/NeKzor/SourceDemoParser.Net/projects/1)
 [![Release Status](https://img.shields.io/github/release/NeKzor/SourceDemoParser.Net/all.svg)](https://github.com/NeKzor/SourceDemoParser.Net/releases)
 
-# SourceDemoParser.Net
 Parse any demo with protocol version 4.
 
 Main features:
