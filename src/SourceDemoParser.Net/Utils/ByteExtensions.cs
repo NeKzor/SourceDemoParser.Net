@@ -5,10 +5,10 @@ namespace SourceDemoParser
 {
 	internal static class InternalExtensions
 	{
-		internal static byte[] GetBytes(this byte[] data)
+		internal static byte[] ToBytes(this byte[] data)
 		{
 			var bytes = new byte[4 + data.Length];
-			var length = data.Length.GetBytes();
+			var length = data.Length.ToBytes();
 			int i = 0;
 			for (; i < 4; i++)
 				bytes[i] = length[i];
@@ -17,7 +17,7 @@ namespace SourceDemoParser
 			return bytes;
 		}
 
-		internal static byte[] GetBytes(this int data)
+		internal static byte[] ToBytes(this int data)
 		{
 			var bytes = BitConverter.GetBytes(data);
 			if (!BitConverter.IsLittleEndian)
@@ -25,7 +25,7 @@ namespace SourceDemoParser
 			return bytes;
 		}
 
-		internal static byte[] GetBytes(this float data)
+		internal static byte[] ToBytes(this float data)
 		{
 			var bytes = BitConverter.GetBytes(data);
 			if (!BitConverter.IsLittleEndian)
@@ -33,13 +33,17 @@ namespace SourceDemoParser
 			return bytes;
 		}
 
-		internal static byte[] GetBytes(this string data)
+		internal static byte[] ToBytes(this string data, bool withLength = true)
 		{
-			var bytes = BitConverter.GetBytes(data.Length);
-			if (!BitConverter.IsLittleEndian)
-				Array.Reverse(bytes);
-			Encoding.ASCII.GetBytes(data).AppendTo(ref bytes);
-			return bytes;
+			if (withLength)
+			{
+				var bytes = BitConverter.GetBytes(data.Length);
+				if (!BitConverter.IsLittleEndian)
+					Array.Reverse(bytes);
+				Encoding.ASCII.GetBytes(data).AppendTo(ref bytes);
+				return bytes;
+			}
+			return Encoding.ASCII.GetBytes(data);
 		}
 
 		internal static void AppendTo(this byte[] source, ref byte[] destination)

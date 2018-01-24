@@ -3,11 +3,11 @@
 	public static class Const
     {
 		// const.h
-		public const int MAX_OSPATH = 260;					//
-		public const int MAX_EDICT_BITS = 11;               // How many bits to use to encode an edict. Number of bits needed to represent max edicts
-		public const int MAX_PLAYER_NAME_LENGTH = 32;		// A player name may have 31 chars + 0 on the PC. The 360 only allows 15 char + 0, but stick with the larger PC size for cross-platform communication
-		public const int MAX_CUSTOM_FILES = 4;              // A client can have up to 4 customization files (logo, sounds, models, txt)
-		public const int SIGNED_GUID_LEN = 32;              // Hashed CD Key (32 hex alphabetic chars + 0 terminator)
+		public const int MAX_OSPATH = 260;
+		public const int MAX_EDICT_BITS = 11;
+		public const int MAX_PLAYER_NAME_LENGTH = 32;
+		public const int MAX_CUSTOM_FILES = 4;
+		public const int SIGNED_GUID_LEN = 32;
 
 		public const string INSTANCE_BASELINE_TABLENAME = "instancebaseline";
 		public const string LIGHT_STYLES_TABLENAME = "lightstyles";

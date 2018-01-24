@@ -4,8 +4,9 @@ namespace SourceDemoParser
 {
 	public class CustomDataFrame : IFrame
 	{
-		public byte[] RawData { get; set; }
 		public int Unknown1 { get; set; }
+		public byte[] RawData { get; set; }
+
 		public int Unknown2 { get; set; }
 		public string Unknown3 { get; set; }
 
@@ -18,7 +19,7 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData()
+		Task IFrame.ParseData(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			Unknown2 = buf.ReadInt32();
@@ -27,18 +28,11 @@ namespace SourceDemoParser
 		}
 		Task<byte[]> IFrame.ExportData()
 		{
-			if (RawData == null)
-				return Task.FromResult(default(byte[]));
-
-			var bytes = Unknown1.GetBytes();
-			var data = Unknown2.GetBytes();
-			$"{Unknown3}\0".GetBytes().AppendTo(ref data);
-			data.Length.GetBytes().AppendTo(ref bytes);
-			data.AppendTo(ref bytes);
-			return Task.FromResult(bytes);
+			var data = new byte[0];
+			Unknown1.ToBytes().AppendTo(ref data);
+			Unknown2.ToBytes().AppendTo(ref data);
+			$"{Unknown3}\0".ToBytes(false).AppendTo(ref data);
+			return Task.FromResult(data);
 		}
-
-		public override string ToString()
-			=> "TODO";
 	}
 }

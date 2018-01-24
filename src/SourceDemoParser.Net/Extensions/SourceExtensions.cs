@@ -30,7 +30,7 @@ namespace SourceDemoParser.Extensions
 
 		// Extra
 		public static void ParseFrames(this SourceDemo demo)
-			=> demo.Messages.ForEach(async m => await m.Frame.ParseData().ConfigureAwait(false));
+			=> demo.Messages.ForEach(async m => await m.Frame.ParseData(demo).ConfigureAwait(false));
 
 		// Adjustments
 		public static Task<SourceDemo> AdjustExact(this SourceDemo demo, int endTick = 0, int startTick = 0)

@@ -9,7 +9,7 @@ namespace SourceDemoParser
 		UserCmd,
 		DataTables,
 		Stop,
-		CustomData,     // >= 4
-		StringTables    // >= 4
+		CustomData,
+		StringTables
 	}
 }

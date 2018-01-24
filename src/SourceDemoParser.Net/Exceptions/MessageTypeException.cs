@@ -7,11 +7,11 @@ namespace SourceDemoParser
 		public DemoMessageType Type { get; }
 		public int CurrentTick { get; }
 
-		public MessageTypeException(int tick, DemoMessageType type)
-			: base($"[{tick}] Unknown demo message type: {(int)type}.")
+		public MessageTypeException(IDemoMessage message)
+			: base($"[{message.CurrentTick}] Unknown demo message type: {(int)message.Type}.")
 		{
-			Type = type;
-			CurrentTick = tick;
+			Type = message.Type;
+			CurrentTick = message.CurrentTick;
 		}
 
 		// Generated

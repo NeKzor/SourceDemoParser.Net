@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
     <RootNamespace>SourceDemoParser</RootNamespace>
-    <Version>1.0.0-alpha</Version>
+    <Version>1.0.0-beta</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

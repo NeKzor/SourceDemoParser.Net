@@ -18,7 +18,9 @@ namespace SourceDemoParser.Extensions
 
 		public Adjustment Build(TypeInfo id)
 		{
-			var attribute = Method.GetCustomAttributes().FirstOrDefault(a => (a is StartAdjustmentAttribute) || (a is EndAdjustmentAttribute));
+			var attribute = Method
+				.GetCustomAttributes()
+				.FirstOrDefault(a => (a is StartAdjustmentAttribute) || (a is EndAdjustmentAttribute));
 			if (attribute == null)
 				throw new Exception("Attribute is null!");
 
@@ -42,7 +44,9 @@ namespace SourceDemoParser.Extensions
 				};
 			}
 
-			var parameter = Method.GetParameters().FirstOrDefault()?.ParameterType;
+			var parameter = Method
+				.GetParameters()
+				.FirstOrDefault()?.ParameterType;
 			if (parameter == null)
 				throw new Exception("Parameter is null!");
 

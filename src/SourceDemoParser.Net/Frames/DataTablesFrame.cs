@@ -19,7 +19,7 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData()
+		Task IFrame.ParseData(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			while (buf.ReadBoolean())
@@ -79,16 +79,9 @@ namespace SourceDemoParser
 		}
 		Task<byte[]> IFrame.ExportData()
 		{
-			if (RawData == null)
-				return Task.FromResult(default(byte[]));
-
+			var data = new byte[0];
 			// TODO
-			var data = RawData.Length.GetBytes();
-			RawData.AppendTo(ref data);
 			return Task.FromResult(data);
 		}
-
-		public override string ToString()
-			=> "TODO";
 	}
 }

@@ -34,7 +34,7 @@ namespace SourceDemoParser.Test
 		{
 			const string source = "portal2_sp.dem";
 
-			var parser = new SourceParser(autoAdjustment: false);
+			var parser = new SourceParser();
 			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 #if EDIT
 			var count = 0;

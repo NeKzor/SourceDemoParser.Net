@@ -20,7 +20,7 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData()
+		Task IFrame.ParseData(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			int tables = buf.ReadByte();
@@ -60,7 +60,7 @@ namespace SourceDemoParser
 						else if (name == Const.USER_INFO_TABLENAME)
 						{
 							var buf2 = new BitBuffer(data);
-							if (InternalParser.IsCsgoDemo)
+							if (demo.GameDirectory == "csgo") // Hack
 							{
 								// 16 bytes = ???
 								var temp1 = buf2.ReadBytes(8);
@@ -137,16 +137,9 @@ namespace SourceDemoParser
 		}
 		Task<byte[]> IFrame.ExportData()
 		{
-			if (RawData == null)
-				return Task.FromResult(default(byte[]));
-
+			var data = new byte[0];
 			// TODO
-			var bytes = RawData.Length.GetBytes();
-			RawData.AppendTo(ref bytes);
-			return Task.FromResult(bytes);
+			return Task.FromResult(data);
 		}
-
-		public override string ToString()
-			=> $"{Tables.Count}";
 	}
 }

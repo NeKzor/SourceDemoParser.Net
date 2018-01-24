@@ -5,7 +5,7 @@ namespace SourceDemoParser
 	public class SourceDemo
 	{
 		// Header
-		public string FileStamp { get; set; }
+		public string HeaderId { get; set; }
 		public int Protocol { get; set; }
 		public int NetworkProtocol { get; set; }
 		public string ServerName { get; set; }

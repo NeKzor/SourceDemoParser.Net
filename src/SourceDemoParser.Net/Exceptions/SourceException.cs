@@ -4,12 +4,12 @@ namespace SourceDemoParser
 {
 	public class SourceException : Exception
 	{
-		public string FileStamp { get; }
+		public string HeaderId { get; }
 
-		public SourceException(string fileStamp)
-			: base($"Unknown file stamp: {fileStamp} (expected: HL2DEMO\0).")
+		public SourceException(string headerId)
+			: base($"Unknown DEMO_HEADER_ID: {headerId} (expected: HL2DEMO\0).")
 		{
-			FileStamp = fileStamp;
+			HeaderId = headerId;
 		}
 
 		// Generated

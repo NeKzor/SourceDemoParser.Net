@@ -41,12 +41,12 @@ namespace SourceDemoParser.Extensions
 		public static bool operator !=(Vector vecA, Vector vecB)
 			=> !(Equals(vecA, vecB));
 
-		public byte[] GetBytes()
+		public byte[] ToBytes()
 		{
 			var bytes = new byte[0];
-			X.GetBytes().AppendTo(ref bytes);
-			Y.GetBytes().AppendTo(ref bytes);
-			Z.GetBytes().AppendTo(ref bytes);
+			X.ToBytes().AppendTo(ref bytes);
+			Y.ToBytes().AppendTo(ref bytes);
+			Z.ToBytes().AppendTo(ref bytes);
 			return bytes;
 		}
 	}
@@ -77,12 +77,12 @@ namespace SourceDemoParser.Extensions
 		public static bool operator !=(QAngle qanA, QAngle qanB)
 			=> !(Equals(qanA, qanB));
 
-		public byte[] GetBytes()
+		public byte[] ToBytes()
 		{
 			var bytes = new byte[0];
-			if (X != null) ((float)X).GetBytes().AppendTo(ref bytes);
-			if (X != null) ((float)Y).GetBytes().AppendTo(ref bytes);
-			if (X != null) ((float)Z).GetBytes().AppendTo(ref bytes);
+			if (X != null) ((float)X).ToBytes().AppendTo(ref bytes);
+			if (X != null) ((float)Y).ToBytes().AppendTo(ref bytes);
+			if (X != null) ((float)Z).ToBytes().AppendTo(ref bytes);
 			return bytes;
 		}
 	}

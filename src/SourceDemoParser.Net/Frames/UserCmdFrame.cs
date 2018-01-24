@@ -20,7 +20,7 @@ namespace SourceDemoParser
 			CmdNumber = cmd;
 			RawData = data;
 		}
-		Task IFrame.ParseData()
+		Task IFrame.ParseData(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			Cmd = new UserCmd();
@@ -63,9 +63,8 @@ namespace SourceDemoParser
 		}
 		Task<byte[]> IFrame.ExportData()
 		{
-			if (RawData == null)
-				return Task.FromResult(default(byte[]));
-
+			var data = new byte[0];
+			CmdNumber.ToBytes().AppendTo(ref data);
 			var bw = new BitWriter();
 			if (Cmd.CommandNumber != null)
 			{
@@ -82,37 +81,37 @@ namespace SourceDemoParser
 			if (Cmd.Viewangles.X != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).GetBytes());
+				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.Viewangles.Y != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).GetBytes());
+				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.Viewangles.Z != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).GetBytes());
+				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.ForwardMove != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.ForwardMove).GetBytes());
+				bw.WriteBytes(((float)Cmd.ForwardMove).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.SideMove != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.SideMove).GetBytes());
+				bw.WriteBytes(((float)Cmd.SideMove).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.UpMove != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.UpMove).GetBytes());
+				bw.WriteBytes(((float)Cmd.UpMove).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.Buttons != null)
@@ -159,23 +158,14 @@ namespace SourceDemoParser
 				for (int i = 0; i < Cmd.EntityGroundContact.Count; i++)
 				{
 					bw.WriteBits(Cmd.EntityGroundContact[i].EntIndex, UserCmd.MAX_EDICT_BITS);
-					bw.WriteBytes(Cmd.EntityGroundContact[i].MinHeight.GetBytes());
-					bw.WriteBytes(Cmd.EntityGroundContact[i].Maxheight.GetBytes());
+					bw.WriteBytes(Cmd.EntityGroundContact[i].MinHeight.ToBytes());
+					bw.WriteBytes(Cmd.EntityGroundContact[i].Maxheight.ToBytes());
 				}
 			}
 			else bw.WriteOneUBit(0);
 #endif
-
-			var bytes = CmdNumber.GetBytes();
-			var length = bw.Data.Length.GetBytes();
-
-			length.AppendTo(ref bytes);
-			bw.Data.AppendTo(ref bytes);
-
-			return Task.FromResult(bytes);
+			bw.Data.ToBytes().AppendTo(ref data);
+			return Task.FromResult(data);
 		}
-
-		public override string ToString()
-			=> $"{CmdNumber}";
 	}
 }

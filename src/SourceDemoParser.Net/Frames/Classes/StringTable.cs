@@ -46,15 +46,15 @@ namespace SourceDemoParser
 	{
 		//public long Version { get; set; }
 		//public long Xuid { get; set; }
-		public string Name { get; set; }						// Scoreboard information
-		public int UserId { get; set; }							// Local server user ID, unique while server is running
-		public string Guid { get; set; }						// Global unique player identifier
-		public int FriendsId { get; set; }						// Friends identification number
-		public string FriendsName { get; set; }					// Friends name
-		public bool Fakeplayer { get; set; }					// True, if player is a bot controlled by game.dll
-		public bool IsHltv { get; set; }						// True, if player is the HLTV proxy
-		public IEnumerable<int> CustomFiles { get; set; }		// Custom files CRC for this player
-		public char FilesDownloaded { get; set; }				// This counter increases each time the server downloaded a new file
+		public string Name { get; set; }
+		public int UserId { get; set; }
+		public string Guid { get; set; }
+		public int FriendsId { get; set; }
+		public string FriendsName { get; set; }
+		public bool Fakeplayer { get; set; }
+		public bool IsHltv { get; set; }
+		public IEnumerable<int> CustomFiles { get; set; }
+		public char FilesDownloaded { get; set; }
 	}
 
 	[DebuggerDisplay("{Id,nq}")]

@@ -4,9 +4,7 @@ namespace SourceDemoParser
 {
 	public interface IFrame
 	{
-		byte[] RawData { get; set; }
-		Task ParseData();
+		Task ParseData(SourceDemo demo);
 		Task<byte[]> ExportData();
-		string ToString();
 	}
 }
