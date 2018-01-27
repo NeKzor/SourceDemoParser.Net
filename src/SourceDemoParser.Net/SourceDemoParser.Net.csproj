@@ -5,6 +5,7 @@
     <RootNamespace>SourceDemoParser</RootNamespace>
     <Version>1.0.0-beta</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

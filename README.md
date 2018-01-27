@@ -28,11 +28,11 @@ Parse any protocol version 4 Source Engine demo.
 
 ### Namespaces
 
-| Namespace | Status | Description |
-| --- | :-: | --- |
-| [SourceDemoParser.Net](src/SourceDemoParser.Net) | ✖ | SourceDemo, SourceParser etc. |
-| [SourceDemoParser.Net.Extensions](src/SourceDemoParser.Net/Extensions) | ✖ | Adjustment, exporting etc. |
-| [SourceDemoParser.Net.Extensions.Demos](src/SourceDemoParser.Net/Extensions/Demos) | ✖ | Supported, default adjustments. |
+| Namespace | Description |
+| --- | --- |
+| SourceDemoParser | SourceDemo, SourceParser etc. |
+| SourceDemoParser.Extensions | Adjustments, exporting etc. |
+| SourceDemoParser.Extensions.Demos | Supported, default adjustments. |
 
 ### Parsing
 ```cs
@@ -46,32 +46,17 @@ var demo = await parser.ParseFileAsync("rank2.dem");
 ```cs
 using SourceDemoParser;
 
-// TODO: better example
 public class MyParser : SourceParser
 {
 	public override async Task<IFrame> HandleMessageAsync(BinaryReader br, DemoMessage message)
 	{
-		var frame = default(IFrame);
 		if ((int)message.Type == 10)
 		{
-			// Your custom parsing logic here
-			frame = new MyCustomFrame(br.ReadInt32()) as IFrame;
-
-			// Ignore MessageTypeException
-			try
-			{
-				await base.HandleMessageAsync(br, message);
-			}
-			catch
-			{
-			}
+			// Custom parsing logic here
+			// MyCustomFrame implements IFrame
+			return new MyCustomFrame(br.ReadInt32()) as IFrame;
 		}
-		else
-		{
-			await base.HandleMessageAsync(br, message);
-		}
-
-		return frame;
+		return await base.HandleMessageAsync(br, message);
 	}
 }
 ```
@@ -169,11 +154,10 @@ await demo.AdjustAsync();
 using SourceDemoParser;
 using SourceDemoParser.Extensions;
 
-var parser = new SourceParser();
-var demo = await parser.ParseFileAsync("just_a_wr_by_zypeh.dem");
-demo.Playbackticks = 1337;
+var exporter = new SourceExporter();
+demo.PlaybackTicks = 1337;
 demo.PlaybackTime = 420; 
-await demo.ExportFileAsync("h4ck3r.dem");
+await exporter.ExportFileAsync("h4ck3r.dem");
 ```
 
 ## Examples

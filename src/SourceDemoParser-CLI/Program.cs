@@ -63,8 +63,8 @@ namespace SourceDemoParser_CLI
 			var count = 0;
 			var filter = default(string[]);
 			if ((command.StartsWith("messages")
-			|| command.StartsWith("commands")
-			|| command.StartsWith("packets")) && (command.Contains("=")))
+				|| command.StartsWith("commands")
+				|| command.StartsWith("packets")) && (command.Contains("=")))
 			{
 				var args = command.Split('=');
 				if (args.Length == 2)
@@ -105,7 +105,7 @@ namespace SourceDemoParser_CLI
 			switch (command.ToLower())
 			{
 				case "header":
-					return $"FileStamp\t{_demo.FileStamp}\n" +
+					return $"HeaderId\t{_demo.HeaderId}\n" +
 						$"Protocol\t{_demo.Protocol}\n" +
 						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
 						$"GameDirectory\t{_demo.GameDirectory}\n" +
@@ -116,8 +116,8 @@ namespace SourceDemoParser_CLI
 						$"PlaybackTicks\t{_demo.PlaybackTicks}\n" +
 						$"PlaybackFrames\t{_demo.PlaybackFrames}\n" +
 						$"SignOnLength\t{_demo.SignOnLength}";
-				case "file-stamp":
-					return $"FileStamp\t{_demo.FileStamp}";
+				case "header-id":
+					return $"FileStamp\t{_demo.HeaderId}";
 				case "protocol":
 					return $"Protocol\t{_demo.Protocol}";
 				case "netproc":

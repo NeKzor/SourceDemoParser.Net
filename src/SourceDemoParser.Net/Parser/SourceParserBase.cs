@@ -8,11 +8,11 @@ namespace SourceDemoParser
 	public abstract class SourceParserBase : ISourceParser
 	{
 		public ParsingMode Mode { get; set; }
-		public bool AutoAdjustment { get; set; }
+		public AdjustmentType AutoAdjustment { get; set; }
 
 		public static int MaxSplitscreenClients = 2;
 
-		protected SourceParserBase(ParsingMode mode, bool autoAdjustment)
+		protected SourceParserBase(ParsingMode mode = default, AdjustmentType autoAdjustment = default)
 		{
 			Mode = mode;
 			AutoAdjustment = autoAdjustment;

@@ -9,7 +9,7 @@ namespace SourceDemoParser
 {
 	public class SourceParser : SourceParserBase
 	{
-		public SourceParser(ParsingMode mode = default, bool autoAdjustment = false)
+		public SourceParser(ParsingMode mode = default, AdjustmentType autoAdjustment = default)
 			: base(mode, autoAdjustment)
 		{
 		}
@@ -70,7 +70,7 @@ namespace SourceDemoParser
 
 					tick = br.ReadInt32();
 					br.ReadByte();
-					frame = await HandleMessageAsync(br, message = new DemoMessage(type, tick));
+					frame = await HandleMessageAsync(br, message = new DemoMessage(type, tick)).ConfigureAwait(false);
 
 					if (frame != null)
 					{
@@ -82,7 +82,7 @@ namespace SourceDemoParser
 					demo.Messages.Add(message);
 				}
 
-				if (AutoAdjustment)
+				if (AutoAdjustment == AdjustmentType.Exact)
 					await demo.AdjustExact().ConfigureAwait(false);
 			}
 			return demo;
@@ -94,24 +94,24 @@ namespace SourceDemoParser
 			{
 				case DemoMessageType.SignOn:
 				case DemoMessageType.Packet:
-					frame = await ParsePacketAsync(br);
+					frame = await ParsePacketAsync(br).ConfigureAwait(false);
 					break;
 				case DemoMessageType.SyncTick:
 					break;
 				case DemoMessageType.ConsoleCmd:
-					frame = await ParseConsoleCmdAsync(br);
+					frame = await ParseConsoleCmdAsync(br).ConfigureAwait(false);
 					break;
 				case DemoMessageType.UserCmd:
-					frame = await ParseUserCmdAsync(br);
+					frame = await ParseUserCmdAsync(br).ConfigureAwait(false);
 					break;
 				case DemoMessageType.DataTables:
-					frame = await ParseDataTablesAsync(br);
+					frame = await ParseDataTablesAsync(br).ConfigureAwait(false);
 					break;
 				case DemoMessageType.CustomData:
-					frame = await ParseCustomDataAsync(br);
+					frame = await ParseCustomDataAsync(br).ConfigureAwait(false);
 					break;
 				case DemoMessageType.StringTables:
-					frame = await ParseStringTablesAsync(br);
+					frame = await ParseStringTablesAsync(br).ConfigureAwait(false);
 					break;
 				default:
 					throw new MessageTypeException(message);

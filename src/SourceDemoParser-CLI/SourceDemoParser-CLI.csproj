@@ -4,6 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net452;netcoreapp1.1</TargetFrameworks>
     <RootNamespace>SourceDemoParser_CLI</RootNamespace>
+    <TargetName>sdp</TargetName>
+    <LangVersion>7.1</LangVersion>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

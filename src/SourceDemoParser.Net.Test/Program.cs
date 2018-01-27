@@ -1,16 +1,11 @@
-﻿//#define PARSE
-//#define PARSE_T
-//#define EDIT
-//#define DISCOVER_2
-//#define DIRECT
-#define CLEANUP
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 #if DISCOVER_2
 using System.Reflection;
 #endif
+using SourceDemoParser;
 using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser.Test
@@ -72,35 +67,35 @@ namespace SourceDemoParser.Test
 			var watch = new Stopwatch();
 			var demo = new SourceDemo();
 
-			var normal = new SourceParser(autoAdjustment: false);
-			var fast = new SourceParser(autoAdjustment: false, fastParsing: true);
-			var headeronly = new SourceParser(autoAdjustment: false, headerOnly: true);
+			var fast = new SourceParser(ParsingMode.Default);
+			var slow = new SourceParser(ParsingMode.Everything);
+			var headeronly = new SourceParser(ParsingMode.HeaderOnly);
 
-			// Normal
-			watch = Stopwatch.StartNew();
-			demo = normal.ParseFileAsync(path + source).GetAwaiter().GetResult();
-			watch.Stop();
-			var result1 = watch.Elapsed.TotalMilliseconds;
-			Console.WriteLine("Normal: " + watch.Elapsed.TotalMilliseconds.ToString() + "ms");
-
-			// Fast
+			// Default
 			watch = Stopwatch.StartNew();
 			demo = fast.ParseFileAsync(path + source).GetAwaiter().GetResult();
 			watch.Stop();
+			var result1 = watch.Elapsed.TotalMilliseconds;
+			Console.WriteLine("Default: " + watch.Elapsed.TotalMilliseconds.ToString() + "ms");
+
+			// Everything
+			watch = Stopwatch.StartNew();
+			demo = slow.ParseFileAsync(path + source).GetAwaiter().GetResult();
+			watch.Stop();
 			var result2 = watch.Elapsed.TotalMilliseconds;
-			Console.WriteLine($"Fast: {result2}ms ({(int)(result1 / result2)} times faster)");
+			Console.WriteLine($"Everything: {result2}ms ({(int)(result2 / result1)} times slower)");
 
 			// Header only
 			watch = Stopwatch.StartNew();
 			demo = headeronly.ParseFileAsync(path + source).GetAwaiter().GetResult();
 			watch.Stop();
 			var result3 = watch.Elapsed.TotalMilliseconds;
-			Console.WriteLine($"Header only: {result3}ms ({(int)(result2 / result3)} times faster)");
+			Console.WriteLine($"Header only: {result3}ms ({(int)(result1 / result3)} times faster)");
 
 			/*	Random Result
-				Normal: 122.9693ms
-				Fast: 3.6232ms (33 times faster)
-				Header only: 0.0785ms (46 times faster)
+				Default: 35.2142ms
+				Everything: 72.361ms (2 times slower)
+				Header only: 0.1488ms (236 times faster)
 			*/
 		}
 
@@ -109,7 +104,7 @@ namespace SourceDemoParser.Test
 		{
 			const string source = "portal2_pausing.dem";
 
-			var parser = new SourceParser(autoAdjustment: false);
+			var parser = new SourceParser();
 			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 
 			bool RemovePacket = false;
@@ -139,7 +134,9 @@ namespace SourceDemoParser.Test
 				}
 				index++;
 			}
-			_ = demo.ExportFileAsync(path + "portal2_cleanup.dem");
+
+			var exporter = new SourceExporter();
+			_ = exporter.ExportFileAsync(demo, path + "portal2_cleanup.dem");
 		}
 
 		[Conditional("EDIT")]
@@ -148,7 +145,7 @@ namespace SourceDemoParser.Test
 			const string source = "portal2_sp.dem";
 			const string destination = "portal2_sp_edit";
 
-			var parser = new SourceParser(autoAdjustment: false);
+			var parser = new SourceParser();
 			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 
 			Console.WriteLine("Before: " + demo.PlaybackTicks);
@@ -168,8 +165,10 @@ namespace SourceDemoParser.Test
 					}
 				}
 
-				//_ = demo.ExportFileAsync(path + destination + "_fast_export.dem", fastExport: true);
-				_ = demo.ExportFileAsync(path + destination + "_export.dem");
+				var exporter = new SourceExporter();
+
+				//_ = exporter.ExportFileAsync(demo, path + destination + "_fast_export.dem", fastExport: true);
+				_ = exporter.ExportFileAsync(demo, path + destination + "_export.dem");
 
 				/*	Results when removing messages (tested with Portal 2)
 
@@ -208,7 +207,7 @@ namespace SourceDemoParser.Test
 			{
 				const string source = "portal2_cm_coop.dem";
 
-				var parser = new SourceParser(autoAdjustment: false);
+				var parser = new SourceParser();
 				var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 				Console.WriteLine("Before: " + demo.PlaybackTicks);
 
@@ -234,7 +233,7 @@ namespace SourceDemoParser.Test
 			{
 				const string source = "portal2_cm_coop.dem";
 
-				var parser = new SourceParser(autoAdjustment: false);
+				var parser = new SourceParser();
 				var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 				Console.WriteLine("Before: " + demo.PlaybackTicks);
 
