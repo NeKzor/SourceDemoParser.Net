@@ -22,7 +22,7 @@ namespace SourceDemoParser_CLI
 					{
 						try
 						{
-							_parser = new SourceParser();
+							_parser = new SourceParser(ParsingMode.Everything);
 							_demo = _parser.ParseFileAsync(args[0]).GetAwaiter().GetResult();
 							Console.Write(ParseCommand("header"));
 						}
@@ -39,7 +39,7 @@ namespace SourceDemoParser_CLI
 					{
 						try
 						{
-							_parser = new SourceParser();
+							_parser = new SourceParser(ParsingMode.Everything);
 							_demo = _parser.ParseFileAsync(file).GetAwaiter().GetResult();
 							var output = string.Empty;
 							foreach (var command in args[0].Split(';'))

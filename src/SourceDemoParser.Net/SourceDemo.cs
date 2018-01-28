@@ -21,15 +21,23 @@ namespace SourceDemoParser
 		public List<IDemoMessage> Messages { get; set; }
 
 		// For the parser
-		internal int MaxSplitscreenClients { get; set; }
-		internal bool HasAlignmentByte { get; set; }
-		internal List<DemoMessageType> GameMessages { get; set; }
+		public GameSpecific Game { get; private set; }
 
 		public SourceDemo()
+			=> Game = new GameSpecific();
+	}
+
+	public class GameSpecific
+	{
+		public int MaxSplitscreenClients { get; set; }
+		public bool HasAlignmentByte { get; set; }
+		public List<DemoMessageType> DefaultMessages { get; set; }
+
+		public GameSpecific()
 		{
 			MaxSplitscreenClients = 1;
 			HasAlignmentByte = true;
-			GameMessages = DemoMessages.Default;
+			DefaultMessages = DemoMessages.Default;
 		}
 	}
 }

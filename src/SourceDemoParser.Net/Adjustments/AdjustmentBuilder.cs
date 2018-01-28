@@ -22,7 +22,7 @@ namespace SourceDemoParser.Extensions
 				.GetCustomAttributes()
 				.FirstOrDefault(a => (a is StartAdjustmentAttribute) || (a is EndAdjustmentAttribute));
 			if (attribute == null)
-				throw new Exception("Attribute is null!");
+				throw new Exception("Start or end attribute not found.");
 
 			var adjustment = default(Adjustment);
 			if (attribute is StartAdjustmentAttribute start)
@@ -48,14 +48,14 @@ namespace SourceDemoParser.Extensions
 				.GetParameters()
 				.FirstOrDefault()?.ParameterType;
 			if (parameter == null)
-				throw new Exception("Parameter is null!");
+				throw new Exception("Method doesn't have any parameters.");
 
 			if (parameter == typeof(PlayerCommand))
 				adjustment.Parameter = PlayerStructType.Command;
 			else if (parameter == typeof(PlayerPosition))
 				adjustment.Parameter = PlayerStructType.Position;
 			else
-				throw new Exception("Invalid parameter type!");
+				throw new Exception("Type of parameter is not supported.");
 
 			adjustment.Root = id;
 			adjustment.Method = Method;

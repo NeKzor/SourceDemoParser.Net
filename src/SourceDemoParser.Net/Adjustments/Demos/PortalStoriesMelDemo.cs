@@ -17,7 +17,7 @@ namespace SourceDemoParser.Extensions.Demos
 		public bool TramrideStart(PlayerPosition pos)
 		{
 			var destination = new Vector(-4592.00f, -4475.4052734375f, 108.683975219727f);
-			if ((pos.Old == destination) && (pos.Current != destination))
+			if ((pos.Previous == destination) && (pos.Current != destination))
 				return true;
 			return false;
 		}

@@ -55,7 +55,7 @@ public class CustomFrame : IFrame
 {
   public byte[] RawData { get; set; }
 
-  public ConsoleCmdFrame(byte[] data)
+  public CustomFrame(byte[] data)
   {
     RawData = data;
   }
@@ -78,7 +78,7 @@ public class CustomFrame : IFrame
 public class CustomMessageParsers
 {
   // This will be called after reading alignment byte or message tick
-  public static Task<IFrame> ParseCustomMessageAsync(BinaryReader br, SourceDemo demo)
+  public static Task<IFrame> ParseCustomMessage(BinaryReader br, SourceDemo demo)
   {
     var length = br.ReadInt32();
     var data = br.ReadBytes(length);
@@ -88,7 +88,7 @@ public class CustomMessageParsers
 
 public class CustomMessageExporters
 {
-  public static Task ParseCustomMessageAsync(BinaryWriter bw, IFrame frame)
+  public static Task ExportCustomMessage(BinaryWriter bw, IFrame frame)
   {
 		bw.Write((frame as CustomFrame).RawData.Length);
     bw.Write((frame as CustomFrame).RawData);
@@ -102,14 +102,14 @@ public class CustomDemoMessages
   // Example: code = 0x03 => type = list[code - 1] = SyncTick
   public static List<DemoMessageType> CustomEngine;
 
-  static()
+  static CustomDemoMessages()
   {
     CustomEngine = DemoMessages.Default;
     // New message handled at 0x0A
     CustomEngine.Add(new DemoMessageType(
       "MyMessage",
-      CustomMessageParsers.ParseCustomAsync,
-      CustomMessageExporters.Export
+      CustomMessageParsers.ParseCustomMessage,
+      CustomMessageExporters.ExportCustomMessage
     ));
   }
 }
@@ -125,7 +125,7 @@ public class CustomParser : SourceParser
     {
       case "custom_mod":
         // Overwrite default game messages with yours
-        demo.GameMessages = CustomDemoMessages.CustomEngine;
+        demo.Game.DefaultMessages = CustomDemoMessages.CustomEngine;
         break;
     }
     return Task.CompletedTask;

@@ -34,7 +34,7 @@ namespace SourceDemoParser
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
 					var code = (int)br.ReadByte();
-					var type = demo.GameMessages.ElementAtOrDefault(code - 1);
+					var type = demo.Game.DefaultMessages.ElementAtOrDefault(code - 1);
 					if (type == null) throw new MessageTypeException(code, br.BaseStream.Position);
 
 					if (type.Name == "Stop")
@@ -44,7 +44,7 @@ namespace SourceDemoParser
 					}
 
 					var tick = br.ReadInt32();
-					if (demo.HasAlignmentByte) br.ReadByte();
+					if (demo.Game.HasAlignmentByte) br.ReadByte();
 
 					var message = new DemoMessage()
 					{
@@ -92,8 +92,8 @@ namespace SourceDemoParser
 			{
 				case 2:
 				case 3:
-					demo.HasAlignmentByte = false;
-					demo.GameMessages = DemoMessages.OldEngine;
+					demo.Game.HasAlignmentByte = false;
+					demo.Game.DefaultMessages = DemoMessages.OldEngine;
 					break;
 				case 4:
 					break;
@@ -106,7 +106,7 @@ namespace SourceDemoParser
 				case "aperturetag":
 				case "portal_stories":
 				case "infra":
-					demo.MaxSplitscreenClients = 2;
+					demo.Game.MaxSplitscreenClients = 2;
 					break;
 			}
 			return Task.CompletedTask;

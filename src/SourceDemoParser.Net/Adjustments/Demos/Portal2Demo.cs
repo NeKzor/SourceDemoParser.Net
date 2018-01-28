@@ -20,7 +20,7 @@ namespace SourceDemoParser.Extensions.Demos
 		public bool E1912_Start(PlayerPosition pos)
 		{
 			var destination = new Vector(-655.748779296875f, -918.37353515625f, -4.96875f);
-			if ((pos.Old == destination) && (pos.Current != destination))
+			if ((pos.Previous == destination) && (pos.Current != destination))
 				return true;
 			return false;
 		}
@@ -30,7 +30,7 @@ namespace SourceDemoParser.Extensions.Demos
 			// Not 100% sure if this works for coop
 			var cmd1 = "dsp_player";
 			var cmd2 = "ss_force_primary_fullscreen 0";
-			return (cmd.Old?.StartsWith(cmd1) == true) && (cmd.Current == cmd2);
+			return (cmd.Previous?.StartsWith(cmd1) == true) && (cmd.Current == cmd2);
 		}
 		[StartAdjustment("mp_coop_start")]
 		public bool MpCoopStart_Start(PlayerPosition pos)

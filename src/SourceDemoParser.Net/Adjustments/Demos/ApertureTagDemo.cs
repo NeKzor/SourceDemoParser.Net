@@ -9,7 +9,7 @@ namespace SourceDemoParser.Extensions.Demos
 		public bool GgIntroWakeup_Start(PlayerPosition pos)
 		{
 			var destination = new Vector(-723.00f, -2481.00f, 17.00f);
-			if ((pos.Old == destination) && (pos.Current != destination))
+			if ((pos.Previous == destination) && (pos.Current != destination))
 				return true;
 			return false;
 		}

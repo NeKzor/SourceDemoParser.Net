@@ -26,7 +26,7 @@ namespace SourceDemoParser
 				if (message.Type.Name == "Stop")
 					break;
 				
-				if (demo.HasAlignmentByte) bw.Write(0x00);
+				if (demo.Game.HasAlignmentByte) bw.Write(0x00);
 				
 				if (message.Frame == null)
 					continue;
@@ -38,7 +38,8 @@ namespace SourceDemoParser
 					continue;
 				}
 
-				await demo.GameMessages[code - 1].Exporter.Invoke(bw, message.Frame).ConfigureAwait(false);
+				await demo.Game.DefaultMessages[code - 1].Exporter
+					.Invoke(bw, message.Frame).ConfigureAwait(false);
 			}
 		}
 		public override Task ExportHeader(BinaryWriter bw, SourceDemo demo)
