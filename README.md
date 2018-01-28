@@ -53,76 +53,76 @@ using SourceDemoParser;
 // the message tick or alignment byte
 public class CustomFrame : IFrame
 {
-	public byte[] RawData { get; set; }
+  public byte[] RawData { get; set; }
 
-	public ConsoleCmdFrame(byte[] data)
-	{
-		RawData = data;
-	}
+  public ConsoleCmdFrame(byte[] data)
+  {
+    RawData = data;
+  }
 
-	// Will be called if parsing mode is
-	// set to "Everything"
-	Task IFrame.ParseData(SourceDemo demo)
-	{
-		// Parse extra data here
-		return Task.FromResult(true);
-	}
-	// For SourceExporter
-	Task<byte[]> IFrame.ExportData()
-	{
-		// Reverse parsing logic here
-		return Task.FromResult(RawData);
-	}
+  // Will be called if parsing mode is
+  // set to "Everything"
+  Task IFrame.ParseData(SourceDemo demo)
+  {
+    // Parse extra data here
+    return Task.FromResult(true);
+  }
+  // For SourceExporter
+  Task<byte[]> IFrame.ExportData()
+  {
+    // Reverse parsing logic here
+    return Task.FromResult(RawData);
+  }
 }
 
 public class CustomMessageParsers
 {
-	// This will be called after reading alignment byte or message tick
-	public static Task<IFrame> ParseCustomMessageAsync(BinaryReader br, SourceDemo demo)
-	{
-		var length = br.ReadInt32();
-		var data = br.ReadBytes(length);
+  // This will be called after reading alignment byte or message tick
+  public static Task<IFrame> ParseCustomMessageAsync(BinaryReader br, SourceDemo demo)
+  {
+    var length = br.ReadInt32();
+    var data = br.ReadBytes(length);
 
-		return Task.FromResult(new CustomFrame(data) as IFrame);
-	}
+    return Task.FromResult(new CustomFrame(data) as IFrame);
+  }
 }
 
 public class CustomDemoMessages
 {
-	// Demo message type will be handled by list index
-	// Example: code = 0x03 => type = list[code - 1] = SyncTick
-	public static List<DemoMessageType> CustomEngine = new List<DemoMessageType>()
-	{
-		new DemoMessageType("SignOn", MessageParsers.ParsePacketAsync), // 0x01
-		new DemoMessageType("Packet", MessageParsers.ParsePacketAsync), // 0x02
-		new DemoMessageType("SyncTick", MessageParsers.ParseSyncTickAsync), // 0x03
-		new DemoMessageType("ConsoleCmd", MessageParsers.ParseConsoleCmdAsync), // 0x04
-		new DemoMessageType("UserCmd", MessageParsers.ParseUserCmdAsync), // 0x05
-		new DemoMessageType("DataTables", MessageParsers.ParseDataTablesAsync), // 0x06
-		new DemoMessageType("Stop", MessageParsers.ParseStopAsync), // 0x07
-		new DemoMessageType("CustomData", MessageParsers.ParseCustomDataAsync), // 0x08
-		new DemoMessageType("StringTables", MessageParsers.ParseStringTablesAsync) // 0x09
-		// New message handled at 0x0A
-		new DemoMessageType("MyMessage", CustomFrameParsers.ParseCustomFrameAsync)
-	};
+  // Demo message type will be handled by list index
+  // Example: code = 0x03 => type = list[code - 1] = SyncTick
+  public static List<DemoMessageType> CustomEngine = new List<DemoMessageType>()
+  {
+    new DemoMessageType("SignOn", MessageParsers.ParsePacketAsync), // 0x01
+    new DemoMessageType("Packet", MessageParsers.ParsePacketAsync), // 0x02
+    new DemoMessageType("SyncTick", MessageParsers.ParseSyncTickAsync), // 0x03
+    new DemoMessageType("ConsoleCmd", MessageParsers.ParseConsoleCmdAsync), // 0x04
+    new DemoMessageType("UserCmd", MessageParsers.ParseUserCmdAsync), // 0x05
+    new DemoMessageType("DataTables", MessageParsers.ParseDataTablesAsync), // 0x06
+    new DemoMessageType("Stop", MessageParsers.ParseStopAsync), // 0x07
+    new DemoMessageType("CustomData", MessageParsers.ParseCustomDataAsync), // 0x08
+    new DemoMessageType("StringTables", MessageParsers.ParseStringTablesAsync) // 0x09
+    // New message handled at 0x0A
+    new DemoMessageType("MyMessage", CustomFrameParsers.ParseCustomFrameAsync)
+  };
 }
 
 public class CustomParser : SourceParser
 {
-	// Detect your custom demo here
-	public override Task Configure(SourceDemo demo)
-	{
-		_ = base.Configure(demo);
+  // Detect your custom demo here
+  public override Task Configure(SourceDemo demo)
+  {
+    _ = base.Configure(demo);
 
-		switch (demo.GameDirectory)
-		{
-			case "custom_mod":
-				// Overwrite default game messages with yours
-				demo.GameMessages = CustomDemoMessages.CustomEngine;
-				break;
-		}
-		return Task.CompletedTask;
-	}
+    switch (demo.GameDirectory)
+    {
+      case "custom_mod":
+        // Overwrite default game messages with yours
+        demo.GameMessages = CustomDemoMessages.CustomEngine;
+        break;
+    }
+    return Task.CompletedTask;
+  }
 }
 ```
 
@@ -160,38 +160,37 @@ using SourceDemoParser.Extensions;
 // Implement ISourceDemo
 public class Portal2CustomMapDemo : ISourceDemo
 {
-	// Set demo folder and tickrate
-	public string GameDirectory => "portal2";
-	public uint DefaultTickrate => 60u;
-	
-	// Return boolean for an adjustment
-	// Example: Find start tick of a specific map
-	[StartAdjustment("sp_gud_mape")]
-	public bool SpGudMape_Start(PlayerPosition pos)
-	{
-		// Search logic with: PlayerPosition
-		var destination = new Vector(-723.00f, -2481.00f, 17.00f);
-		if ((pos.Old != destination) && (pos.Current != destination))
-			return true;
-		return false;
-	}
-	
-	// Example: Find end tick of a specific map with negative tick offset
-	[EndAdjustment("sp_gud_mape_finale", -1)]
-	public bool GgStageTheend_Ending(PlayerCommand cmd)
-	{
-		// Search logic with: PlayerCommand
-		var command = "playvideo_exitcommand_nointerrupt at_credits end_movie credits_video";
-		return (cmd.Current == command);
-	}
-	
-	// Example: Find end tick of any map with positive tick offset
-	[EndAdjustment(offset: 1)]
-	public bool ForSpecialCasesAlwaysCheck_Ending(PlayerCommand cmd)
-	{
-		var command = "echo SPECIAL_FADEOUT_WITH_VALUE";
-		return (cmd.Current.StartsWitch(command));
-	}
+  // Set demo folder and tickrate
+  public string GameDirectory => "portal2";
+  public uint DefaultTickrate => 60u;
+
+  // Return boolean for an adjustment
+  // Example: Find start tick of a specific map
+  [StartAdjustment("sp_gud_mape")]
+  public bool SpGudMape_Start(PlayerPosition pos)
+  {
+    // Search logic with: PlayerPosition
+    var destination = new Vector(-723.00f, -2481.00f, 17.00f);
+    if ((pos.Old != destination) && (pos.Current != destination))
+      return true;
+    return false;
+  }
+  // Example: Find end tick of a specific map with negative tick offset
+  [EndAdjustment("sp_gud_mape_finale", -1)]
+  public bool GgStageTheend_Ending(PlayerCommand cmd)
+  {
+    // Search logic with: PlayerCommand
+    var command = "playvideo_exitcommand_nointerrupt at_credits end_movie credits_video";
+    return (cmd.Current == command);
+  }
+
+  // Example: Find end tick of any map with positive tick offset
+  [EndAdjustment(offset: 1)]
+  public bool ForSpecialCasesAlwaysCheck_Ending(PlayerCommand cmd)
+  {
+    var command = "echo SPECIAL_FADEOUT_WITH_VALUE";
+    return (cmd.Current.StartsWitch(command));
+  }
 }
 ```
 ##### [More Demo Examples](src/SourceDemoParser.Net/Extensions/Demos)

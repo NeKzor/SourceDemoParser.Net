@@ -12,7 +12,7 @@ namespace SourceDemoParser
 
 		internal FrameHandler Handler { get; private set; }
 		
-		public DemoMessageType(string name, FrameHandler handler)
+		public DemoMessageType(string name, FrameHandler handler = null)
 		{
 			Name = name;
 			Handler = handler;

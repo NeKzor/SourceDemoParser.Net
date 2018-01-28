@@ -10,7 +10,7 @@ script:
 # Test
   - cd ../SourceDemoParser.Net.Test
   - dotnet restore
-  - dotnet build -c Release /p:DefineConstants="DIRECT" -f netcoreapp1.1
+  - dotnet build -c Release /p:DefineConstants="OE" -f netcoreapp1.1
   - dotnet run -p SourceDemoParser.Net.Test.csproj -c Release -f netcoreapp1.1
 # CLI Test
   - cd ../SourceDemoParser-CLI
