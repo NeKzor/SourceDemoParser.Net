@@ -20,6 +20,8 @@ namespace SourceDemoParser.Extensions
 		// Data
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
 			=> demo.Messages.Where(message => message.Type.Name == type.Name).ToList();
+		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, string typeName)
+			=> demo.Messages.Where(message => message.Type.Name == typeName).ToList();
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
 			=> demo.Messages.Where(message => message.CurrentTick == tick).ToList();
 

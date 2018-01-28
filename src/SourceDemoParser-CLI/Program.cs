@@ -154,20 +154,24 @@ namespace SourceDemoParser_CLI
 					return (count > 0) ? $"Messages\n{string.Join("\n", _demo.Messages.Take(count))}"
 							   : $"Messages\n{string.Join("\n", _demo.Messages)}";
 				case "commands":
+					var ccmd = new DemoMessageType("ConsoleCmd");
 					return (filter == default(string[]))
-						? (count == 0) ? $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd))}"
-								: $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd).Take(count))}"
-								: "ConsoleCommands\n" + string.Join("\n", _demo.GetMessagesByType(DemoMessageType.ConsoleCmd).Where(m =>
-								{
-									var cmd = (m.Frame as ConsoleCmdFrame).ConsoleCommand;
-									foreach (var f in filter)
-										if (cmd.StartsWith(f))
-											return false;
-									return true;
-								}));
+						? (count == 0)
+							? $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(ccmd))}"
+							: $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType(ccmd).Take(count))}"
+						: "ConsoleCommands\n" + string.Join("\n", _demo.GetMessagesByType(ccmd).Where(m =>
+						{
+							var cmd = (m.Frame as ConsoleCmdFrame).ConsoleCommand;
+							foreach (var f in filter)
+								if (cmd.StartsWith(f))
+									return false;
+							return true;
+						}));
 				case "packets":
-					return (count > 0) ? $"Packets\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.Packet).Take(count))}"
-							   : $"Packets\n{string.Join("\n", _demo.GetMessagesByType(DemoMessageType.Packet))}";
+					var packet = new DemoMessageType("Packet");
+					return (count > 0)
+						? $"Packets\n{string.Join("\n", _demo.GetMessagesByType(packet).Take(count))}"
+						: $"Packets\n{string.Join("\n", _demo.GetMessagesByType(packet))}";
 				// Returns nothing
 				case "adj":
 				case "adjust":
