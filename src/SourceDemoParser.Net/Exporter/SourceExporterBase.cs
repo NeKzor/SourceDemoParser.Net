@@ -6,14 +6,15 @@ namespace SourceDemoParser
 	public abstract class SourceExporterBase : ISourceExporter
 	{
         public ExportMode Mode { get; set; }
+		public bool WriteAlignmentTag { get; set; }
 
-        protected SourceExporterBase(ExportMode mode)
+        protected SourceExporterBase(ExportMode mode, bool writeAlignmentTag)
         {
             Mode = mode;
+			WriteAlignmentTag = writeAlignmentTag;
         }
 
         public abstract Task ExportAsync(BinaryWriter bw, SourceDemo demo);
-        public abstract Task<byte[]> HandleMessageAsync(IDemoMessage message);
 
 		public virtual Task<byte[]> ExportConsoleCmd(ConsoleCmdFrame frame)
 		{

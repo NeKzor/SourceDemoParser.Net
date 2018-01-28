@@ -22,6 +22,7 @@ namespace SourceDemoParser.Test
 			DiscoverTest();
 			DirectLoadTest();
 			Cleanup();
+			OldEngine();
 		}
 
 		[Conditional("PARSE")]
@@ -93,9 +94,9 @@ namespace SourceDemoParser.Test
 			Console.WriteLine($"Header only: {result3}ms ({(int)(result1 / result3)} times faster)");
 
 			/*	Random Result
-				Default: 35.2142ms
-				Everything: 72.361ms (2 times slower)
-				Header only: 0.1488ms (236 times faster)
+				Default: 30.8731ms
+				Everything: 63.1461ms (2 times slower)
+				Header only: 0.123ms (251 times faster)
 			*/
 		}
 
@@ -246,6 +247,15 @@ namespace SourceDemoParser.Test
 			{
 				Console.WriteLine(ex.ToString());
 			}
+		}
+
+		[Conditional("OE")]
+		private static void OldEngine()
+		{
+			const string source = "hl2oe.dem";
+			var parser = new SourceParser();
+			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
+			Console.WriteLine($"Messages: {demo.Messages.Count}");
 		}
 	}
 

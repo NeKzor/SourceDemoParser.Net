@@ -19,14 +19,14 @@ namespace SourceDemoParser.Extensions
 
 		// Data
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
-			=> demo.Messages.Where(message => message.Type == type).ToList();
+			=> demo.Messages.Where(message => message.Type.Name == type.Name).ToList();
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
 			=> demo.Messages.Where(message => message.CurrentTick == tick).ToList();
 
 		public static IDemoMessage FindMessage(this SourceDemo demo, string command)
-			=> demo.GetMessagesByType(DemoMessageType.ConsoleCmd).FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
+			=> demo.GetMessagesByType(new DemoMessageType("ConsoleCmd")).FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
 		public static IDemoMessage FindMessage(this SourceDemo demo, Vector position)
-			=> demo.GetMessagesByType(DemoMessageType.Packet).FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
+			=> demo.GetMessagesByType(new DemoMessageType("Packet")).FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
 
 		// Extra
 		public static void ParseFrames(this SourceDemo demo)
@@ -88,8 +88,8 @@ namespace SourceDemoParser.Extensions
 
 			if (candidates.Count > 0)
 			{
-				var packets = demo.GetMessagesByType(DemoMessageType.Packet);
-				var cmds = demo.GetMessagesByType(DemoMessageType.ConsoleCmd);
+				var packets = demo.GetMessagesByType(new DemoMessageType("ConsoleCmd"));
+				var cmds = demo.GetMessagesByType(new DemoMessageType("ConsoleCmd"));
 
 				var adjustments = new List<Adjustment>();
 				foreach (var candidate in candidates)

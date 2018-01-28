@@ -6,8 +6,8 @@ namespace SourceDemoParser
 {
 	public class SourceExporter : SourceExporterBase
 	{
-		public SourceExporter(ExportMode mode = default)
-			: base(mode)
+		public SourceExporter(ExportMode mode = default, bool writeAlignmentTag = true)
+			: base(mode, writeAlignmentTag)
 		{
 		}
 
@@ -36,16 +36,16 @@ namespace SourceDemoParser
 
 			foreach (var message in demo.Messages)
 			{
-				bw.Write((byte)message.Type);
+				/* bw.Write((byte)message.Type);
 				bw.Write(message.CurrentTick);
 
 				if (message.Type == DemoMessageType.Stop)
 					break;
 				
-				bw.Write(0x00);
+				if (WriteAlignmentTag) bw.Write(0x00);
 
 				if (message.Type == DemoMessageType.SyncTick)
-					continue;
+					continue; */
 				
 				if (message.Frame == null)
 					continue;
@@ -53,40 +53,11 @@ namespace SourceDemoParser
 				var data = default(byte[]);
 				if (Mode == ExportMode.FrameData)
 					data = await message.Frame.ExportData().ConfigureAwait(false);
-				else
-					data = await HandleMessageAsync(message).ConfigureAwait(false);
+				/* else
+					data = await HandleMessageAsync(message).ConfigureAwait(false); */
 				
 				bw.Write(data);
 			}
-		}
-		public override async Task<byte[]> HandleMessageAsync(IDemoMessage message)
-		{
-			var data = default(byte[]);
-			switch (message.Type)
-			{
-				case DemoMessageType.SignOn:
-				case DemoMessageType.Packet:
-					data = await ExportPacket(message.Frame as PacketFrame).ConfigureAwait(false);
-					break;
-				case DemoMessageType.ConsoleCmd:
-					data = await ExportConsoleCmd(message.Frame as ConsoleCmdFrame).ConfigureAwait(false);
-					break;
-				case DemoMessageType.UserCmd:
-					data = await ExportUserCmd(message.Frame as UserCmdFrame).ConfigureAwait(false);
-					break;
-				case DemoMessageType.DataTables:
-					data = await ExportDataTables(message.Frame as DataTablesFrame).ConfigureAwait(false);
-					break;
-				case DemoMessageType.CustomData:
-					data = await ExportCustomData(message.Frame as CustomDataFrame).ConfigureAwait(false);
-					break;
-				case DemoMessageType.StringTables:
-					data = await ExportStringTables(message.Frame as StringTablesFrame).ConfigureAwait(false);
-					break;
-				default:
-					throw new MessageTypeException(message);
-			}
-			return data;
 		}
 
 		public async Task<byte[]> ExportContentAsync(SourceDemo demo)

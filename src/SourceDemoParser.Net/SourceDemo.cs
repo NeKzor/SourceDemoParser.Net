@@ -16,7 +16,20 @@ namespace SourceDemoParser
 		public int PlaybackTicks { get; set; }
 		public int PlaybackFrames { get; set; }
 		public int SignOnLength { get; set; }
+
 		// Data
 		public List<IDemoMessage> Messages { get; set; }
+
+		// For the parser
+		internal int MaxSplitscreenClients { get; set; }
+		internal bool HasAlignmentByte { get; set; }
+		internal List<DemoMessageType> GameMessages { get; set; }
+
+		public SourceDemo()
+		{
+			MaxSplitscreenClients = 1;
+			HasAlignmentByte = true;
+			GameMessages = DemoMessages.Default;
+		}
 	}
 }

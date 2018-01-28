@@ -6,6 +6,7 @@ namespace SourceDemoParser
 	public interface ISourceParser
 	{
 		Task<SourceDemo> ParseAsync(Stream stream);
-		Task<IFrame> HandleMessageAsync(BinaryReader br, IDemoMessage message);
+		Task<SourceDemo> ParseHeader(BinaryReader br, SourceDemo demo);
+		Task Configure(SourceDemo demo);
 	}
 }

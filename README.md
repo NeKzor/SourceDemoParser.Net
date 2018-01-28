@@ -44,19 +44,84 @@ var demo = await parser.ParseFileAsync("rank2.dem");
 
 ### Custom Parser
 ```cs
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using SourceDemoParser;
 
-public class MyParser : SourceParser
+// This contains the data after reading
+// the message tick or alignment byte
+public class CustomFrame : IFrame
 {
-	public override async Task<IFrame> HandleMessageAsync(BinaryReader br, DemoMessage message)
+	public byte[] RawData { get; set; }
+
+	public ConsoleCmdFrame(byte[] data)
 	{
-		if ((int)message.Type == 10)
+		RawData = data;
+	}
+
+	// Will be called if parsing mode is
+	// set to "Everything"
+	Task IFrame.ParseData(SourceDemo demo)
+	{
+		// Parse extra data here
+		return Task.FromResult(true);
+	}
+	// For SourceExporter
+	Task<byte[]> IFrame.ExportData()
+	{
+		// Reverse parsing logic here
+		return Task.FromResult(RawData);
+	}
+}
+
+public class CustomMessageParsers
+{
+	// This will be called after reading alignment byte or message tick
+	public static Task<IFrame> ParseCustomMessageAsync(BinaryReader br, SourceDemo demo)
+	{
+		var length = br.ReadInt32();
+		var data = br.ReadBytes(length);
+
+		return Task.FromResult(new CustomFrame(data) as IFrame);
+	}
+}
+
+public class CustomDemoMessages
+{
+	// Demo message type will be handled by list index
+	// Example: code = 0x03 => type = list[code - 1] = SyncTick
+	public static List<DemoMessageType> CustomEngine = new List<DemoMessageType>()
+	{
+		new DemoMessageType("SignOn", MessageParsers.ParsePacketAsync), // 0x01
+		new DemoMessageType("Packet", MessageParsers.ParsePacketAsync), // 0x02
+		new DemoMessageType("SyncTick", MessageParsers.ParseSyncTickAsync), // 0x03
+		new DemoMessageType("ConsoleCmd", MessageParsers.ParseConsoleCmdAsync), // 0x04
+		new DemoMessageType("UserCmd", MessageParsers.ParseUserCmdAsync), // 0x05
+		new DemoMessageType("DataTables", MessageParsers.ParseDataTablesAsync), // 0x06
+		new DemoMessageType("Stop", MessageParsers.ParseStopAsync), // 0x07
+		new DemoMessageType("CustomData", MessageParsers.ParseCustomDataAsync), // 0x08
+		new DemoMessageType("StringTables", MessageParsers.ParseStringTablesAsync) // 0x09
+		// New message handled at 0x0A
+		new DemoMessageType("MyMessage", CustomFrameParsers.ParseCustomFrameAsync)
+	};
+}
+
+public class CustomParser : SourceParser
+{
+	// Detect your custom demo here
+	public override Task Configure(SourceDemo demo)
+	{
+		_ = base.Configure(demo);
+
+		switch (demo.GameDirectory)
 		{
-			// Custom parsing logic here
-			// MyCustomFrame implements IFrame
-			return new MyCustomFrame(br.ReadInt32()) as IFrame;
+			case "custom_mod":
+				// Overwrite default game messages with yours
+				demo.GameMessages = CustomDemoMessages.CustomEngine;
+				break;
 		}
-		return await base.HandleMessageAsync(br, message);
+		return Task.CompletedTask;
 	}
 }
 ```

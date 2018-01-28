@@ -4,14 +4,14 @@ namespace SourceDemoParser
 {
 	public class MessageTypeException : Exception
 	{
-		public DemoMessageType Type { get; }
-		public int CurrentTick { get; }
+		public int Type { get; }
+		public long Position { get; set; }
 
-		public MessageTypeException(IDemoMessage message)
-			: base($"[{message.CurrentTick}] Unknown demo message type: {(int)message.Type}.")
+		public MessageTypeException(int type, long position)
+			: base($"Unknown demo message type 0x{type.ToString("X")} at {position}.")
 		{
-			Type = message.Type;
-			CurrentTick = message.CurrentTick;
+			Type = type;
+			Position = position;
 		}
 
 		// Generated
