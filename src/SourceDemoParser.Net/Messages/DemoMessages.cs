@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using DemoMessageTypes = System.Collections.Generic.List<SourceDemoParser.DemoMessageType>;
+using Parser = SourceDemoParser.DemoMessageParsers;
+using Exporter = SourceDemoParser.DemoMessageExporters;
 
 namespace SourceDemoParser
 {
@@ -7,26 +9,26 @@ namespace SourceDemoParser
 	{
 		public static DemoMessageTypes Default = new DemoMessageTypes()
 		{
-			new DemoMessageType("SignOn", DemoMessageParsers.ParsePacketAsync),
-			new DemoMessageType("Packet", DemoMessageParsers.ParsePacketAsync),
-			new DemoMessageType("SyncTick", DemoMessageParsers.ParseSyncTickAsync),
-			new DemoMessageType("ConsoleCmd", DemoMessageParsers.ParseConsoleCmdAsync),
-			new DemoMessageType("UserCmd", DemoMessageParsers.ParseUserCmdAsync),
-			new DemoMessageType("DataTables", DemoMessageParsers.ParseDataTablesAsync),
-			new DemoMessageType("Stop", DemoMessageParsers.ParseStopAsync),
-			new DemoMessageType("CustomData", DemoMessageParsers.ParseCustomDataAsync),
-			new DemoMessageType("StringTables", DemoMessageParsers.ParseStringTablesAsync)
+			new DemoMessageType("SignOn", Parser.ParsePacket, Exporter.ExportPacket),
+			new DemoMessageType("Packet", Parser.ParsePacket, Exporter.ExportPacket),
+			new DemoMessageType("SyncTick", Parser.ParseSyncTick, Exporter.ExportSyncTick),
+			new DemoMessageType("ConsoleCmd", Parser.ParseConsoleCmdAsync, Exporter.ExportConsoleCmd),
+			new DemoMessageType("UserCmd", Parser.ParseUserCmd, Exporter.ExportUserCmd),
+			new DemoMessageType("DataTables", Parser.ParseDataTables, Exporter.ExportDataTables),
+			new DemoMessageType("Stop", Parser.ParseStop, Exporter.ExportStop),
+			new DemoMessageType("CustomData", Parser.ParseCustomData, Exporter.ExportCustomData),
+			new DemoMessageType("StringTables", Parser.ParseStringTables, Exporter.ExportStringTables)
 		};
 		public static DemoMessageTypes OldEngine = new DemoMessageTypes()
 		{
-			new DemoMessageType("SignOn", DemoMessageParsers.ParsePacketAsync),
-			new DemoMessageType("Packet", DemoMessageParsers.ParsePacketAsync),
-			new DemoMessageType("SyncTick", DemoMessageParsers.ParseSyncTickAsync),
-			new DemoMessageType("ConsoleCmd", DemoMessageParsers.ParseConsoleCmdAsync),
-			new DemoMessageType("UserCmd", DemoMessageParsers.ParseUserCmdAsync),
-			new DemoMessageType("DataTables", DemoMessageParsers.ParseDataTablesAsync),
-			new DemoMessageType("Stop", DemoMessageParsers.ParseStopAsync),
-			new DemoMessageType("StringTables", DemoMessageParsers.ParseStringTablesAsync)
+			new DemoMessageType("SignOn", Parser.ParsePacket, Exporter.ExportPacket),
+			new DemoMessageType("Packet", Parser.ParsePacket, Exporter.ExportPacket),
+			new DemoMessageType("SyncTick", Parser.ParseSyncTick, Exporter.ExportSyncTick),
+			new DemoMessageType("ConsoleCmd", Parser.ParseConsoleCmdAsync, Exporter.ExportConsoleCmd),
+			new DemoMessageType("UserCmd", Parser.ParseUserCmd, Exporter.ExportUserCmd),
+			new DemoMessageType("DataTables", Parser.ParseDataTables, Exporter.ExportDataTables),
+			new DemoMessageType("Stop", Parser.ParseStop, Exporter.ExportStop),
+			new DemoMessageType("StringTables", Parser.ParseStringTables, Exporter.ExportStringTables)
 		};
 	}
 }

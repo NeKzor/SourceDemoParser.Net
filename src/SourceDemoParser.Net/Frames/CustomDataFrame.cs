@@ -24,7 +24,7 @@ namespace SourceDemoParser
 			var buf = new BitBuffer(RawData);
 			Unknown2 = buf.ReadInt32();
 			Unknown3 = buf.ReadString();
-			return Task.FromResult(false);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

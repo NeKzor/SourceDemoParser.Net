@@ -21,7 +21,7 @@ namespace SourceDemoParser
 			ConsoleCommand = Encoding.ASCII
 				.GetString(RawData)
 				.TrimEnd(new char[1]);
-			return Task.FromResult(true);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

@@ -65,9 +65,9 @@ public class CustomFrame : IFrame
   Task IFrame.ParseData(SourceDemo demo)
   {
     // Parse extra data here
-    return Task.FromResult(true);
+    return Task.CompletedTask;
   }
-  // For SourceExporter
+  // For SourceExporter, used to edit data
   Task<byte[]> IFrame.ExportData()
   {
     // Reverse parsing logic here
@@ -84,6 +84,16 @@ public class CustomMessageParsers
     var data = br.ReadBytes(length);
 
     return Task.FromResult(new CustomFrame(data) as IFrame);
+  }
+}
+
+public class CustomMessageParsers
+{
+  public static Task ParseCustomMessageAsync(BinaryWriter bw, IFrame frame)
+  {
+		bw.Write((frame as CustomFrame).RawData.Length);
+    bw.Write((frame as CustomFrame).RawData);
+    return Task.CompletedTask;
   }
 }
 

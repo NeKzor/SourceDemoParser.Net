@@ -4,16 +4,11 @@ dotnet: 2.0.0
 dist: trusty
 solution: SourceDemoParser.Net.sln
 script:
-  - cd src/SourceDemoParser.Net/
   - dotnet restore
-  - dotnet build -c Release -f netstandard1.4
+  - dotnet build src/SourceDemoParser.Net/ -c Release -f netstandard1.4
 # Test
-  - cd ../SourceDemoParser.Net.Test
-  - dotnet restore
-  - dotnet build -c Release /p:DefineConstants="OE" -f netcoreapp1.1
-  - dotnet run -p SourceDemoParser.Net.Test.csproj -c Release -f netcoreapp1.1
+  - dotnet build src/SourceDemoParser.Net.Test/ -c Release /p:DefineConstants="OE" -f netcoreapp1.1
+  - dotnet run -p src/SourceDemoParser.Net.Test/ -c Release -f netcoreapp1.1
 # CLI Test
-  - cd ../SourceDemoParser-CLI
-  - dotnet restore
-  - dotnet build -c Release -f netcoreapp1.1
-  - dotnet run -p SourceDemoParser-CLI.csproj -c Release -f netcoreapp1.1 "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../../demos/portal2_coop.dem"
+  - dotnet build src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1
+  - dotnet run -p src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1 "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../../demos/portal2_coop.dem"

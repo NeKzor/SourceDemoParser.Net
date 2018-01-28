@@ -26,9 +26,9 @@ namespace SourceDemoParser.Extensions
 			=> demo.Messages.Where(message => message.CurrentTick == tick).ToList();
 
 		public static IDemoMessage FindMessage(this SourceDemo demo, string command)
-			=> demo.GetMessagesByType(new DemoMessageType("ConsoleCmd")).FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
+			=> demo.GetMessagesByType("ConsoleCmd").FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
 		public static IDemoMessage FindMessage(this SourceDemo demo, Vector position)
-			=> demo.GetMessagesByType(new DemoMessageType("Packet")).FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
+			=> demo.GetMessagesByType("Packet").FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
 
 		// Extra
 		public static void ParseFrames(this SourceDemo demo)
@@ -90,8 +90,8 @@ namespace SourceDemoParser.Extensions
 
 			if (candidates.Count > 0)
 			{
-				var packets = demo.GetMessagesByType(new DemoMessageType("ConsoleCmd"));
-				var cmds = demo.GetMessagesByType(new DemoMessageType("ConsoleCmd"));
+				var packets = demo.GetMessagesByType("Packets");
+				var cmds = demo.GetMessagesByType("ConsoleCmd");
 
 				var adjustments = new List<Adjustment>();
 				foreach (var candidate in candidates)
@@ -307,7 +307,7 @@ namespace SourceDemoParser.Extensions
 				Demo = demo,
 				Adjustments = ConvertToAdjustment(iDemo).ToList()
 			});
-			return Task.FromResult(0);
+			return Task.CompletedTask;
 		}
 		internal static IEnumerable<Adjustment> ConvertToAdjustment(TypeInfo iDemo)
 		{

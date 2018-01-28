@@ -6,12 +6,42 @@ namespace SourceDemoParser
 {
 	public class SourceExporter : SourceExporterBase
 	{
-		public SourceExporter(ExportMode mode = default, bool writeAlignmentTag = true)
-			: base(mode, writeAlignmentTag)
+		public SourceExporter(ExportMode mode = default)
+			: base(mode)
 		{
 		}
 
 		public override async Task ExportAsync(BinaryWriter bw, SourceDemo demo)
+		{
+			await ExportHeader(bw, demo);
+			if (Mode == ExportMode.HeaderOnly)
+				return;
+
+			foreach (var message in demo.Messages)
+			{
+				var code = (byte)message.Type.Code;
+				bw.Write(code);
+				bw.Write(message.CurrentTick);
+
+				if (message.Type.Name == "Stop")
+					break;
+				
+				if (demo.HasAlignmentByte) bw.Write(0x00);
+				
+				if (message.Frame == null)
+					continue;
+				
+				if (Mode == ExportMode.FrameData)
+				{
+					var data = await message.Frame.ExportData().ConfigureAwait(false);
+					if (data != null) bw.Write(data);
+					continue;
+				}
+				
+				await demo.GameMessages[code - 1].Exporter.Invoke(bw, message.Frame).ConfigureAwait(false);
+			}
+		}
+		public override Task ExportHeader(BinaryWriter bw, SourceDemo demo)
 		{
 			// DEMO_HEADER_ID
 			if (demo.HeaderId != "HL2DEMO\0")
@@ -31,33 +61,7 @@ namespace SourceDemoParser
 			bw.Write(demo.PlaybackFrames);
 			bw.Write(demo.SignOnLength);
 
-			if (Mode == ExportMode.HeaderOnly)
-				return;
-
-			foreach (var message in demo.Messages)
-			{
-				/* bw.Write((byte)message.Type);
-				bw.Write(message.CurrentTick);
-
-				if (message.Type == DemoMessageType.Stop)
-					break;
-				
-				if (WriteAlignmentTag) bw.Write(0x00);
-
-				if (message.Type == DemoMessageType.SyncTick)
-					continue; */
-				
-				if (message.Frame == null)
-					continue;
-				
-				var data = default(byte[]);
-				if (Mode == ExportMode.FrameData)
-					data = await message.Frame.ExportData().ConfigureAwait(false);
-				/* else
-					data = await HandleMessageAsync(message).ConfigureAwait(false); */
-				
-				bw.Write(data);
-			}
+			return Task.CompletedTask;
 		}
 
 		public async Task<byte[]> ExportContentAsync(SourceDemo demo)

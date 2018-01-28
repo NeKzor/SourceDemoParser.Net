@@ -75,7 +75,7 @@ namespace SourceDemoParser
 					DataTableName = buf.ReadString()
 				});
 			}
-			return Task.FromResult(false);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

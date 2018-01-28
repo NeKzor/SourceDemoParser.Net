@@ -46,7 +46,7 @@ namespace SourceDemoParser
 			// 4 bytes
 			var OutSequence = buf.ReadInt32();
 
-			return Task.FromResult(false);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

@@ -3,24 +3,27 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-    public delegate Task<IFrame> FrameHandler(BinaryReader br, SourceDemo demo);
+	public delegate Task<IFrame> FrameParser(BinaryReader br, SourceDemo demo);
+	public delegate Task FrameExporter(BinaryWriter bw, IFrame frame);
     
     public class DemoMessageType
 	{
-		public int Type { get; private set; }
+		public int Code { get; private set; }
 		public string Name { get; private set; }
 
-		internal FrameHandler Handler { get; private set; }
-		
-		public DemoMessageType(string name, FrameHandler handler = null)
+		internal FrameParser Parser { get; private set; }
+		internal FrameExporter Exporter { get; private set; }
+
+		public DemoMessageType(string name, FrameParser parser, FrameExporter exporter)
 		{
 			Name = name;
-			Handler = handler;
+			Parser = parser;
+			Exporter = exporter;
 		}
 
 		public DemoMessageType WithCode(int code)
 		{
-			Type = code;
+			Code = code;
 			return this;
 		}
 		

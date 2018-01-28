@@ -9,7 +9,7 @@ namespace SourceDemoParser_DS
 	public class DemoSimulation
 	{
 		public SourceDemo Demo { get; set; }
-		public int _currentTick;
+		private int _currentTick;
 
 		public DemoSimulation(string file)
 		{

@@ -133,7 +133,7 @@ namespace SourceDemoParser
 				}
 				Tables.Add(table);
 			}
-			return Task.FromResult(false);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

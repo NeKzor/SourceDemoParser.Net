@@ -50,7 +50,7 @@ namespace SourceDemoParser
 					{
 						Type = type.WithCode(code),
 						CurrentTick = tick,
-						Frame = await type.Handler.Invoke(br, demo).ConfigureAwait(false)
+						Frame = await type.Parser.Invoke(br, demo).ConfigureAwait(false)
 					};
 
 					if ((Mode == ParsingMode.Everything) && (message.Frame != null))

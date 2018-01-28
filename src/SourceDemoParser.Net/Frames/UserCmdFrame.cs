@@ -59,7 +59,7 @@ namespace SourceDemoParser
 				}
 			}
 #endif
-			return Task.FromResult(false);
+			return Task.CompletedTask;
 		}
 		Task<byte[]> IFrame.ExportData()
 		{

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-	public abstract class SourceParserBase : ISourceParser
+	public abstract class SourceParserBase
 	{
 		public ParsingMode Mode { get; set; }
 		public AdjustmentType AutoAdjustment { get; set; }
