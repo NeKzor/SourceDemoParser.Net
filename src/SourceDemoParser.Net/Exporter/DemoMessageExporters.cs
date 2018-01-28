@@ -5,48 +5,48 @@ namespace SourceDemoParser
 {
     public static class DemoMessageExporters
 	{
-		public static Task<byte[]> ExportPacket(BinaryWriter bw, IFrame frame)
+		public static Task ExportPacket(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as PacketFrame).PacketData.ToBytes().AppendTo(ref data);
-			(frame as PacketFrame).NetData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as PacketFrame).PacketData);
+			bw.Write((frame as PacketFrame).PacketData);
+			bw.Write((frame as PacketFrame).NetData.Length);
+			return Task.CompletedTask;
 		}
-		public static Task<byte[]> ExportSyncTick(BinaryWriter bw, IFrame frame)
-			=> Task.FromResult(default(byte[]));
-		public static Task<byte[]> ExportConsoleCmd(BinaryWriter bw, IFrame frame)
+		public static Task ExportSyncTick(BinaryWriter bw, IFrame frame)
+			=> Task.CompletedTask;
+		public static Task ExportConsoleCmd(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as ConsoleCmdFrame).RawData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as ConsoleCmdFrame).RawData.Length);
+			bw.Write((frame as ConsoleCmdFrame).RawData);
+			return Task.CompletedTask;
 		}
-		public static Task<byte[]> ExportUserCmd(BinaryWriter bw, IFrame frame)
+		public static Task ExportUserCmd(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as UserCmdFrame).CmdNumber.ToBytes().AppendTo(ref data);
-			(frame as UserCmdFrame).RawData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as UserCmdFrame).CmdNumber);
+			bw.Write((frame as UserCmdFrame).RawData.Length);
+			bw.Write((frame as UserCmdFrame).RawData);
+			return Task.CompletedTask;
 		}
-		public static Task<byte[]> ExportDataTables(BinaryWriter bw, IFrame frame)
+		public static Task ExportDataTables(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as DataTablesFrame).RawData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as DataTablesFrame).RawData.Length);
+			bw.Write((frame as DataTablesFrame).RawData);
+			return Task.CompletedTask;
 		}
-		public static Task<byte[]> ExportStop(BinaryWriter bw, IFrame frame)
-			=> Task.FromResult(default(byte[]));
-		public static Task<byte[]> ExportCustomData(BinaryWriter bw, IFrame frame)
+		public static Task ExportStop(BinaryWriter bw, IFrame frame)
+			=> Task.CompletedTask;
+		public static Task ExportCustomData(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as CustomDataFrame).Unknown1.ToBytes().AppendTo(ref data);
-			(frame as CustomDataFrame).RawData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as CustomDataFrame).Unknown1);
+			bw.Write((frame as CustomDataFrame).RawData.Length);
+			bw.Write((frame as CustomDataFrame).RawData);
+			return Task.CompletedTask;
 		}
-		public static Task<byte[]> ExportStringTables(BinaryWriter bw, IFrame frame)
+		public static Task ExportStringTables(BinaryWriter bw, IFrame frame)
 		{
-			var data = new byte[0];
-			(frame as StringTablesFrame).RawData.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			bw.Write((frame as StringTablesFrame).RawData.Length);
+			bw.Write((frame as StringTablesFrame).RawData);
+			return Task.CompletedTask;
 		}
 	}
 }

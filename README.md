@@ -64,10 +64,10 @@ public class CustomFrame : IFrame
   // set to "Everything"
   Task IFrame.ParseData(SourceDemo demo)
   {
-    // Parse extra data here
+    // Parse RawData into something readable
     return Task.CompletedTask;
   }
-  // For SourceExporter, used to edit data
+  // For exporting edited data
   Task<byte[]> IFrame.ExportData()
   {
     // Reverse parsing logic here
@@ -82,12 +82,11 @@ public class CustomMessageParsers
   {
     var length = br.ReadInt32();
     var data = br.ReadBytes(length);
-
     return Task.FromResult(new CustomFrame(data) as IFrame);
   }
 }
 
-public class CustomMessageParsers
+public class CustomMessageExporters
 {
   public static Task ParseCustomMessageAsync(BinaryWriter bw, IFrame frame)
   {
@@ -101,20 +100,18 @@ public class CustomDemoMessages
 {
   // Demo message type will be handled by list index
   // Example: code = 0x03 => type = list[code - 1] = SyncTick
-  public static List<DemoMessageType> CustomEngine = new List<DemoMessageType>()
+  public static List<DemoMessageType> CustomEngine;
+
+  static()
   {
-    new DemoMessageType("SignOn", MessageParsers.ParsePacketAsync), // 0x01
-    new DemoMessageType("Packet", MessageParsers.ParsePacketAsync), // 0x02
-    new DemoMessageType("SyncTick", MessageParsers.ParseSyncTickAsync), // 0x03
-    new DemoMessageType("ConsoleCmd", MessageParsers.ParseConsoleCmdAsync), // 0x04
-    new DemoMessageType("UserCmd", MessageParsers.ParseUserCmdAsync), // 0x05
-    new DemoMessageType("DataTables", MessageParsers.ParseDataTablesAsync), // 0x06
-    new DemoMessageType("Stop", MessageParsers.ParseStopAsync), // 0x07
-    new DemoMessageType("CustomData", MessageParsers.ParseCustomDataAsync), // 0x08
-    new DemoMessageType("StringTables", MessageParsers.ParseStringTablesAsync) // 0x09
+    CustomEngine = DemoMessages.Default;
     // New message handled at 0x0A
-    new DemoMessageType("MyMessage", CustomFrameParsers.ParseCustomFrameAsync)
-  };
+    CustomEngine.Add(new DemoMessageType(
+      "MyMessage",
+      CustomMessageParsers.ParseCustomAsync,
+      CustomMessageExporters.Export
+    ));
+  }
 }
 
 public class CustomParser : SourceParser

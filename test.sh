@@ -1,0 +1,1 @@
+dotnet run -p src/SourceDemoParser.Net.Test/ -c ${1-PARSE_T} -f netcoreapp1.1 --no-build

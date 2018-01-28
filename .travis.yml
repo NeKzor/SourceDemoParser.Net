@@ -7,8 +7,8 @@ script:
   - dotnet restore
   - dotnet build src/SourceDemoParser.Net/ -c Release -f netstandard1.4
 # Test
-  - dotnet build src/SourceDemoParser.Net.Test/ -c Release /p:DefineConstants="OE" -f netcoreapp1.1
-  - dotnet run -p src/SourceDemoParser.Net.Test/ -c Release -f netcoreapp1.1
+  - dotnet build src/SourceDemoParser.Net.Test/ -c OE -f netcoreapp1.1
+  - dotnet run -p src/SourceDemoParser.Net.Test/ -c OE -f netcoreapp1.1 --no-build
 # CLI Test
   - dotnet build src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1
-  - dotnet run -p src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1 "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "../../demos/portal2_coop.dem"
+  - dotnet run -p src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1 --no-build "messages=3;packets=3;commands=3;time;ticks;adj2;time;ticks" "demos/portal2_coop.dem"

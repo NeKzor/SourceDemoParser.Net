@@ -13,7 +13,7 @@ namespace SourceDemoParser
 
 		public override async Task ExportAsync(BinaryWriter bw, SourceDemo demo)
 		{
-			await ExportHeader(bw, demo);
+			await ExportHeader(bw, demo).ConfigureAwait(false);
 			if (Mode == ExportMode.HeaderOnly)
 				return;
 
@@ -37,7 +37,7 @@ namespace SourceDemoParser
 					if (data != null) bw.Write(data);
 					continue;
 				}
-				
+
 				await demo.GameMessages[code - 1].Exporter.Invoke(bw, message.Frame).ConfigureAwait(false);
 			}
 		}
