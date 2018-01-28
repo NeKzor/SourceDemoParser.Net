@@ -27,8 +27,9 @@ namespace SourceDemoParser.Extensions
 		public static IDemoMessage FindMessage(this SourceDemo demo, Vector position)
 			=> demo.GetMessagesByType("Packet").FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
 		
-		public static void ParseFrames(this SourceDemo demo)
-			=> demo.Messages.ForEach(async (m) => await m.Frame.ParseData(demo).ConfigureAwait(false));
+		public static Task ParseFrames(this SourceDemo demo)
+			=> Task.Run(() => demo.Messages
+				.ForEach(async (m) => await m.Frame.ParseData(demo).ConfigureAwait(false)));
 
 		// Adjustments
 		public static Task<SourceDemo> AdjustExact(this SourceDemo demo, int endTick = 0, int startTick = 0)
