@@ -68,11 +68,12 @@ await demo.AdjustExact();
 // by the SourceRuns community (echo #SAVE#)
 await demo.AdjustFlagAsync(saveFlag: "echo #IDEEDIT#");
 
-// Adjustments for specific maps with special rules (see below)
+// Adjustments for specific maps with special rules
 // Requires frame data to be parsed before: Set mode of parser
 // to "Everything" or use
 await demo.ParseFrames();
 
+// Also: adjustments have to be loaded first (see below)
 await demo.AdjustAsync();
 ```
 
@@ -126,10 +127,10 @@ using SourceDemoParser.Extensions;
 
 // Stuff will be cached automatically on success
 // Load all default adjustments
-await SourceExtensions.DiscoverAsync();
+await Adjustments.DiscoverAsync();
 
 // Load all adjustments of an assembly using System.Reflection:
-var result = await SourceExtensions.DiscoverAsync(Assembly.GetEntryAssembly());
+var result = await Adjustments.DiscoverAsync(Assembly.GetEntryAssembly());
 if (result) Console.WriteLine("Loaded at least one new adjustment.");
 
 // Or load manually
@@ -199,7 +200,7 @@ public class CustomMessageExporters
 {
   public static Task ExportCustomMessage(BinaryWriter bw, IFrame frame)
   {
-		bw.Write((frame as CustomFrame).RawData.Length);
+    bw.Write((frame as CustomFrame).RawData.Length);
     bw.Write((frame as CustomFrame).RawData);
     return Task.CompletedTask;
   }

@@ -26,10 +26,9 @@ namespace SourceDemoParser
 			Cmd = new UserCmd();
 			if (buf.ReadBoolean()) Cmd.CommandNumber = buf.ReadBits(32);
 			if (buf.ReadBoolean()) Cmd.TickCount = buf.ReadBits(32);
-			Cmd.Viewangles = new QAngle();
-			if (buf.ReadBoolean()) Cmd.Viewangles.X = buf.ReadSingle();
-			if (buf.ReadBoolean()) Cmd.Viewangles.Y = buf.ReadSingle();
-			if (buf.ReadBoolean()) Cmd.Viewangles.Z = buf.ReadSingle();
+			if (buf.ReadBoolean()) Cmd.ViewanglesX = buf.ReadSingle();
+			if (buf.ReadBoolean()) Cmd.ViewanglesY = buf.ReadSingle();
+			if (buf.ReadBoolean()) Cmd.ViewanglesZ = buf.ReadSingle();
 			if (buf.ReadBoolean()) Cmd.ForwardMove = buf.ReadSingle();
 			if (buf.ReadBoolean()) Cmd.SideMove = buf.ReadSingle();
 			if (buf.ReadBoolean()) Cmd.UpMove = buf.ReadSingle();
@@ -78,22 +77,22 @@ namespace SourceDemoParser
 				bw.WriteInt32((int)Cmd.TickCount);
 			}
 			else bw.WriteOneUBit(0);
-			if (Cmd.Viewangles.X != null)
+			if (Cmd.ViewanglesX != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
+				bw.WriteBytes(((float)Cmd.ViewanglesX).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
-			if (Cmd.Viewangles.Y != null)
+			if (Cmd.ViewanglesY != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
+				bw.WriteBytes(((float)Cmd.ViewanglesY).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
-			if (Cmd.Viewangles.Z != null)
+			if (Cmd.ViewanglesZ != null)
 			{
 				bw.WriteOneUBit(1);
-				bw.WriteBytes(((float)Cmd.Viewangles.X).ToBytes());
+				bw.WriteBytes(((float)Cmd.ViewanglesZ).ToBytes());
 			}
 			else bw.WriteOneUBit(0);
 			if (Cmd.ForwardMove != null)

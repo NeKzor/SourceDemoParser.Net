@@ -13,7 +13,7 @@ namespace SourceDemoParser_DS
 
 		public DemoSimulation(string file)
 		{
-			var parser = new SourceParser();
+			var parser = new SourceParser(ParsingMode.Everything);
 			Demo = parser.ParseFileAsync(file).GetAwaiter().GetResult();
 			Demo.AdjustExact().GetAwaiter().GetResult();
 		}
@@ -51,7 +51,7 @@ namespace SourceDemoParser_DS
 		public (DataPoint Yz, DataPoint Xz, DataPoint Xy) GetStartingPoints()
 		{
 			var info = Demo
-				.GetMessagesByType(DemoMessageType.Packet)
+				.GetMessagesByType("Packet")
 				.Select(m => m.Frame)
 				.Cast<PacketFrame>()
 				.Select(f => f.Infos[0])
@@ -64,7 +64,7 @@ namespace SourceDemoParser_DS
 		public (DataPoint Yz, DataPoint Xz, DataPoint Xy) GetEndingPoints()
 		{
 			var info = Demo
-				.GetMessagesByType(DemoMessageType.Packet)
+				.GetMessagesByType("Packet")
 				.Select(m => m.Frame)
 				.Cast<PacketFrame>()
 				.Select(f => f.Infos[0])
@@ -103,7 +103,7 @@ namespace SourceDemoParser_DS
 				case KeyType.W:
 					return user.ForwardMove > 0;
 				case KeyType.A:
-					return user.SideMove > 0;   // TODO: Check this
+					return user.SideMove > 0;
 				case KeyType.S:
 					return user.ForwardMove < 0;
 				case KeyType.D:

@@ -5,6 +5,6 @@ namespace SourceDemoParser
 	public interface IFrame
 	{
 		Task ParseData(SourceDemo demo);
-        Task<byte[]> ExportData();
-    }
+		Task<byte[]> ExportData();
+	}
 }

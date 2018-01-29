@@ -183,7 +183,7 @@ namespace SourceDemoParser_CLI
 				case "adjust2":
 					if (!_discovered)
 					{
-						SourceExtensions.DiscoverAsync().GetAwaiter().GetResult();
+						Adjustments.DiscoverAsync().GetAwaiter().GetResult();
 						_discovered = true;
 					}
 					_demo.AdjustAsync().GetAwaiter().GetResult();

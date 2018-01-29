@@ -1,5 +1,4 @@
-﻿// TODO: Test hl2 demos
-#if HL2
+﻿#if HL2
 using System.Collections.Generic;
 #endif
 using SourceDemoParser.Extensions;
@@ -10,7 +9,9 @@ namespace SourceDemoParser
 	{
 		public int? CommandNumber { get; set; }
 		public int? TickCount { get; set; }
-		public QAngle Viewangles { get; set; }
+		public float? ViewanglesX { get; set; }
+		public float? ViewanglesY { get; set; }
+		public float? ViewanglesZ { get; set; }
 		public float? ForwardMove { get; set; }
 		public float? SideMove { get; set; }
 		public float? UpMove { get; set; }

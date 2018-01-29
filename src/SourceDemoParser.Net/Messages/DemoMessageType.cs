@@ -5,8 +5,8 @@ namespace SourceDemoParser
 {
 	public delegate Task<IFrame> MessageParser(BinaryReader br, SourceDemo demo);
 	public delegate Task MessageExporter(BinaryWriter bw, IFrame frame);
-    
-    public class DemoMessageType
+
+	public class DemoMessageType
 	{
 		public int Code { get; private set; }
 		public string Name { get; private set; }
@@ -26,7 +26,7 @@ namespace SourceDemoParser
 			Code = code;
 			return this;
 		}
-		
+
 		public override string ToString()
 			=> Name;
 	}

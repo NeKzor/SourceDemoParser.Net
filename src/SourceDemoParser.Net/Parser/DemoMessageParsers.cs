@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-    public static class DemoMessageParsers
+	public static class DemoMessageParsers
 	{
 		public static Task<IFrame> ParsePacket(BinaryReader br, SourceDemo demo)
 		{

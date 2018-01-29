@@ -58,7 +58,7 @@ namespace SourceDemoParser.Test
 				}
 			}
 #endif
-				}
+		}
 
 		[Conditional("PARSE_T")]
 		private static void TimingTest()
@@ -214,9 +214,9 @@ namespace SourceDemoParser.Test
 
 				// Load automatically from assembly
 #if !DISCOVER_2
-				_ = SourceExtensions.DiscoverAsync();
+				_ = Adjustments.DiscoverAsync();
 #else
-				_ = SourceExtensions.DiscoverAsync(Assembly.GetEntryAssembly());
+				_ = Adjustments.DiscoverAsync(Assembly.GetEntryAssembly());
 #endif
 				_ = demo.AdjustAsync();
 				Console.WriteLine("After: " + demo.PlaybackTicks);
@@ -239,7 +239,7 @@ namespace SourceDemoParser.Test
 				Console.WriteLine("Before: " + demo.PlaybackTicks);
 
 				// Load custom demo directly
-				_ = SourceExtensions.LoadAsync<CustomDemo>();
+				_ = Adjustments.LoadAsync<CustomDemo>();
 				_ = demo.AdjustAsync();
 				Console.WriteLine("After: " + demo.PlaybackTicks);
 			}

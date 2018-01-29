@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser
-{	
+{
 	public class SourceParser : SourceParserBase
 	{
 		public SourceParser(
@@ -30,7 +30,7 @@ namespace SourceDemoParser
 
 				if (AutoConfiguration)
 					await Configure(demo).ConfigureAwait(false);
-				
+
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
 					var code = (int)br.ReadByte();
@@ -39,7 +39,7 @@ namespace SourceDemoParser
 
 					if (type.Name == "Stop")
 					{
-						demo.Messages.Add(new DemoMessage{ Type = type.WithCode(code) });
+						demo.Messages.Add(new DemoMessage { Type = type.WithCode(code) });
 						break;
 					}
 
@@ -55,7 +55,7 @@ namespace SourceDemoParser
 
 					if ((Mode == ParsingMode.Everything) && (message.Frame != null))
 						await message.Frame.ParseData(demo).ConfigureAwait(false);
-					
+
 					demo.Messages.Add(message);
 				}
 
@@ -66,25 +66,25 @@ namespace SourceDemoParser
 		}
 		public override Task<SourceDemo> ParseHeader(BinaryReader br, SourceDemo demo)
 		{
-				// DEMO_HEADER_ID
-				demo.HeaderId = Encoding.ASCII.GetString(br.ReadBytes(8));
-				if (demo.HeaderId != "HL2DEMO\0")
-					throw new SourceException(demo.HeaderId);
+			// DEMO_HEADER_ID
+			demo.HeaderId = Encoding.ASCII.GetString(br.ReadBytes(8));
+			if (demo.HeaderId != "HL2DEMO\0")
+				throw new SourceException(demo.HeaderId);
 
-				// DEMO_PROTOCOL
-				demo.Protocol = br.ReadInt32();
-				demo.NetworkProtocol = br.ReadInt32();
-				demo.ServerName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.ClientName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.MapName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.GameDirectory = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
-				demo.PlaybackTime = br.ReadSingle();
-				demo.PlaybackTicks = br.ReadInt32();
-				demo.PlaybackFrames = br.ReadInt32();
-				demo.SignOnLength = br.ReadInt32();
-				demo.Messages = new List<IDemoMessage>();
+			// DEMO_PROTOCOL
+			demo.Protocol = br.ReadInt32();
+			demo.NetworkProtocol = br.ReadInt32();
+			demo.ServerName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
+			demo.ClientName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
+			demo.MapName = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
+			demo.GameDirectory = Encoding.ASCII.GetString(br.ReadBytes(260)).TrimEnd(new char[1]);
+			demo.PlaybackTime = br.ReadSingle();
+			demo.PlaybackTicks = br.ReadInt32();
+			demo.PlaybackFrames = br.ReadInt32();
+			demo.SignOnLength = br.ReadInt32();
+			demo.Messages = new List<IDemoMessage>();
 
-				return Task.FromResult(demo);
+			return Task.FromResult(demo);
 		}
 		public override Task Configure(SourceDemo demo)
 		{

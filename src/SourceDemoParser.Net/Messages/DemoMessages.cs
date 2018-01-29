@@ -5,7 +5,7 @@ using Exporter = SourceDemoParser.DemoMessageExporters;
 
 namespace SourceDemoParser
 {
-    public static class DemoMessages
+	public static class DemoMessages
 	{
 		public static DemoMessageTypes Default = new DemoMessageTypes()
 		{

@@ -1,7 +1,7 @@
 ﻿namespace SourceDemoParser.Extensions
 {
 	public static class Const
-    {
+	{
 		// const.h
 		public const int MAX_OSPATH = 260;
 		public const int MAX_EDICT_BITS = 11;

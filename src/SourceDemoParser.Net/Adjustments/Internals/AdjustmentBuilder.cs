@@ -6,17 +6,30 @@ namespace SourceDemoParser.Extensions
 {
 	internal class AdjustmentBuilder
 	{
+		public TypeInfo Id { get; set; }
 		public MethodInfo Method { get; set; }
 
 		public AdjustmentBuilder()
 		{
 		}
-		public AdjustmentBuilder(MethodInfo method)
+		public AdjustmentBuilder(TypeInfo id, MethodInfo method)
 		{
+			Id = id;
 			Method = method;
 		}
 
-		public Adjustment Build(TypeInfo id)
+		public AdjustmentBuilder WithId(TypeInfo id)
+		{
+			Id = id;
+			return this;
+		}
+		public AdjustmentBuilder WithMethod(MethodInfo method)
+		{
+			Method = method;
+			return this;
+		}
+
+		public Adjustment Build()
 		{
 			var attribute = Method
 				.GetCustomAttributes()
@@ -27,7 +40,7 @@ namespace SourceDemoParser.Extensions
 			var adjustment = default(Adjustment);
 			if (attribute is StartAdjustmentAttribute start)
 			{
-				adjustment = new Adjustment
+				adjustment = new Adjustment()
 				{
 					Type = AdjustmentType.Start,
 					MapName = start.MapName,
@@ -36,7 +49,7 @@ namespace SourceDemoParser.Extensions
 			}
 			else if (attribute is EndAdjustmentAttribute end)
 			{
-				adjustment = new Adjustment
+				adjustment = new Adjustment()
 				{
 					Type = AdjustmentType.End,
 					MapName = end.MapName,
@@ -57,7 +70,7 @@ namespace SourceDemoParser.Extensions
 			else
 				throw new Exception("Type of parameter is not supported.");
 
-			adjustment.Root = id;
+			adjustment.Root = Id;
 			adjustment.Method = Method;
 			return adjustment;
 		}

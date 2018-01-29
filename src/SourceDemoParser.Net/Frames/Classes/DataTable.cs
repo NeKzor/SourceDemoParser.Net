@@ -70,11 +70,11 @@ namespace SourceDemoParser
 		Int = 0,
 		Float,
 		Vector,
-		VectorXy,		// ?
+		VectorXy,       // ?
 		String,
 		Array,
 		DataTable,
-		Int64			//?
+		Int64           //?
 	}
 	[Flags]
 	public enum SendPropFlags
@@ -90,7 +90,7 @@ namespace SourceDemoParser
 		InsideArray = (1 << 8),
 		ProxyAlwaysYes = (1 << 9),
 		IsAVectorElem = (1 << 10),
-		Collapsible = (1 << 11),                    
+		Collapsible = (1 << 11),
 		CoordMp = (1 << 12),
 		CoordMpLowPrecision = (1 << 13),
 		CoordMpIntegral = (1 << 14),

@@ -3,15 +3,12 @@
 
 namespace SourceDemoParser.Extensions
 {
-	public class Vector
+	public struct Vector
 	{
 		public float X { get; set; }
 		public float Y { get; set; }
 		public float Z { get; set; }
 
-		public Vector()
-		{
-		}
 		public Vector(float x, float y, float z)
 		{
 			X = x;
@@ -39,15 +36,12 @@ namespace SourceDemoParser.Extensions
 		}
 	}
 
-	public class QAngle
+	public struct QAngle
 	{
-		public float? X { get; set; }	// Pitch
-		public float? Y { get; set; }	// Yaw
-		public float? Z { get; set; }	// Roll
+		public float X { get; set; }    // Pitch
+		public float Y { get; set; }    // Yaw
+		public float Z { get; set; }    // Roll
 
-		public QAngle()
-		{
-		}
 		public QAngle(float x, float y, float z)
 		{
 			X = x;
@@ -59,7 +53,7 @@ namespace SourceDemoParser.Extensions
 			=> $"{X}, {Y}, {Z}";
 
 		public static bool Equals(QAngle qanA, QAngle qanB)
-			=> (qanA?.X == qanB?.X) && (qanA?.Y == qanB?.Y) && (qanA?.Z == qanB?.Z);
+			=> (qanA.X == qanB.X) && (qanA.Y == qanB.Y) && (qanA.Z == qanB.Z);
 		public static bool operator ==(QAngle qanA, QAngle qanB)
 			=> Equals(qanA, qanB);
 		public static bool operator !=(QAngle qanA, QAngle qanB)
@@ -68,9 +62,9 @@ namespace SourceDemoParser.Extensions
 		public byte[] ToBytes()
 		{
 			var bytes = new byte[0];
-			if (X != null) ((float)X).ToBytes().AppendTo(ref bytes);
-			if (X != null) ((float)Y).ToBytes().AppendTo(ref bytes);
-			if (X != null) ((float)Z).ToBytes().AppendTo(ref bytes);
+			X.ToBytes().AppendTo(ref bytes);
+			Y.ToBytes().AppendTo(ref bytes);
+			Z.ToBytes().AppendTo(ref bytes);
 			return bytes;
 		}
 	}
