@@ -60,7 +60,7 @@ namespace SourceDemoParser
 						else if (name == Const.USER_INFO_TABLENAME)
 						{
 							var buf2 = new BitBuffer(data);
-							if (demo.GameDirectory == "csgo") // Hack
+							if (demo.GameDirectory == "csgo")
 							{
 								// 16 bytes = ???
 								var temp1 = buf2.ReadBytes(8);

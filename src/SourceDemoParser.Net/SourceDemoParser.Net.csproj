@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.4</TargetFrameworks>
     <RootNamespace>SourceDemoParser</RootNamespace>
-    <Version>1.0.0-beta</Version>
+    <Version>1.0-beta</Version>
     <Authors>NeKz</Authors>
     <Description>Parse any protocol version 4 Source Engine demo.</Description>
     <Copyright>Copyright © NeKz 2017-2018</Copyright>
