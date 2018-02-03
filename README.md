@@ -245,10 +245,10 @@ public class CustomParser : SourceParser
 
 ## Examples
 
-### [CLI Tool](src/SourceDemoParser-CLI)
+### [CLI Tool](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-CLI)
 Simple tool for command line interfaces.
 
 Example: `dotnet SourceDemoParser-CLI.dll header segment_42.dem`.
 
-### [SourceDemoParser-DS](src/SourceDemoParser-DS)
-[![Showcase](showcase.gif)](src/SourceDemoParser-DS)
+### [SourceDemoParser-DS](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
+[![Showcase](showcase.gif)](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SourceDemoParser.Extensions;
@@ -14,9 +16,12 @@ namespace SourceDemoParser
 		public int InSequence { get; set; }
 		public int OutSequence { get; set; }
 
+		public List<NetMessageData> NetMessages { get; set; }
+
 		public PacketFrame()
 		{
 			Infos = new List<PacketInfo>();
+			NetMessages = new List<NetMessageData>();
 		}
 		public PacketFrame(byte[] packetData, byte[] netData) : this()
 		{
@@ -45,6 +50,33 @@ namespace SourceDemoParser
 			var InSequence = buf.ReadInt32();
 			// 4 bytes
 			var OutSequence = buf.ReadInt32();
+
+			buf = new BitBuffer(NetData);
+			while (buf.BitsLeft > 6)
+			{
+				var code = buf.ReadBits(6);
+				var type = demo.Game.DefaultNetMessages.ElementAtOrDefault(code);
+				if (type == null)
+					throw new Exception($"Unknown net message {code} at {buf.CurrentByte}.");
+
+				if (type.Parser == null)
+					continue;
+
+				var message = type.Parser
+					.Invoke(buf, demo)
+					.ConfigureAwait(false)
+					.GetAwaiter()
+					.GetResult();
+				
+				if (message != null)
+				{
+					NetMessages.Add(new NetMessageData()
+					{
+						Type = type,
+						Message = message
+					});
+				}
+			}
 
 			return Task.CompletedTask;
 		}

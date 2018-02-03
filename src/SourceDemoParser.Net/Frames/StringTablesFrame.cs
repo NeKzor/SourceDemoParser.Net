@@ -34,6 +34,8 @@ namespace SourceDemoParser
 				{
 					var entry = buf.ReadString();
 					var data = default(byte[]);
+					var version = default(long);
+					var xuid = default(long);
 					var info = default(TableInfoBase);
 
 					if (buf.ReadBoolean())
@@ -44,7 +46,7 @@ namespace SourceDemoParser
 						// TODO
 						if (name == Const.INSTANCE_BASELINE_TABLENAME)
 						{
-							info = new InstanceBaseline
+							info = new InstanceBaseline()
 							{
 								Id = int.Parse(entry)
 							};
@@ -62,17 +64,17 @@ namespace SourceDemoParser
 							var buf2 = new BitBuffer(data);
 							if (demo.GameDirectory == "csgo")
 							{
-								// 16 bytes = ???
-								var temp1 = buf2.ReadBytes(8);
-								var temp2 = buf2.ReadBytes(8);
-								var version = BitConverter.ToInt64(temp1, 0);
-								var xuid = BitConverter.ToInt64(temp2, 0);
+								// 8 bytes
+								version = BitConverter.ToInt64(buf2.ReadBytes(8), 0);
+								// 8 bytes
+								xuid = BitConverter.ToInt64(buf2.ReadBytes(8), 0);
 							}
 							else
 							{
-								// 8 bytes = ???
-								var idk1 = buf2.ReadInt32();
-								var idk2 = buf2.ReadInt32();
+								// 4 bytes
+								version = buf2.ReadInt32();
+								// 4 bytes
+								xuid = buf2.ReadInt32();
 							}
 
 							info = new PlayerInfo()
@@ -104,10 +106,12 @@ namespace SourceDemoParser
 							};
 						}
 					}
-					table.AddEntry(new StringTableEntry
+					table.AddEntry(new StringTableEntry()
 					{
 						Name = entry,
 						RawData = data,
+						Version = version,
+						Xuid = xuid,
 						Info = info
 					});
 				}
@@ -124,7 +128,7 @@ namespace SourceDemoParser
 							var length = buf.ReadInt16();
 							data = buf.ReadBytes(length);
 						}
-						table.AddClientEntry(new ClientEntry
+						table.AddClientEntry(new ClientEntry()
 						{
 							Name = centry,
 							RawData = data

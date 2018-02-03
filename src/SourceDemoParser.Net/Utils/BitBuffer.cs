@@ -9,7 +9,7 @@ namespace SourceDemoParser
 {
 	// Thanks Traderain
 	[DebuggerDisplay("{CurrentByte,nq}/{Length,nq}")]
-	internal class BitBuffer
+	internal class BitBuffer : ISourceBufferUtil
 	{
 		internal enum EndianType
 		{
@@ -24,7 +24,7 @@ namespace SourceDemoParser
 		public int BitsLeft => (_data.Count * 8) - _currentBit;
 		public int BytesLeft => _data.Count - CurrentByte;
 
-		public EndianType Endian { get; set; }
+		internal EndianType Endian { get; set; }
 
 		private readonly List<byte> _data;
 		private int _currentBit;

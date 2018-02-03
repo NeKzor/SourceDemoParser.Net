@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace SourceDemoParser
 {
 	[DebuggerDisplay("{CurrentByte,nq}")]
-	internal class BitWriter
+	internal class BitWriter : ISourceWriterUtil
 	{
 		public byte[] Data => _data.ToArray();
 		public int CurrentBit => _currentBit;

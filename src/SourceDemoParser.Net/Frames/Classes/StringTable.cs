@@ -31,6 +31,8 @@ namespace SourceDemoParser
 	{
 		public string Name { get; set; }
 		public byte[] RawData { get; set; }
+		public long Version { get; set; }
+		public long Xuid { get; set; }
 		public TableInfoBase Info { get; set; }
 	}
 

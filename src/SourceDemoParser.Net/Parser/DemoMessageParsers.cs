@@ -7,7 +7,7 @@ namespace SourceDemoParser
 	{
 		public static Task<IFrame> ParsePacket(BinaryReader br, SourceDemo demo)
 		{
-			var info = br.ReadBytes((demo.Game.MaxSplitscreenClients * 76) + 4 + 4);
+			var info = br.ReadBytes(((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8);
 			var length = br.ReadInt32();
 			var net = br.ReadBytes(length);
 			return Task.FromResult(new PacketFrame(info, net) as IFrame);

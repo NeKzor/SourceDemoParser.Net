@@ -30,12 +30,14 @@ namespace SourceDemoParser
 					NetTableName = buf.ReadString(),
 					NeedsDecoder = needsdecoder
 				};
+				
 				var props = buf.ReadUBits(DataTable.PROPINFOBITS_NUMPROPS);
 				for (int j = 0; j < props; j++)
 				{
-					const int protocol = 4;
-					const int fbits = (protocol == 2) ? 11 : DataTable.PROPINFOBITS_FLAGS;
-
+					int fbits = (demo.Protocol == 2)
+						? 11
+						: DataTable.PROPINFOBITS_FLAGS;
+					
 					var prop = new SendProp
 					{
 						Type = (SendPropType)buf.ReadUBits(DataTable.PROPINFOBITS_TYPE),

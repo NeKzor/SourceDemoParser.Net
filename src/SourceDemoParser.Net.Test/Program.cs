@@ -23,6 +23,7 @@ namespace SourceDemoParser.Test
 			DirectLoadTest();
 			Cleanup();
 			OldEngine();
+			Portal();
 		}
 
 		[Conditional("PARSE")]
@@ -256,6 +257,26 @@ namespace SourceDemoParser.Test
 			var parser = new SourceParser();
 			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 			Console.WriteLine($"Messages: {demo.Messages.Count}");
+		}
+
+		[Conditional("PORTAL")]
+		private static void Portal()
+		{
+			const string source = "portal.dem";
+			var parser = new SourceParser(ParsingMode.Everything);
+			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
+			foreach (var packet in demo.GetMessagesByType("Packet"))
+			{
+				var messages = (packet.Frame as PacketFrame).NetMessages;
+				if (messages.Count == 0)
+				{
+					Console.WriteLine($"Skipped a packet at {packet.CurrentTick}");
+					continue;
+				}
+				foreach (var message in messages)
+					Console.WriteLine($"Net message: {message}");
+			}
+				
 		}
 	}
 
