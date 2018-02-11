@@ -59,9 +59,9 @@ namespace SourceDemoParser
 	[DebuggerDisplay("[{ClassId,nq}] {ClassName,nq} ({DataTableName,nq})")]
 	public class ServerClassInfo
 	{
+		public short ClassId { get; set; }
 		public string ClassName { get; set; }
 		public string DataTableName { get; set; }
-		public int ClassId { get; set; }
 	}
 
 	// dt_common.h

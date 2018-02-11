@@ -24,6 +24,7 @@ namespace SourceDemoParser.Test
 			Cleanup();
 			OldEngine();
 			Portal();
+			Portal2();
 		}
 
 		[Conditional("PARSE")]
@@ -265,7 +266,7 @@ namespace SourceDemoParser.Test
 			const string source = "portal.dem";
 			var parser = new SourceParser(ParsingMode.Everything);
 			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
-			foreach (var packet in demo.GetMessagesByType("Packet"))
+			/* foreach (var packet in demo.GetMessagesByType("Packet"))
 			{
 				var messages = (packet.Frame as PacketFrame).NetMessages;
 				if (messages.Count == 0)
@@ -275,8 +276,15 @@ namespace SourceDemoParser.Test
 				}
 				foreach (var message in messages)
 					Console.WriteLine($"Net message: {message}");
-			}
-				
+			} */
+		}
+
+		[Conditional("PORTAL2")]
+		private static void Portal2()
+		{
+			const string source = "portal2_sp.dem";
+			var parser = new SourceParser(ParsingMode.Everything);
+			var demo = parser.ParseFileAsync(path + source).GetAwaiter().GetResult();
 		}
 	}
 

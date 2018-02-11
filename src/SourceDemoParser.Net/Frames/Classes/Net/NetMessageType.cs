@@ -17,6 +17,8 @@ namespace SourceDemoParser
 		public int Code { get; private set; }
 		public string Name { get; private set; }
 
+		public static readonly NetMessageType Empty = new NetMessageType(null, null, null);
+
 		internal NetDataParser Parser { get; private set; }
 		internal NetDataExporter Exporter { get; private set; }
 

@@ -51,30 +51,45 @@ namespace SourceDemoParser
 			// 4 bytes
 			var OutSequence = buf.ReadInt32();
 
+			Console.WriteLine("Reading new net message...");
 			buf = new BitBuffer(NetData);
 			while (buf.BitsLeft > 6)
 			{
 				var code = buf.ReadBits(6);
 				var type = demo.Game.DefaultNetMessages.ElementAtOrDefault(code);
 				if (type == null)
-					throw new Exception($"Unknown net message {code} at {buf.CurrentByte}.");
+				{
+					Console.WriteLine($"Unknown net message {code} at {buf.CurrentByte}.");
+					break;
+					//throw new Exception($"Unknown net message {code} at {buf.CurrentByte}.");
+				}
+				
+				Console.WriteLine($"Handled {code} as {type.Name}.");
 
 				if (type.Parser == null)
 					continue;
 
-				var message = type.Parser
-					.Invoke(buf, demo)
-					.ConfigureAwait(false)
-					.GetAwaiter()
-					.GetResult();
-				
-				if (message != null)
+				try
 				{
-					NetMessages.Add(new NetMessageData()
+					var message = type.Parser
+						.Invoke(buf, demo)
+						.ConfigureAwait(false)
+						.GetAwaiter()
+						.GetResult();
+					
+					if (message != null)
 					{
-						Type = type,
-						Message = message
-					});
+						NetMessages.Add(new NetMessageData()
+						{
+							Type = type,
+							Message = message
+						});
+					}
+				}
+				catch
+				{
+					Console.WriteLine("Parsing error.");
+					break;
 				}
 			}
 

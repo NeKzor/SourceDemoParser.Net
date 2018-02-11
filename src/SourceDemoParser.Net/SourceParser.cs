@@ -107,6 +107,7 @@ namespace SourceDemoParser
 				case "portal_stories":
 				case "infra":
 					demo.Game.MaxSplitscreenClients = 2;
+					demo.Game.DefaultNetMessages = NetMessages.Portal2;
 					break;
 			}
 			return Task.CompletedTask;
