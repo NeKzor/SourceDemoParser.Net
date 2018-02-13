@@ -7,8 +7,8 @@ script:
   - dotnet restore
   - dotnet build src/SourceDemoParser.Net/ -c Release -f netstandard1.4
 # Test
-  - dotnet build src/SourceDemoParser.Net.Test/ -c PORTAL2 -f netcoreapp1.1
-  - dotnet run -p src/SourceDemoParser.Net.Test/ -c PORTAL2 -f netcoreapp1.1 --no-build
+  - dotnet build src/SourceDemoParser.Net.Test/ -c PARSE_T -f netcoreapp1.1
+  - dotnet run -p src/SourceDemoParser.Net.Test/ -c PARSE_T -f netcoreapp1.1 --no-build
 # CLI Test
   - dotnet build src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1
   - dotnet run -p src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1 --no-build "ticks;adj2;ticks" "demos/portal2_coop.dem"

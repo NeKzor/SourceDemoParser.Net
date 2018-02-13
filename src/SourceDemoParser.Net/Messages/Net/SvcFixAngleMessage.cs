@@ -3,21 +3,32 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcFixAngleMessage : INetMessage
+	public class SvcFixAngleMessage : NetMessage
 	{
 		public bool Relative { get; set; }
 		public QAngle Angle { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcFixAngleMessage(NetMessageType type) : base(type)
 		{
-			var relative = buf.ReadBoolean();
-			var x = (buf.ReadBoolean()) ? buf.ReadSingle() : 0;
-			var y = (buf.ReadBoolean()) ? buf.ReadSingle() : 0;
-			var z = (buf.ReadBoolean()) ? buf.ReadSingle() : 0;
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Relative = buf.ReadBoolean();
+			Angle = new QAngle
+			(
+				(buf.ReadBoolean()) ? buf.ReadSingle() : 0,
+				(buf.ReadBoolean()) ? buf.ReadSingle() : 0,
+				(buf.ReadBoolean()) ? buf.ReadSingle() : 0
+			);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteBoolean(Relative);
+			//bw.Single(Angle.X);
+			//bw.Single(Angle.Y);
+			//bw.Single(Angle.Z);
 			return Task.CompletedTask;
 		}
 	}

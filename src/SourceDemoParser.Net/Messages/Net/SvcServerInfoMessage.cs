@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcServerInfoMessage : INetMessage
+	public class SvcServerInfoMessage : NetMessage
 	{
 		public short Protocol { get; set; }
 		public int ServerCount { get; set; }
@@ -19,35 +19,59 @@ namespace SourceDemoParser.Messages.Net
 		public string MapName { get; set; }
 		public string SkyName { get; set; }
 		public string HostName { get; set; }
+		//public bool Replay { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcServerInfoMessage(NetMessageType type) : base(type)
 		{
-			var protocol = buf.ReadInt16();
-			var count = buf.ReadInt32();
-			var hltv = buf.ReadBoolean();
-			var dedicated = buf.ReadBoolean();
-			var client = buf.ReadInt32();
-			var classes = buf.ReadUInt16();
-			var mapcrc = (protocol < 18)
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Protocol = buf.ReadInt16();
+			ServerCount = buf.ReadInt32();
+			IsHltv= buf.ReadBoolean();
+			IsDedicated = buf.ReadBoolean();
+			ClientCrc = buf.ReadInt32();
+			MaxClasses = buf.ReadUInt16();
+			MapCrc = (Protocol < 18)
 				? buf.ReadInt32()
 				: buf.ReadBits(128);
-			var slot = buf.ReadByte();
-			var clients = buf.ReadByte();
-			var tick = buf.ReadSingle();
-			var os = buf.ReadChar();
-			var dir = buf.ReadString();
-			var map = buf.ReadString();
-			var sky = buf.ReadString();
-			var host = buf.ReadString();
-			//var replay = buf.ReadBoolean();
+			PlayerSlot = buf.ReadByte();
+			MaxClients = buf.ReadByte();
+			TickInterval = buf.ReadSingle();
+			OperatingSystem = buf.ReadChar();
+			GameDir = buf.ReadString();
+			MapName = buf.ReadString();
+			MapName = buf.ReadString();
+			HostName = buf.ReadString();
+			//Replay = buf.ReadBoolean();
 
-			System.Diagnostics.Debug.WriteLine("protocol: " + protocol);
-			System.Diagnostics.Debug.WriteLine("host: " + host);
-			//System.Diagnostics.Debug.WriteLine("replay: " + replay);
+			System.Diagnostics.Debug.WriteLine("Protocol: " + Protocol);
+			System.Diagnostics.Debug.WriteLine("HostName: " + HostName);
+			//System.Diagnostics.Debug.WriteLine("Replay: " + Replay);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteInt16(Protocol);
+			bw.WriteInt32(ServerCount);
+			bw.WriteBoolean(IsHltv);
+			bw.WriteBoolean(IsDedicated);
+			bw.WriteInt32(ClientCrc);
+			bw.WriteUInt16(MaxClasses);
+			if (Protocol < 18)
+				bw.WriteInt32(MapCrc);
+			else
+				bw.WriteBits(MapCrc, 128);
+			bw.WriteByte(PlayerSlot);
+			bw.WriteByte(MaxClients);
+			//bw.WriteSingle(TickInterval);
+			//bw.WriteChar(OperatingSystem);
+			bw.WriteString(GameDir);
+			bw.WriteString(MapName);
+			bw.WriteString(MapName);
+			bw.WriteString(HostName);
+			//bw.WriteBoolean(Replay);
 			return Task.CompletedTask;
 		}
 	}

@@ -2,19 +2,25 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcGameEventMessage : INetMessage
+	public class SvcGameEventMessage : NetMessage
 	{
 		public int Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcGameEventMessage(NetMessageType type) : base(type)
 		{
-			var length = buf.ReadBits(11); // ?
-			var data = buf.ReadBytes(length);
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Length = buf.ReadBits(11); // ?
+			//Data = buf.ReadByte(Length);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteBits(Length, 11);
+			//bw.WriteBits(0, Length);
 			return Task.CompletedTask;
 		}
 	}

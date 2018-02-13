@@ -3,7 +3,7 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcBspDecalMessage : INetMessage
+	public class SvcBspDecalMessage : NetMessage
 	{
 		public Vector Position { get; set; }
 		public uint DecalTextureIndex { get; set; }
@@ -12,20 +12,30 @@ namespace SourceDemoParser.Messages.Net
 		public uint ModelIndex { get; set; }
 		public bool LowPriority { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcBspDecalMessage(NetMessageType type) : base(type)
 		{
-			var x = buf.ReadSingle();
-			var y = buf.ReadSingle();
-			var z = buf.ReadSingle();
-			var texture = buf.ReadUInt32();
-			var entities = buf.ReadBoolean();
-			var entity = buf.ReadUInt32();
-			var model = buf.ReadUInt32();
-			var priority = buf.ReadBoolean();
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Position = new Vector(buf.ReadSingle(), buf.ReadSingle(), buf.ReadSingle());
+			DecalTextureIndex = buf.ReadUInt32();
+			HasEntities = buf.ReadBoolean();
+			EntityIndex = buf.ReadUInt32();
+			ModelIndex = buf.ReadUInt32();
+			LowPriority = buf.ReadBoolean();
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			//bw.Single(Position.X);
+			//bw.Single(Position.Y);
+			//bw.Single(Position.Z);
+			bw.WriteUInt32(DecalTextureIndex);
+			bw.WriteBoolean(HasEntities);
+			bw.WriteUInt32(EntityIndex);
+			bw.WriteUInt32(ModelIndex);
+			bw.WriteBoolean(LowPriority);
 			return Task.CompletedTask;
 		}
 	}

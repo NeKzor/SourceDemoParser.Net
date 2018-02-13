@@ -31,24 +31,32 @@ public class ExampleFrame : IDemoFrame
 
 public class ExampleDemoMessage : DemoMessage
 {
-	public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-    {
-      var length = br.ReadInt32();
-      var data = br.ReadBytes(length);
-      return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
-    }
-    public override Task Export(BinaryWriter bw, SourceDemo demo)
-    {
-      bw.Write((Frame as ExampleFrame).RawData.Length);
-      bw.Write((Frame as ExampleFrame).RawData);
-      return Task.CompletedTask;
-    }
+  public ExampleDemoMessage(DemoMessageType type) : base(type)
+  {
+  }
+
+  public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
+  {
+    var length = br.ReadInt32();
+    var data = br.ReadBytes(length);
+    return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
+  }
+  public override Task Export(BinaryWriter bw, SourceDemo demo)
+  {
+    bw.Write((Frame as ExampleFrame).RawData.Length);
+    bw.Write((Frame as ExampleFrame).RawData);
+    return Task.CompletedTask;
+  }
 }
 
 public class Example : DemoMessageType
 {
+  public Example(int code) : base(code)
+  {
+  }
+
   public override IDemoMessage GetMessage()
-    => new ExampleDemoMessage();
+    => new ExampleDemoMessage(this);
 }
 
 public static class ExampleDemoMessages
@@ -62,7 +70,7 @@ public static class ExampleDemoMessages
     // Note: 0x07 is always "stop" for the parser
     ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
-    ExampleEngine.Add(new Example());
+    ExampleEngine.Add(new Example(0x0A));
   }
 }
 

@@ -2,17 +2,22 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcSetPauseMessage : INetMessage
+	public class SvcSetPauseMessage : NetMessage
 	{
 		public bool Paused { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcSetPauseMessage(NetMessageType type) : base(type)
 		{
-			var paused = buf.ReadBoolean();
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Paused = buf.ReadBoolean();
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteBoolean(Paused);
 			return Task.CompletedTask;
 		}
 	}

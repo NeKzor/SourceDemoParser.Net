@@ -19,27 +19,25 @@ namespace SourceDemoParser
 
 			foreach (var message in demo.Messages)
 			{
-				bw.Write((byte)message.Type);
+				bw.Write((byte)message.Type.MessageType);
 				bw.Write(message.Tick);
 
-				if (message.Type == 0x07)
+				if (message.Type.Name == "Stop")
 					break;
 				
 				if (demo.Game.HasAlignmentByte) bw.Write(0x00);
 				
+				await message.Export(bw, demo).ConfigureAwait(false);
+
 				if (message.Frame == null)
 					continue;
-				
+
 				if (Mode == ExportMode.FrameData)
 				{
 					var data = await message.Frame.Export().ConfigureAwait(false);
 					if (data != null) bw.Write(data);
 					continue;
 				}
-
-				await demo.Game.DefaultMessages[message.Type - 1]
-					.GetMessage()
-					.Export(bw, demo).ConfigureAwait(false);
 			}
 		}
 		public override Task ExportHeader(BinaryWriter bw, SourceDemo demo)

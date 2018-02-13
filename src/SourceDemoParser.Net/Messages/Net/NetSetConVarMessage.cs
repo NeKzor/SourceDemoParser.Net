@@ -3,14 +3,18 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetSetConVarMessage : INetMessage
+	public class NetSetConVarMessage : NetMessage
 	{
 		public List<ConVar> ConVars { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public NetSetConVarMessage(NetMessageType type) : base(type)
+		{
+			ConVars = new List<ConVar>();
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			var length = buf.ReadInt32();
-			ConVars = new List<ConVar>(length);
 			while (length-- != 0)
 			{
 				ConVars.Add(new ConVar()
@@ -21,8 +25,14 @@ namespace SourceDemoParser.Messages.Net
 			}
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteInt32(ConVars.Count);
+			foreach (var convar in ConVars)
+			{
+				bw.WriteString(convar.Name);
+				bw.WriteString(convar.Value);
+			}
 			return Task.CompletedTask;
 		}
 	}

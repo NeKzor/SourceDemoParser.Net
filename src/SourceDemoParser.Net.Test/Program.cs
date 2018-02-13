@@ -96,9 +96,9 @@ namespace SourceDemoParser.Test
 			Console.WriteLine($"Header only: {result3}ms ({(int)(result1 / result3)} times faster)");
 
 			/*	Random Result
-				Default: 30.8731ms
-				Everything: 63.1461ms (2 times slower)
-				Header only: 0.123ms (251 times faster)
+				Default: 33.0111ms
+				Everything: 82.6472ms (2 times slower)
+				Header only: 0.1249ms (264 times faster)
 			*/
 		}
 

@@ -2,11 +2,15 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetNopMessage : INetMessage
+	public class NetNopMessage : NetMessage
 	{
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public NetNopMessage(NetMessageType type) : base(type)
+		{
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 			=> Task.CompletedTask;
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 			=> Task.FromResult(default(byte[]));
 	}
 }

@@ -2,16 +2,20 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetDisconnectMessage : INetMessage
+	public class NetDisconnectMessage : NetMessage
 	{
 		public string Reason { get; set; }
+		
+		public NetDisconnectMessage(NetMessageType type) : base(type)
+		{
+		}
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Reason = buf.ReadString();
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
 			bw.WriteString(Reason);
 			return Task.CompletedTask;

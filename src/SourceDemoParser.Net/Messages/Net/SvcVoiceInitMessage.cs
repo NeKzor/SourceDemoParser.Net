@@ -2,23 +2,29 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcVoiceInitMessage : INetMessage
+	public class SvcVoiceInitMessage : NetMessage
 	{
 		public string VoiceCodec { get; set; }
 		public byte Quality { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcVoiceInitMessage(NetMessageType type) : base(type)
 		{
-			var codec = buf.ReadString(); // MAX_OSPATH
-			var quality = buf.ReadByte();
-			Debug.WriteLine("codec: " + codec);
-			Debug.WriteLine("quality: " + quality);
-			/* if (quality == (byte)255)
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			VoiceCodec = buf.ReadString(); // MAX_OSPATH
+			Quality = buf.ReadByte();
+			System.Diagnostics.Debug.WriteLine("VoiceCodec: " + VoiceCodec);
+			System.Diagnostics.Debug.WriteLine("Quality: " + Quality);
+			/* if (Quality == (byte)255)
 				_ = buf.ReadSingle(); */
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteString(VoiceCodec);
+			bw.WriteByte(Quality);
 			return Task.CompletedTask;
 		}
 	}

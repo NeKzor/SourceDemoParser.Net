@@ -2,13 +2,17 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetTickMessage : INetMessage
+	public class NetTickMessage : NetMessage
 	{
 		public int Tick { get; set; }
 		public short HostFrameTime { get; set; }
 		public short HostFrameTimeStdDeviation { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public NetTickMessage(NetMessageType type) : base(type)
+		{
+		}
+		
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Tick = buf.ReadInt32();
 			HostFrameTime = buf.ReadInt16();
@@ -16,7 +20,7 @@ namespace SourceDemoParser.Messages.Net
 			System.Diagnostics.Debug.WriteLine(Tick);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
 			bw.WriteInt32(Tick);
 			bw.WriteInt16(HostFrameTime);

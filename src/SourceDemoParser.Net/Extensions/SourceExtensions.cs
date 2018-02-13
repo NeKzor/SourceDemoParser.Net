@@ -16,9 +16,21 @@ namespace SourceDemoParser.Extensions
 
 		// Data
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
-			=> demo.Messages.Where(message => message.Type == type.MessageType).ToList();
+			=> demo.Messages
+				.Where(message => message.Type == type)
+				.ToList();
+		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, string typeName)
+			=> demo.Messages
+				.Where(message => message.Type.Name == typeName)
+				.ToList();
+		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, int typeCode)
+			=> demo.Messages
+				.Where(message => message.Type.MessageType == typeCode)
+				.ToList();
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
-			=> demo.Messages.Where(message => message.Tick == tick).ToList();
+			=> demo.Messages
+				.Where(message => message.Tick == tick)
+				.ToList();
 		public static Task ParseFrames(this SourceDemo demo)
 			=> Task.Run(() => demo.Messages
 				.ForEach(async (m) => await m.Frame.Parse(demo).ConfigureAwait(false)));
@@ -44,7 +56,7 @@ namespace SourceDemoParser.Extensions
 				throw new InvalidOperationException("Cannot adjust ticks without parsed messages.");
 
 			var flag = demo
-				.GetMessagesByType(new Types.ConsoleCmd())
+				.GetMessagesByType("ConsoleCmd")
 				.FirstOrDefault(m => (m.Frame as ConsoleCmdFrame).ConsoleCommand == saveFlag);
 			
 			if (flag != null)

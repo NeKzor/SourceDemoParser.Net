@@ -52,7 +52,7 @@ namespace SourceDemoParser
 			// 4 bytes
 			var OutSequence = buf.ReadInt32();
 
-			Console.WriteLine("Reading new net message...");
+			Debug.WriteLine("Reading new net message...");
 			buf = new BitBuffer(NetData);
 			while (buf.BitsLeft > 6)
 			{

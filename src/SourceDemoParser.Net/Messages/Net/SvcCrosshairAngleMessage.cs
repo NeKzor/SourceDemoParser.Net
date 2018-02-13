@@ -3,19 +3,24 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcCrosshairAngleMessage : INetMessage
+	public class SvcCrosshairAngleMessage : NetMessage
 	{
 		public QAngle Angle { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcCrosshairAngleMessage(NetMessageType type) : base(type)
 		{
-			var x = buf.ReadSingle();
-			var y = buf.ReadSingle();
-			var z = buf.ReadSingle();
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Angle = new QAngle(buf.ReadSingle(), buf.ReadSingle(), buf.ReadSingle());
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			//bw.Single(Angle.X);
+			//bw.Single(Angle.Y);
+			//bw.Single(Angle.Z);
 			return Task.CompletedTask;
 		}
 	}

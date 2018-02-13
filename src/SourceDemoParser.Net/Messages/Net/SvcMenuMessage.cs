@@ -2,21 +2,28 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcMenuMessage : INetMessage
+	public class SvcMenuMessage : NetMessage
 	{
-		public short Type { get; set; }
+		public short MenuType { get; set; }
 		public uint Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcMenuMessage(NetMessageType type) : base(type)
 		{
-			var type = buf.ReadInt16();
-			var length = buf.ReadUInt32();
-			var data = buf.ReadBytes((int)length);
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			MenuType = buf.ReadInt16();
+			Length = buf.ReadUInt32();
+			Data = buf.ReadBytes((int)Length);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteInt16(MenuType);
+			bw.WriteUInt32(Length);
+			bw.WriteBytes(Data);
 			return Task.CompletedTask;
 		}
 	}

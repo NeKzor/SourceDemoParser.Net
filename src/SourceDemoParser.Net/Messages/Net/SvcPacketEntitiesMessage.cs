@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcPacketEntitiesMessage : INetMessage
+	public class SvcPacketEntitiesMessage : NetMessage
 	{
 		public int MaxEntries { get; set; }
 		public bool IsDelta { get; set; }
@@ -13,21 +13,34 @@ namespace SourceDemoParser.Messages.Net
 		public bool UpdateBaseline { get; set; }
 		public byte[] Data { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcPacketEntitiesMessage(NetMessageType type) : base(type)
 		{
-			var max = buf.ReadBits(11); // ?
-			var delta = buf.ReadBoolean();
-			var from = (delta) ? buf.ReadInt32() : 0;
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			MaxEntries = buf.ReadBits(11); // ?
+			IsDelta = buf.ReadBoolean();
+			DeltaFrom = (IsDelta) ? buf.ReadInt32() : 0;
 			//var length = buf.ReadUInt32();
-			var baseline = buf.ReadBoolean();
-			var entries = buf.ReadBits(11); // ?
-			var length = buf.ReadBits(20);
-			var update = buf.ReadBoolean();
-			buf.SeekBits(length);
+			BaseLine = buf.ReadBoolean();
+			UpdatedEntries = buf.ReadBits(11); // ?
+			Length = buf.ReadBits(20);
+			UpdateBaseline = buf.ReadBoolean();
+			buf.SeekBits(Length);
+			//Data = buf.ReadByte(Length);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteBits(MaxEntries, 11);
+			bw.WriteBoolean(IsDelta);
+			if (IsDelta) bw.WriteInt32(DeltaFrom);
+			bw.WriteBoolean(BaseLine);
+			bw.WriteBits(UpdatedEntries, 11);
+			bw.WriteBits(Length, 20);
+			bw.WriteBoolean(UpdateBaseline);
+			bw.WriteBytes(Data);
 			return Task.CompletedTask;
 		}
 	}

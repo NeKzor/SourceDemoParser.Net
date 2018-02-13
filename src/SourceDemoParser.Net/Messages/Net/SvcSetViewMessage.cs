@@ -2,17 +2,22 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcSetViewMessage : INetMessage
+	public class SvcSetViewMessage : NetMessage
 	{
 		public int EntityIndex { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcSetViewMessage(NetMessageType type) : base(type)
 		{
-			var index = buf.ReadBits(11);
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			EntityIndex = buf.ReadBits(11);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteBits(EntityIndex, 11);
 			return Task.CompletedTask;
 		}
 	}

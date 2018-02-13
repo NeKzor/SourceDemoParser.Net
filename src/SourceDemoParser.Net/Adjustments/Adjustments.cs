@@ -88,8 +88,8 @@ namespace SourceDemoParser.Extensions
 
 			if (candidates.Count > 0)
 			{
-				var packets = demo.GetMessagesByType(new Types.Packet());
-				var cmds = demo.GetMessagesByType(new Types.ConsoleCmd());
+				var packets = demo.GetMessagesByType("Packet");
+				var cmds = demo.GetMessagesByType("ConsoleCmd");
 
 				var adjustments = new List<Adjustment>();
 				foreach (var candidate in candidates)

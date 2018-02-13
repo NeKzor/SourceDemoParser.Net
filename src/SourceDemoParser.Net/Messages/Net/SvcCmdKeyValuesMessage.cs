@@ -2,19 +2,25 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcCmdKeyValuesMessage : INetMessage
+	public class SvcCmdKeyValuesMessage : NetMessage
 	{
 		public uint Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public SvcCmdKeyValuesMessage(NetMessageType type) : base(type)
 		{
-			var length = buf.ReadUInt32();
-			var data = buf.ReadBytes((int)length);
+		}
+
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		{
+			Length = buf.ReadUInt32();
+			Data = buf.ReadBytes((int)Length);
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
+			bw.WriteUInt32(Length);
+			bw.WriteBytes(Data);
 			return Task.CompletedTask;
 		}
 	}

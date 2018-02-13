@@ -2,18 +2,22 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetSignonStateMessage : INetMessage
+	public class NetSignonStateMessage : NetMessage
 	{
 		public byte SignonState { get; set; }
 		public int SpawnCount { get; set; }
+		
+		public NetSignonStateMessage(NetMessageType type) : base(type)
+		{
+		}
 
-		public Task Parse(ISourceBufferUtil buf, SourceDemo demo)
+		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			SignonState = buf.ReadByte();
 			SpawnCount = buf.ReadInt32();
 			return Task.CompletedTask;
 		}
-		public Task Export(ISourceWriterUtil bw, SourceDemo demo)
+		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
 		{
 			bw.WriteByte(SignonState);
 			bw.WriteInt32(SpawnCount);
