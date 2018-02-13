@@ -37,24 +37,20 @@ namespace SourceDemoParser
 					var type = demo.Game.DefaultMessages.ElementAtOrDefault(code - 1);
 					if (type == null) throw new MessageTypeException(code, br.BaseStream.Position);
 
-					if (type.Name == "Stop")
+					var message = type.GetMessage();
+					if (message.Type.Name == "Stop")
 					{
-						demo.Messages.Add(new DemoMessage { Type = type.WithCode(code) });
+						demo.Messages.Add(message);
 						break;
 					}
 
-					var tick = br.ReadInt32();
+					message.Tick = br.ReadInt32();
 					if (demo.Game.HasAlignmentByte) br.ReadByte();
 
-					var message = new DemoMessage()
-					{
-						Type = type.WithCode(code),
-						CurrentTick = tick,
-						Frame = await type.Parser.Invoke(br, demo).ConfigureAwait(false)
-					};
-
+					await message.Parse(br, demo);
+					
 					if ((Mode == ParsingMode.Everything) && (message.Frame != null))
-						await message.Frame.ParseData(demo).ConfigureAwait(false);
+						await message.Frame.Parse(demo).ConfigureAwait(false);
 
 					demo.Messages.Add(message);
 				}

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-	public class CustomDataFrame : IFrame
+	public class CustomDataFrame : IDemoFrame
 	{
 		public int Unknown1 { get; set; }
 		public byte[] RawData { get; set; }
@@ -19,14 +19,14 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			Unknown2 = buf.ReadInt32();
 			Unknown3 = buf.ReadString();
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			Unknown1.ToBytes().AppendTo(ref data);

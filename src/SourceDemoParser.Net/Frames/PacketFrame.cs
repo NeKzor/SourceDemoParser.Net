@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser
 {
-	public class PacketFrame : IFrame
+	public class PacketFrame : IDemoFrame
 	{
 		public byte[] PacketData { get; set; }
 		public byte[] NetData { get; set; }
@@ -16,12 +17,12 @@ namespace SourceDemoParser
 		public int InSequence { get; set; }
 		public int OutSequence { get; set; }
 
-		public List<NetMessageData> NetMessages { get; set; }
+		public List<INetMessage> NetMessages { get; set; }
 
 		public PacketFrame()
 		{
 			Infos = new List<PacketInfo>();
-			NetMessages = new List<NetMessageData>();
+			NetMessages = new List<INetMessage>();
 		}
 		public PacketFrame(byte[] packetData, byte[] netData) : this()
 		{
@@ -29,7 +30,7 @@ namespace SourceDemoParser
 			NetData = netData;
 		}
 
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			var buf = new BitBuffer(PacketData);
 			for (int i = 0; i < ((PacketData.Length - 8) / 76); i++)
@@ -59,43 +60,29 @@ namespace SourceDemoParser
 				var type = demo.Game.DefaultNetMessages.ElementAtOrDefault(code);
 				if (type == null)
 				{
-					Console.WriteLine($"Unknown net message {code} at {buf.CurrentByte}.");
+					Debug.WriteLine($"Unknown net message {code} at {buf.CurrentByte}.");
 					break;
 					//throw new Exception($"Unknown net message {code} at {buf.CurrentByte}.");
 				}
 				
-				Console.WriteLine($"Handled {code} as {type.Name}.");
-
-				if (type.Parser == null)
-					continue;
+				Debug.WriteLine($"Handled {code} as {type.Name}.");
 
 				try
 				{
-					var message = type.Parser
-						.Invoke(buf, demo)
-						.ConfigureAwait(false)
-						.GetAwaiter()
-						.GetResult();
-					
-					if (message != null)
-					{
-						NetMessages.Add(new NetMessageData()
-						{
-							Type = type,
-							Message = message
-						});
-					}
+					var message = type.GetMessage();
+					_ = message.Parse(buf, demo).ConfigureAwait(false);
+					NetMessages.Add(message);
 				}
 				catch
 				{
-					Console.WriteLine("Parsing error.");
+					Debug.WriteLine("Parsing error.");
 					break;
 				}
 			}
 
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			foreach (var info in Infos)

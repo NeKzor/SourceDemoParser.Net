@@ -117,7 +117,7 @@ namespace SourceDemoParser.Test
 			var index = 0;
 			foreach (var msg in copy)
 			{
-				if (msg.CurrentTick > 0)
+				if (msg.Tick > 0)
 				{
 					if (msg.Frame is ConsoleCmdFrame ccf)
 					{

@@ -16,28 +16,18 @@ namespace SourceDemoParser.Extensions
 
 		// Data
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
-			=> demo.Messages.Where(message => message.Type.Name == type.Name).ToList();
-		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, string typeName)
-			=> demo.Messages.Where(message => message.Type.Name == typeName).ToList();
+			=> demo.Messages.Where(message => message.Type == type.MessageType).ToList();
 		public static IReadOnlyCollection<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
-			=> demo.Messages.Where(message => message.CurrentTick == tick).ToList();
-
-		public static IDemoMessage FindMessage(this SourceDemo demo, string command, string defaultName = "ConsoleCmd")
-			=> demo.GetMessagesByType(defaultName)
-				.FirstOrDefault(message => (message.Frame as ConsoleCmdFrame).ConsoleCommand == command);
-		public static IDemoMessage FindMessage(this SourceDemo demo, Vector position, string defaultName = "Packet")
-			=> demo.GetMessagesByType(defaultName)
-				.FirstOrDefault(message => Vector.Equals((message.Frame as PacketFrame).Infos[0].ViewOrigin, position));
-
+			=> demo.Messages.Where(message => message.Tick == tick).ToList();
 		public static Task ParseFrames(this SourceDemo demo)
 			=> Task.Run(() => demo.Messages
-				.ForEach(async (m) => await m.Frame.ParseData(demo).ConfigureAwait(false)));
+				.ForEach(async (m) => await m.Frame.Parse(demo).ConfigureAwait(false)));
 
 		// Adjustments
 		public static Task<SourceDemo> AdjustExact(this SourceDemo demo, int endTick = 0, int startTick = 0)
 		{
 			if (endTick < 1)
-				endTick = demo.Messages.Last(m => m.CurrentTick > 0).CurrentTick;
+				endTick = demo.Messages.Last(m => m.Tick > 0).Tick;
 
 			var delta = endTick - startTick;
 			if (delta < 0)
@@ -53,10 +43,13 @@ namespace SourceDemoParser.Extensions
 			if (demo.Messages.Count == 0)
 				throw new InvalidOperationException("Cannot adjust ticks without parsed messages.");
 
-			var flag = demo.FindMessage(saveFlag);
+			var flag = demo
+				.GetMessagesByType(new Types.ConsoleCmd())
+				.FirstOrDefault(m => (m.Frame as ConsoleCmdFrame).ConsoleCommand == saveFlag);
+			
 			if (flag != null)
 			{
-				await demo.AdjustExact(flag.CurrentTick).ConfigureAwait(false);
+				await demo.AdjustExact(flag.Tick).ConfigureAwait(false);
 				return demo;
 			}
 			return demo;

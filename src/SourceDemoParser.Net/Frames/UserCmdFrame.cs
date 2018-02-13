@@ -6,11 +6,11 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser
 {
-	public class UserCmdFrame : IFrame
+	public class UserCmdFrame : IDemoFrame
 	{
 		public byte[] RawData { get; set; }
 		public int CmdNumber { get; set; }
-		public UserCmd Cmd { get; set; }
+		public UserCmdInfo Cmd { get; set; }
 
 		public UserCmdFrame()
 		{
@@ -20,10 +20,10 @@ namespace SourceDemoParser
 			CmdNumber = cmd;
 			RawData = data;
 		}
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
-			Cmd = new UserCmd();
+			Cmd = new UserCmdInfo();
 			if (buf.ReadBoolean()) Cmd.CommandNumber = buf.ReadBits(32);
 			if (buf.ReadBoolean()) Cmd.TickCount = buf.ReadBits(32);
 			if (buf.ReadBoolean()) Cmd.ViewanglesX = buf.ReadSingle();
@@ -37,7 +37,7 @@ namespace SourceDemoParser
 			if (buf.ReadBoolean())
 			{
 				Cmd.WeaponSelect = buf.ReadBits(Const.MAX_EDICT_BITS);
-				if (buf.ReadBoolean()) Cmd.WeaponSubtype = buf.ReadBits(UserCmd.WEAPON_SUBTYPE_BITS);
+				if (buf.ReadBoolean()) Cmd.WeaponSubtype = buf.ReadBits(UserCmdInfo.WEAPON_SUBTYPE_BITS);
 			}
 			if (buf.ReadBoolean()) Cmd.MouseDx = buf.ReadInt16();
 			if (buf.ReadBoolean()) Cmd.MouseDy = buf.ReadInt16();
@@ -60,7 +60,7 @@ namespace SourceDemoParser
 #endif
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			CmdNumber.ToBytes().AppendTo(ref data);
@@ -132,7 +132,7 @@ namespace SourceDemoParser
 				if (Cmd.WeaponSubtype != null)
 				{
 					bw.WriteOneUBit(1);
-					bw.WriteBits((int)Cmd.WeaponSubtype, UserCmd.WEAPON_SUBTYPE_BITS);
+					bw.WriteBits((int)Cmd.WeaponSubtype, UserCmdInfo.WEAPON_SUBTYPE_BITS);
 				}
 				else bw.WriteOneUBit(0);
 			}

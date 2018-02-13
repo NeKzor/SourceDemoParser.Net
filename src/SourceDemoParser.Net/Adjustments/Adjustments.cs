@@ -88,8 +88,8 @@ namespace SourceDemoParser.Extensions
 
 			if (candidates.Count > 0)
 			{
-				var packets = demo.GetMessagesByType("Packet");
-				var cmds = demo.GetMessagesByType("ConsoleCmd");
+				var packets = demo.GetMessagesByType(new Types.Packet());
+				var cmds = demo.GetMessagesByType(new Types.ConsoleCmd());
 
 				var adjustments = new List<Adjustment>();
 				foreach (var candidate in candidates)
@@ -281,7 +281,7 @@ namespace SourceDemoParser.Extensions
 				}
 				catch (Exception e)
 				{
-					throw new Exception($"[{message.CurrentTick}] Exception occured when invoking method: " +
+					throw new Exception($"[{message.Tick}] Exception occured when invoking method: " +
 						$"{adjustment.Method.Name}.\n{e}");
 				}
 
@@ -291,7 +291,7 @@ namespace SourceDemoParser.Extensions
 				return new AdjustmentResult()
 				{
 					Found = true,
-					FoundTickAt = message.CurrentTick
+					FoundTickAt = message.Tick
 				};
 			}
 			return new AdjustmentResult();

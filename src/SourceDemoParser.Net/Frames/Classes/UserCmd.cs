@@ -5,7 +5,7 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser
 {
-	public class UserCmd
+	public class UserCmdInfo
 	{
 		public int? CommandNumber { get; set; }
 		public int? TickCount { get; set; }

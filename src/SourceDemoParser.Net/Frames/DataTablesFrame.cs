@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-	public class DataTablesFrame : IFrame
+	public class DataTablesFrame : IDemoFrame
 	{
 		public byte[] RawData { get; set; }
 		public List<SendTable> Tables { get; set; }
@@ -19,7 +19,7 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			while (buf.ReadBoolean())
@@ -79,7 +79,7 @@ namespace SourceDemoParser
 			}
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			// TODO

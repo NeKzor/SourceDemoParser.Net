@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-	public class ConsoleCmdFrame : IFrame
+	public class ConsoleCmdFrame : IDemoFrame
 	{
 		public byte[] RawData { get; set; }
 		public string ConsoleCommand { get; set; }
@@ -16,14 +16,14 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			ConsoleCommand = Encoding.ASCII
 				.GetString(RawData)
 				.TrimEnd(new char[1]);
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			$"{ConsoleCommand}\0".ToBytes().AppendTo(ref data);

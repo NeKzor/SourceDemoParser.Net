@@ -5,7 +5,7 @@ namespace SourceDemoParser
 {
 	internal static class InternalExtensions
 	{
-		internal static byte[] ToBytes(this byte[] data)
+		public static byte[] ToBytes(this byte[] data)
 		{
 			var bytes = new byte[4 + data.Length];
 			var length = data.Length.ToBytes();
@@ -16,24 +16,21 @@ namespace SourceDemoParser
 				bytes[i] = data[i - 4];
 			return bytes;
 		}
-
-		internal static byte[] ToBytes(this int data)
+		public static byte[] ToBytes(this int data)
 		{
 			var bytes = BitConverter.GetBytes(data);
 			if (!BitConverter.IsLittleEndian)
 				Array.Reverse(bytes);
 			return bytes;
 		}
-
-		internal static byte[] ToBytes(this float data)
+		public static byte[] ToBytes(this float data)
 		{
 			var bytes = BitConverter.GetBytes(data);
 			if (!BitConverter.IsLittleEndian)
 				Array.Reverse(bytes);
 			return bytes;
 		}
-
-		internal static byte[] ToBytes(this string data, bool withLength = true)
+		public static byte[] ToBytes(this string data, bool withLength = true)
 		{
 			if (withLength)
 			{
@@ -45,16 +42,14 @@ namespace SourceDemoParser
 			}
 			return Encoding.ASCII.GetBytes(data);
 		}
-
-		internal static void AppendTo(this byte[] source, ref byte[] destination)
+		public static void AppendTo(this byte[] source, ref byte[] destination)
 		{
 			var temp = destination;
 			destination = new byte[temp.Length + source.Length];
 			temp.CopyTo(destination, 0);
 			source.CopyTo(destination, temp.Length);
 		}
-
-		internal static byte[] Merge(params byte[][] sources)
+		public static byte[] Merge(params byte[][] sources)
 		{
 			var bytes = new byte[0];
 			foreach (var source in sources)
@@ -62,8 +57,7 @@ namespace SourceDemoParser
 
 			return bytes;
 		}
-
-		internal static byte[] ToBuffer(this byte[] data, int length)
+		public static byte[] ToBuffer(this byte[] data, int length)
 		{
 			var buffer = new byte[length];
 			for (int i = 0; i < data.Length; i++)

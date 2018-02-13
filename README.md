@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NeKzor/SourceDemoParser.Net.svg?branch=master)](https://travis-ci.org/NeKzor/SourceDemoParser.Net)
-[![Build Version](https://img.shields.io/badge/version-v1.0-yellow.svg)](https://github.com/NeKzor/SourceDemoParser.Net/projects/1)
-[![Release Status](https://img.shields.io/github/release/NeKzor/SourceDemoParser.Net/all.svg)](https://github.com/NeKzor/SourceDemoParser.Net/releases)
+[![Build Version](https://img.shields.io/badge/version-v1.0--beta-yellow.svg)](https://github.com/NeKzor/SourceDemoParser.Net/projects/1)
+[![Release Version](https://img.shields.io/github/release/NeKzor/SourceDemoParser.Net/all.svg)](https://github.com/NeKzor/SourceDemoParser.Net/releases)
 
 Parse any protocol version 4 Source Engine demo.
 
@@ -15,7 +15,13 @@ Parse any protocol version 4 Source Engine demo.
     - [ISourceDemo](#isourcedemo)
     - [Discover, Load & Adjust](#discover-load--adjust)
   - [Parse, Edit & Export](#parse-edit--export)
-  - [Custom Parser](#custom-parser)
+  - [Custom Engine](#custom-engine)
+    - [Structure](#structure)
+	- [Message Frame](#message-frame)
+	- [Demo Message](#demo-message)
+	- [Message Type](#message-type)
+	- [Configuration](#configuration)
+	- [Parser](#parser)
 - [Examples](#examples)
 
 ## Main Features
@@ -31,8 +37,12 @@ Parse any protocol version 4 Source Engine demo.
 | Namespace | Description |
 | --- | --- |
 | SourceDemoParser | SourceDemo, SourceParser etc. |
-| SourceDemoParser.Extensions | Adjustments, exporting etc. |
-| SourceDemoParser.Extensions.Demos | Supported, default adjustments. |
+| SourceDemoParser.Messages | Default demo messages. |
+| SourceDemoParser.Messages.Net | Default networking and server-client messages. |
+| SourceDemoParser.Types | Default demo message types. |
+| SourceDemoParser.Messages.Net | Default net messages types. |
+| SourceDemoParser.Extensions | Useful demo utilities and demo adjusting. |
+| SourceDemoParser.Extensions.Demos | Default demo adjustments. |
 
 ### Parsing
 ```cs
@@ -152,79 +162,94 @@ demo.PlaybackTime = 420;
 await exporter.ExportFileAsync("h4ck3r.dem");
 ```
 
-### Custom Parser
-```cs
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using SourceDemoParser;
+### Custom Engine
 
-// This contains the data after reading
-// the message tick or alignment byte
-public class CustomFrame : IFrame
+#### Structure
+
+| Name | Type | Description |
+| --- | --- | --- |
+| ExampleParser | SourceParser | New example parser. |
+| Example | DemoMessageType | The new message type which should be handled as 0x0A byte. |
+| ExampleMessage | DemoMessage | The actual message which handles parsing and exporting functionality. |
+| ExampleFrame | IDemoFrame | Message data. |
+| ExampleDemoMessages.ExampleEngine | List\<DemoMessageType\> | Default messages of the custom engine containing the new message type. |
+
+#### Message Frame
+```cs
+public class ExampleFrame : IDemoFrame
 {
   public byte[] RawData { get; set; }
 
-  public CustomFrame(byte[] data)
+  public ExampleFrame(byte[] data)
   {
     RawData = data;
   }
 
   // Will be called if parsing mode is
   // set to "Everything"
-  Task IFrame.ParseData(SourceDemo demo)
+  Task IDemoFrame.Parse(SourceDemo demo)
   {
     // Parse RawData into something readable
     return Task.CompletedTask;
   }
   // For exporting edited data
-  Task<byte[]> IFrame.ExportData()
+  Task<byte[]> IDemoFrame.Export()
   {
     // Reverse parsing logic here
     return Task.FromResult(RawData);
   }
 }
+```
 
-public class CustomMessageParsers
+#### Demo Message
+```cs
+public class ExampleDemoMessage : DemoMessage
 {
-  // This will be called after reading alignment byte or message tick
-  public static Task<IFrame> ParseCustomMessage(BinaryReader br, SourceDemo demo)
-  {
-    var length = br.ReadInt32();
-    var data = br.ReadBytes(length);
-    return Task.FromResult(new CustomFrame(data) as IFrame);
-  }
+	public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
+    {
+      var length = br.ReadInt32();
+      var data = br.ReadBytes(length);
+      return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
+    }
+    public override Task Export(BinaryWriter bw, SourceDemo demo)
+    {
+      bw.Write((Frame as ExampleFrame).RawData.Length);
+      bw.Write((Frame as ExampleFrame).RawData);
+      return Task.CompletedTask;
+    }
 }
+```
 
-public class CustomMessageExporters
+#### Message Type
+```cs
+public class Example : DemoMessageType
 {
-  public static Task ExportCustomMessage(BinaryWriter bw, IFrame frame)
-  {
-    bw.Write((frame as CustomFrame).RawData.Length);
-    bw.Write((frame as CustomFrame).RawData);
-    return Task.CompletedTask;
-  }
+  public override IDemoMessage GetMessage()
+    => new ExampleDemoMessage();
 }
+```
 
-public class CustomDemoMessages
+#### Configuration
+```cs
+public static class ExampleDemoMessages
 {
   // Demo message type will be handled by list index
   // Example: code = 0x03 => type = list[code - 1] = SyncTick
-  public static List<DemoMessageType> CustomEngine;
+  public static List<DemoMessageType> ExampleEngine;
 
-  static CustomDemoMessages()
+  static ExampleDemoMessages()
   {
-    CustomEngine = DemoMessages.Default;
+    // Note: 0x07 is always "stop" for the parser
+    ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
-    CustomEngine.Add(new DemoMessageType(
-      "MyMessage",
-      CustomMessageParsers.ParseCustomMessage,
-      CustomMessageExporters.ExportCustomMessage
-    ));
+    ExampleEngine.Add(new Example());
   }
 }
+```
 
-public class CustomParser : SourceParser
+#### Parser
+```cs
+public class ExampleParser : SourceParser
 {
   // Detect your custom demo here
   public override Task Configure(SourceDemo demo)
@@ -233,9 +258,9 @@ public class CustomParser : SourceParser
 
     switch (demo.GameDirectory)
     {
-      case "custom_mod":
+      case "example_mod":
         // Overwrite default game messages with yours
-        demo.Game.DefaultMessages = CustomDemoMessages.CustomEngine;
+        demo.Game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
         break;
     }
     return Task.CompletedTask;

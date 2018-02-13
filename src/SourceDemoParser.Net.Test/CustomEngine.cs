@@ -3,74 +3,70 @@ using System.IO;
 using System.Threading.Tasks;
 using SourceDemoParser;
 
-namespace ReadmeExample
+namespace CustomEngine
 {
-// This contains the data after reading
-// the message tick or alignment byte
-public class CustomFrame : IFrame
+public class ExampleFrame : IDemoFrame
 {
   public byte[] RawData { get; set; }
 
-  public CustomFrame(byte[] data)
+  public ExampleFrame(byte[] data)
   {
     RawData = data;
   }
 
   // Will be called if parsing mode is
   // set to "Everything"
-  Task IFrame.ParseData(SourceDemo demo)
+  Task IDemoFrame.Parse(SourceDemo demo)
   {
     // Parse RawData into something readable
     return Task.CompletedTask;
   }
   // For exporting edited data
-  Task<byte[]> IFrame.ExportData()
+  Task<byte[]> IDemoFrame.Export()
   {
     // Reverse parsing logic here
     return Task.FromResult(RawData);
   }
 }
 
-public class CustomMessageParsers
+public class ExampleDemoMessage : DemoMessage
 {
-  // This will be called after reading alignment byte or message tick
-  public static Task<IFrame> ParseCustomMessage(BinaryReader br, SourceDemo demo)
-  {
-    var length = br.ReadInt32();
-    var data = br.ReadBytes(length);
-    return Task.FromResult(new CustomFrame(data) as IFrame);
-  }
+	public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
+    {
+      var length = br.ReadInt32();
+      var data = br.ReadBytes(length);
+      return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
+    }
+    public override Task Export(BinaryWriter bw, SourceDemo demo)
+    {
+      bw.Write((Frame as ExampleFrame).RawData.Length);
+      bw.Write((Frame as ExampleFrame).RawData);
+      return Task.CompletedTask;
+    }
 }
 
-public class CustomMessageExporters
+public class Example : DemoMessageType
 {
-  public static Task ExportCustomMessage(BinaryWriter bw, IFrame frame)
-  {
-		bw.Write((frame as CustomFrame).RawData.Length);
-    bw.Write((frame as CustomFrame).RawData);
-    return Task.CompletedTask;
-  }
+  public override IDemoMessage GetMessage()
+    => new ExampleDemoMessage();
 }
 
-public class CustomDemoMessages
+public static class ExampleDemoMessages
 {
   // Demo message type will be handled by list index
   // Example: code = 0x03 => type = list[code - 1] = SyncTick
-  public static List<DemoMessageType> CustomEngine;
+  public static List<DemoMessageType> ExampleEngine;
 
-  static CustomDemoMessages()
+  static ExampleDemoMessages()
   {
-    CustomEngine = DemoMessages.Default;
+    // Note: 0x07 is always "stop" for the parser
+    ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
-    CustomEngine.Add(new DemoMessageType(
-      "MyMessage",
-      CustomMessageParsers.ParseCustomMessage,
-      CustomMessageExporters.ExportCustomMessage
-    ));
+    ExampleEngine.Add(new Example());
   }
 }
 
-public class CustomParser : SourceParser
+public class ExampleParser : SourceParser
 {
   // Detect your custom demo here
   public override Task Configure(SourceDemo demo)
@@ -79,9 +75,9 @@ public class CustomParser : SourceParser
 
     switch (demo.GameDirectory)
     {
-      case "custom_mod":
+      case "example_mod":
         // Overwrite default game messages with yours
-        demo.Game.DefaultMessages = CustomDemoMessages.CustomEngine;
+        demo.Game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
         break;
     }
     return Task.CompletedTask;

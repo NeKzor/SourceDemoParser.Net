@@ -6,7 +6,7 @@ using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser
 {
-	public class StringTablesFrame : IFrame
+	public class StringTablesFrame : IDemoFrame
 	{
 		public byte[] RawData { get; set; }
 		public List<StringTable> Tables { get; set; }
@@ -20,7 +20,7 @@ namespace SourceDemoParser
 			RawData = data;
 		}
 
-		Task IFrame.ParseData(SourceDemo demo)
+		Task IDemoFrame.Parse(SourceDemo demo)
 		{
 			var buf = new BitBuffer(RawData);
 			int tables = buf.ReadByte();
@@ -139,7 +139,7 @@ namespace SourceDemoParser
 			}
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IFrame.ExportData()
+		Task<byte[]> IDemoFrame.Export()
 		{
 			var data = new byte[0];
 			// TODO
