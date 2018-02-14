@@ -2,13 +2,10 @@ using SourceDemoParser.Messages.Net;
 
 namespace SourceDemoParser.Types.Net
 {
-	public class NetFile : NetMessageType
+	public class NetFile : NetMessageType<NetFileMessage>
 	{
 		public NetFile(int code) : base(code)
 		{
 		}
-
-		public override INetMessage GetMessage()
-			=> new NetFileMessage(this);
 	}
 }

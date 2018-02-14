@@ -7,10 +7,6 @@ namespace SourceDemoParser.Messages.Net
 		public string VoiceCodec { get; set; }
 		public byte Quality { get; set; }
 
-		public SvcVoiceInitMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			VoiceCodec = buf.ReadString(); // MAX_OSPATH

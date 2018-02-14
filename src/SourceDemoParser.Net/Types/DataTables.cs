@@ -2,13 +2,10 @@ using SourceDemoParser.Messages;
 
 namespace SourceDemoParser.Types
 {
-	public class DataTables : DemoMessageType
+	public class DataTables : DemoMessageType<DataTablesMessage>
 	{
 		public DataTables(int code) : base(code)
 		{
 		}
-
-		public override IDemoMessage GetMessage()
-			=> new DataTablesMessage(this);
 	}
 }

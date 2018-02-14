@@ -8,21 +8,13 @@ namespace SourceDemoParser
 {
 	public class UserCmdFrame : IDemoFrame
 	{
-		public byte[] RawData { get; set; }
-		public int CmdNumber { get; set; }
+		public byte[] Data { get; set; }
+
 		public UserCmdInfo Cmd { get; set; }
 
-		public UserCmdFrame()
-		{
-		}
-		public UserCmdFrame(int cmd, byte[] data)
-		{
-			CmdNumber = cmd;
-			RawData = data;
-		}
 		Task IDemoFrame.Parse(SourceDemo demo)
 		{
-			var buf = new BitBuffer(RawData);
+			var buf = new BitBuffer(Data);
 			Cmd = new UserCmdInfo();
 			if (buf.ReadBoolean()) Cmd.CommandNumber = buf.ReadBits(32);
 			if (buf.ReadBoolean()) Cmd.TickCount = buf.ReadBits(32);
@@ -60,10 +52,9 @@ namespace SourceDemoParser
 #endif
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IDemoFrame.Export()
+		Task<byte[]> IDemoFrame.Export(SourceDemo demo)
 		{
 			var data = new byte[0];
-			CmdNumber.ToBytes().AppendTo(ref data);
 			var bw = new BitWriter();
 			if (Cmd.CommandNumber != null)
 			{

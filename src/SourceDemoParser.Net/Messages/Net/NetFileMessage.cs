@@ -7,10 +7,6 @@ namespace SourceDemoParser.Messages.Net
 		public uint TransferId { get; set; }
 		public string FileName { get; set; }
 		public bool FileRequested { get; set; }
-		
-		public NetFileMessage(NetMessageType type) : base(type)
-		{
-		}
 
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{

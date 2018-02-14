@@ -2,13 +2,10 @@ using SourceDemoParser.Messages.Net;
 
 namespace SourceDemoParser.Types.Net
 {
-	public class SvcGameEvent : NetMessageType
+	public class SvcGameEvent : NetMessageType<SvcGameEventMessage>
 	{
 		public SvcGameEvent(int code) : base(code)
 		{
 		}
-
-		public override INetMessage GetMessage()
-			=> new SvcGameEventMessage(this);
 	}
 }

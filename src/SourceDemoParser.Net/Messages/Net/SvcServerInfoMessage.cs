@@ -21,10 +21,6 @@ namespace SourceDemoParser.Messages.Net
 		public string HostName { get; set; }
 		//public bool Replay { get; set; }
 
-		public SvcServerInfoMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Protocol = buf.ReadInt16();

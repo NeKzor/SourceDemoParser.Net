@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public bool Paused { get; set; }
 
-		public SvcSetPauseMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Paused = buf.ReadBoolean();

@@ -3,22 +3,17 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages
 {
-	public class StringTablesMessage : DemoMessage
+	public class StringTablesMessage : DemoMessage<StringTablesFrame>
 	{
-		public StringTablesMessage(DemoMessageType type) : base(type)
+		public override Task Parse(BinaryReader br, SourceDemo demo)
 		{
-		}
-
-		public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-		{
-			var length = br.ReadInt32();
-			var data = br.ReadBytes(length);
-			return Task.FromResult(Frame = new StringTablesFrame(data) as IDemoFrame);
+			Data = br.ReadBytes(br.ReadInt32());
+			return Task.CompletedTask;
 		}
 		public override Task Export(BinaryWriter bw, SourceDemo demo)
 		{
-			bw.Write((Frame as StringTablesFrame).RawData.Length);
-			bw.Write((Frame as StringTablesFrame).RawData);
+			bw.Write(Data.Length);
+			bw.Write(Data);
 			return Task.CompletedTask;
 		}
 	}

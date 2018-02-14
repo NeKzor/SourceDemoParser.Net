@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public int SoundIndex { get; set; }
 
-		public SvcPrefetchMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			SoundIndex = buf.ReadBits(13);

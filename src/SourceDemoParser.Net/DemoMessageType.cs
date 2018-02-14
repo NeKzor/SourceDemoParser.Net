@@ -16,4 +16,19 @@ namespace SourceDemoParser
 		public override string ToString()
 			=> Name;
 	}
+
+	public abstract class DemoMessageType<T> : DemoMessageType
+		where T : IDemoMessage, new()
+	{
+		public DemoMessageType(int code) : base(code)
+		{
+		}
+
+		public override IDemoMessage GetMessage()
+		{
+			var message = new T();
+			message.Type = this;
+			return message;
+		}
+	}
 }

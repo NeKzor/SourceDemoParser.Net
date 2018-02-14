@@ -12,10 +12,6 @@ namespace SourceDemoParser.Messages.Net
 		public uint ModelIndex { get; set; }
 		public bool LowPriority { get; set; }
 
-		public SvcBspDecalMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Position = new Vector(buf.ReadSingle(), buf.ReadSingle(), buf.ReadSingle());

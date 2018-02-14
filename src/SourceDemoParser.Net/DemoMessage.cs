@@ -3,21 +3,38 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser
 {
-	public class DemoMessage : IDemoMessage
+	public abstract class DemoMessage : IDemoMessage
 	{
-		public DemoMessageType Type { get; }
+		public byte[] Data
+		{
+			get => Frame.Data;
+			set => Frame.Data = value;
+		}
+
+		public DemoMessageType Type { get; set; }
 		public int Tick { get; set; }
 		public IDemoFrame Frame { get; set; }
-
+		
+		public DemoMessage()
+		{
+		}
 		public DemoMessage(DemoMessageType type)
-			=> Type = type;
+		{
+			Type = type;
+		}
 
-		public virtual Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-			=> Task.FromResult(default(IDemoFrame));
-		public virtual Task Export(BinaryWriter bw, SourceDemo demo)
-			=> Task.CompletedTask;
+		public abstract Task Parse(BinaryReader br, SourceDemo demo);
+		public abstract Task Export(BinaryWriter bw, SourceDemo demo);
 
 		public override string ToString()
 			=> $"[{Tick}] 0x{Type.MessageType.ToString("X")} as {Type}";
+	}
+	public abstract class DemoMessage<T> : DemoMessage
+		where T : IDemoFrame, new()
+	{	
+		public DemoMessage()
+		{
+			Frame = new T();
+		}
 	}
 }

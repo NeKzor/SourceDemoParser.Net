@@ -7,7 +7,7 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public List<ConVar> ConVars { get; set; }
 
-		public NetSetConVarMessage(NetMessageType type) : base(type)
+		public NetSetConVarMessage()
 		{
 			ConVars = new List<ConVar>();
 		}

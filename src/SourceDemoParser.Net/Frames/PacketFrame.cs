@@ -10,8 +10,7 @@ namespace SourceDemoParser
 {
 	public class PacketFrame : IDemoFrame
 	{
-		public byte[] PacketData { get; set; }
-		public byte[] NetData { get; set; }
+		public byte[] Data { get; set; }
 
 		public List<PacketInfo> Infos { get; set; }
 		public int InSequence { get; set; }
@@ -24,16 +23,11 @@ namespace SourceDemoParser
 			Infos = new List<PacketInfo>();
 			NetMessages = new List<INetMessage>();
 		}
-		public PacketFrame(byte[] packetData, byte[] netData) : this()
-		{
-			PacketData = packetData;
-			NetData = netData;
-		}
 
 		Task IDemoFrame.Parse(SourceDemo demo)
 		{
-			var buf = new BitBuffer(PacketData);
-			for (int i = 0; i < ((PacketData.Length - 8) / 76); i++)
+			var buf = new BitBuffer(Data);
+			for (int i = 0; i < ((Data.Length - 8) / 76); i++)
 			{
 				// 76 bytes
 				Infos.Add(new PacketInfo
@@ -53,7 +47,6 @@ namespace SourceDemoParser
 			var OutSequence = buf.ReadInt32();
 
 			Debug.WriteLine("Reading new net message...");
-			buf = new BitBuffer(NetData);
 			while (buf.BitsLeft > 6)
 			{
 				var code = buf.ReadBits(6);
@@ -82,7 +75,7 @@ namespace SourceDemoParser
 
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IDemoFrame.Export()
+		Task<byte[]> IDemoFrame.Export(SourceDemo demo)
 		{
 			var data = new byte[0];
 			foreach (var info in Infos)
@@ -97,7 +90,6 @@ namespace SourceDemoParser
 			}
 			InSequence.ToBytes().AppendTo(ref data);
 			OutSequence.ToBytes().AppendTo(ref data);
-			NetData.ToBytes().AppendTo(ref data);
 			return Task.FromResult(data);
 		}
 	}

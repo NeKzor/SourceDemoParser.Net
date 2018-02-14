@@ -4,10 +4,6 @@ namespace SourceDemoParser.Messages.Net
 {
 	public class NetNopMessage : NetMessage
 	{
-		public NetNopMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 			=> Task.CompletedTask;
 		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)

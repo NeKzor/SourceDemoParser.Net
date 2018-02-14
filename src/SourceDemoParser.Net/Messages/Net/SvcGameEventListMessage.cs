@@ -8,10 +8,6 @@ namespace SourceDemoParser.Messages.Net
 		public int Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcGameEventListMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Events = buf.ReadBits(9); // ?

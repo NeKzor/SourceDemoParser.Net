@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public string Command { get; set; }
 		
-		public NetStringCmdMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Command = buf.ReadString(256); // 256 MAX_COMMAND_LEN

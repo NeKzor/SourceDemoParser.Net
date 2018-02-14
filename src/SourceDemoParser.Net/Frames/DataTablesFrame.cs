@@ -5,7 +5,8 @@ namespace SourceDemoParser
 {
 	public class DataTablesFrame : IDemoFrame
 	{
-		public byte[] RawData { get; set; }
+		public byte[] Data { get; set; }
+
 		public List<SendTable> Tables { get; set; }
 		public List<ServerClassInfo> Classes { get; set; }
 
@@ -14,14 +15,10 @@ namespace SourceDemoParser
 			Tables = new List<SendTable>();
 			Classes = new List<ServerClassInfo>();
 		}
-		public DataTablesFrame(byte[] data) : this()
-		{
-			RawData = data;
-		}
-
+		
 		Task IDemoFrame.Parse(SourceDemo demo)
 		{
-			var buf = new BitBuffer(RawData);
+			var buf = new BitBuffer(Data);
 			while (buf.ReadBoolean())
 			{
 				bool needsdecoder = buf.ReadBoolean();
@@ -79,7 +76,7 @@ namespace SourceDemoParser
 			}
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IDemoFrame.Export()
+		Task<byte[]> IDemoFrame.Export(SourceDemo demo)
 		{
 			var data = new byte[0];
 			// TODO

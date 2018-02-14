@@ -7,10 +7,6 @@ namespace SourceDemoParser.Messages.Net
 		public int Cookie { get; set; }
 		public string CvarName { get; set; }
 
-		public SvcGetCvarValueMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Cookie = buf.ReadInt32();

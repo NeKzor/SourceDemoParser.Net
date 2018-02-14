@@ -1,26 +1,24 @@
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages
 {
-	public class PacketMessage : DemoMessage
+	public class PacketMessage : DemoMessage<PacketFrame>
 	{
-		public PacketMessage(DemoMessageType type) : base(type)
+		public override Task Parse(BinaryReader br, SourceDemo demo)
 		{
-		}
-
-		public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-		{
-			var info = br.ReadBytes(((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8);
-			var length = br.ReadInt32();
-			var net = br.ReadBytes(length);
-			return Task.FromResult(Frame = new PacketFrame(info, net) as IDemoFrame);
+			var temp = br.ReadBytes(((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8);
+			br.ReadBytes(br.ReadInt32()).AppendTo(ref temp);
+			Data = temp;
+			return Task.CompletedTask;
 		}
 		public override Task Export(BinaryWriter bw, SourceDemo demo)
 		{
-			bw.Write((Frame as PacketFrame).PacketData);
-			bw.Write((Frame as PacketFrame).NetData.Length);
-			bw.Write((Frame as PacketFrame).NetData);
+			var length = ((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8;
+			bw.Write(Data.Take(length).ToArray());
+			bw.Write(Data.Length - length);
+			bw.Write(Data.Skip(length).ToArray());
 			return Task.CompletedTask;
 		}
 	}

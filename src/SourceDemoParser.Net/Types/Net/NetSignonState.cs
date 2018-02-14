@@ -2,13 +2,10 @@ using SourceDemoParser.Messages.Net;
 
 namespace SourceDemoParser.Types.Net
 {
-	public class NetSignonState : NetMessageType
+	public class NetSignonState : NetMessageType<NetSignonStateMessage>
 	{
 		public NetSignonState(int code) : base(code)
 		{
 		}
-
-		public override INetMessage GetMessage()
-			=> new NetSignonStateMessage(this);
 	}
 }

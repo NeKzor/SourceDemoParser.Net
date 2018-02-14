@@ -7,10 +7,6 @@ namespace SourceDemoParser.Messages.Net
 		public int Tick { get; set; }
 		public short HostFrameTime { get; set; }
 		public short HostFrameTimeStdDeviation { get; set; }
-
-		public NetTickMessage(NetMessageType type) : base(type)
-		{
-		}
 		
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{

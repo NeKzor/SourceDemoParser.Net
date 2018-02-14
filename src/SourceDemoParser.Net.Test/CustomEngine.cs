@@ -7,56 +7,43 @@ namespace CustomEngine
 {
 public class ExampleFrame : IDemoFrame
 {
-  public byte[] RawData { get; set; }
-
-  public ExampleFrame(byte[] data)
-  {
-    RawData = data;
-  }
+  public byte[] Data { get; set; }
 
   // Will be called if parsing mode is
   // set to "Everything"
   Task IDemoFrame.Parse(SourceDemo demo)
   {
-    // Parse RawData into something readable
+    // Parse Data into something readable
     return Task.CompletedTask;
   }
   // For exporting edited data
-  Task<byte[]> IDemoFrame.Export()
+  Task<byte[]> IDemoFrame.Export(SourceDemo demo)
   {
     // Reverse parsing logic here
-    return Task.FromResult(RawData);
+    return Task.FromResult(Data);
   }
 }
 
 public class ExampleDemoMessage : DemoMessage
 {
-  public ExampleDemoMessage(DemoMessageType type) : base(type)
+  public override Task Parse(BinaryReader br, SourceDemo demo)
   {
-  }
-
-  public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-  {
-    var length = br.ReadInt32();
-    var data = br.ReadBytes(length);
-    return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
+    Data = br.ReadBytes(br.ReadInt32());
+    return Task.CompletedTask;
   }
   public override Task Export(BinaryWriter bw, SourceDemo demo)
   {
-    bw.Write((Frame as ExampleFrame).RawData.Length);
-    bw.Write((Frame as ExampleFrame).RawData);
+    bw.Write(Data.Length);
+    bw.Write(Data);
     return Task.CompletedTask;
   }
 }
 
-public class Example : DemoMessageType
+public class Example : DemoMessageType<ExampleDemoMessage>
 {
   public Example(int code) : base(code)
   {
   }
-
-  public override IDemoMessage GetMessage()
-    => new ExampleDemoMessage(this);
 }
 
 public static class ExampleDemoMessages

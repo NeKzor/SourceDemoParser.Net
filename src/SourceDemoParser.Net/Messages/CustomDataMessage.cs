@@ -3,24 +3,21 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages
 {
-	public class CustomDataMessage : DemoMessage
+	public class CustomDataMessage : DemoMessage<CustomDataFrame>
 	{
-		public CustomDataMessage(DemoMessageType type) : base(type)
-		{
-		}
+		public int Unknown { get; set; }
 
-		public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
+		public override Task Parse(BinaryReader br, SourceDemo demo)
 		{
-			var idk = br.ReadInt32();
-			var length = br.ReadInt32();
-			var data = br.ReadBytes(length);
-			return Task.FromResult(Frame = new CustomDataFrame(idk, data) as IDemoFrame);
+			Unknown = br.ReadInt32();
+			Data= br.ReadBytes(br.ReadInt32());
+			return Task.CompletedTask;
 		}
 		public override Task Export(BinaryWriter bw, SourceDemo demo)
 		{
-			bw.Write((Frame as CustomDataFrame).Unknown1);
-			bw.Write((Frame as CustomDataFrame).RawData.Length);
-			bw.Write((Frame as CustomDataFrame).RawData);
+			bw.Write(Unknown);
+			bw.Write(Data.Length);
+			bw.Write(Data);
 			return Task.CompletedTask;
 		}
 	}

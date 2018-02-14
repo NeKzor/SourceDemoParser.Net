@@ -14,10 +14,6 @@ namespace SourceDemoParser.Messages.Net
 		public bool Compressed { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcCreateStringTableMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			TableName = buf.ReadString(); // 256

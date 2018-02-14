@@ -9,10 +9,6 @@ namespace SourceDemoParser.Messages.Net
 		public ushort Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcVoiceDataMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			FromClient = buf.ReadByte();

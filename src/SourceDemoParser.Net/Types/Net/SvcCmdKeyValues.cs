@@ -2,13 +2,10 @@ using SourceDemoParser.Messages.Net;
 
 namespace SourceDemoParser.Types.Net
 {
-	public class SvcCmdKeyValues : NetMessageType
+	public class SvcCmdKeyValues : NetMessageType<SvcCmdKeyValuesMessage>
 	{
 		public SvcCmdKeyValues(int code) : base(code)
 		{
 		}
-
-		public override INetMessage GetMessage()
-			=> new SvcCmdKeyValuesMessage(this);
 	}
 }

@@ -8,21 +8,18 @@ namespace SourceDemoParser
 {
 	public class StringTablesFrame : IDemoFrame
 	{
-		public byte[] RawData { get; set; }
+		public byte[] Data { get; set; }
+
 		public List<StringTable> Tables { get; set; }
 
 		public StringTablesFrame()
 		{
 			Tables = new List<StringTable>();
 		}
-		public StringTablesFrame(byte[] data) : this()
-		{
-			RawData = data;
-		}
 
 		Task IDemoFrame.Parse(SourceDemo demo)
 		{
-			var buf = new BitBuffer(RawData);
+			var buf = new BitBuffer(Data);
 			int tables = buf.ReadByte();
 			for (int i = 0; i < tables; i++)
 			{
@@ -122,16 +119,16 @@ namespace SourceDemoParser
 					for (var j = 0; j < centries; j++)
 					{
 						var centry = buf.ReadString();
-						var data = default(byte[]);
+						var ddata = default(byte[]);
 						if (buf.ReadBoolean())
 						{
 							var length = buf.ReadInt16();
-							data = buf.ReadBytes(length);
+							ddata = buf.ReadBytes(length);
 						}
 						table.AddClientEntry(new ClientEntry()
 						{
 							Name = centry,
-							RawData = data
+							RawData = ddata
 						});
 					}
 				}
@@ -139,7 +136,7 @@ namespace SourceDemoParser
 			}
 			return Task.CompletedTask;
 		}
-		Task<byte[]> IDemoFrame.Export()
+		Task<byte[]> IDemoFrame.Export(SourceDemo demo)
 		{
 			var data = new byte[0];
 			// TODO

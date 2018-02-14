@@ -2,13 +2,10 @@ using SourceDemoParser.Messages.Net;
 
 namespace SourceDemoParser.Types.Net
 {
-	public class SvcSplitScreen : NetMessageType
+	public class SvcSplitScreen : NetMessageType<SvcSplitScreenMessage>
 	{
 		public SvcSplitScreen(int code) : base(code)
 		{
 		}
-
-		public override INetMessage GetMessage()
-			=> new SvcSplitScreenMessage(this);
 	}
 }

@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public int EntityIndex { get; set; }
 
-		public SvcSetViewMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			EntityIndex = buf.ReadBits(11);

@@ -9,10 +9,6 @@ namespace SourceDemoParser.Messages.Net
 		public int Sounds { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcSoundsMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			ReliableSound = buf.ReadBoolean();

@@ -8,10 +8,6 @@ namespace SourceDemoParser.Messages.Net
 		public int Length { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcTempEntitiesMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Entries = buf.ReadBits(8);

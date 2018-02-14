@@ -178,25 +178,20 @@ await exporter.ExportFileAsync("h4ck3r.dem");
 ```cs
 public class ExampleFrame : IDemoFrame
 {
-  public byte[] RawData { get; set; }
-
-  public ExampleFrame(byte[] data)
-  {
-    RawData = data;
-  }
+  public byte[] Data { get; set; }
 
   // Will be called if parsing mode is
   // set to "Everything"
   Task IDemoFrame.Parse(SourceDemo demo)
   {
-    // Parse RawData into something readable
+    // Parse Data into something readable
     return Task.CompletedTask;
   }
   // For exporting edited data
-  Task<byte[]> IDemoFrame.Export()
+  Task<byte[]> IDemoFrame.Export(SourceDemo demo)
   {
     // Reverse parsing logic here
-    return Task.FromResult(RawData);
+    return Task.FromResult(Data);
   }
 }
 ```
@@ -205,27 +200,27 @@ public class ExampleFrame : IDemoFrame
 ```cs
 public class ExampleDemoMessage : DemoMessage
 {
-	public override Task<IDemoFrame> Parse(BinaryReader br, SourceDemo demo)
-    {
-      var length = br.ReadInt32();
-      var data = br.ReadBytes(length);
-      return Task.FromResult(Frame = new ExampleFrame(data) as IDemoFrame);
-    }
-    public override Task Export(BinaryWriter bw, SourceDemo demo)
-    {
-      bw.Write((Frame as ExampleFrame).RawData.Length);
-      bw.Write((Frame as ExampleFrame).RawData);
-      return Task.CompletedTask;
-    }
+  public override Task Parse(BinaryReader br, SourceDemo demo)
+  {
+    Data = br.ReadBytes(br.ReadInt32());
+    return Task.CompletedTask;
+  }
+  public override Task Export(BinaryWriter bw, SourceDemo demo)
+  {
+    bw.Write(Data.Length);
+    bw.Write(Data);
+    return Task.CompletedTask;
+  }
 }
 ```
 
 #### Message Type
 ```cs
-public class Example : DemoMessageType
+public class Example : DemoMessageType<ExampleDemoMessage>
 {
-  public override IDemoMessage GetMessage()
-    => new ExampleDemoMessage();
+  public Example(int code) : base(code)
+  {
+  }
 }
 ```
 
@@ -242,7 +237,7 @@ public static class ExampleDemoMessages
     // Note: 0x07 is always "stop" for the parser
     ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
-    ExampleEngine.Add(new Example());
+    ExampleEngine.Add(new Example(0x0A));
   }
 }
 ```

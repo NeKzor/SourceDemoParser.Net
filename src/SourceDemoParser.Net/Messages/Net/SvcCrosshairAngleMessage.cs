@@ -6,11 +6,7 @@ namespace SourceDemoParser.Messages.Net
 	public class SvcCrosshairAngleMessage : NetMessage
 	{
 		public QAngle Angle { get; set; }
-
-		public SvcCrosshairAngleMessage(NetMessageType type) : base(type)
-		{
-		}
-
+		
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Angle = new QAngle(buf.ReadSingle(), buf.ReadSingle(), buf.ReadSingle());

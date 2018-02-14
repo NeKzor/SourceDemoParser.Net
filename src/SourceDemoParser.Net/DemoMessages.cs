@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SourceDemoParser.Messages;
 using SourceDemoParser.Types;
 using DemoMessageTypes = System.Collections.Generic.List<SourceDemoParser.DemoMessageType>;
 

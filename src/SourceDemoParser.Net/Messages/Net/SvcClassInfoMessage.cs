@@ -8,7 +8,7 @@ namespace SourceDemoParser.Messages.Net
 		public bool CreateOnClient { get; set; }
 		public List<ServerClassInfo> ServerClasses { get; set; }
 
-		public SvcClassInfoMessage(NetMessageType type) : base(type)
+		public SvcClassInfoMessage()
 		{
 			ServerClasses = new List<ServerClassInfo>();
 		}

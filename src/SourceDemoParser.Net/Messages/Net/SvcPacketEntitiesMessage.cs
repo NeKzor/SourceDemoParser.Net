@@ -13,10 +13,6 @@ namespace SourceDemoParser.Messages.Net
 		public bool UpdateBaseline { get; set; }
 		public byte[] Data { get; set; }
 
-		public SvcPacketEntitiesMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			MaxEntries = buf.ReadBits(11); // ?

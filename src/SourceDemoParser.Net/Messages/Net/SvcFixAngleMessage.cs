@@ -8,10 +8,6 @@ namespace SourceDemoParser.Messages.Net
 		public bool Relative { get; set; }
 		public QAngle Angle { get; set; }
 
-		public SvcFixAngleMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Relative = buf.ReadBoolean();

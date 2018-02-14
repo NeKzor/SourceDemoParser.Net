@@ -5,8 +5,9 @@ namespace SourceDemoParser.Messages
 {
 	public class SyncTickMessage : DemoMessage
 	{
-		public SyncTickMessage(DemoMessageType type) : base(type)
-		{
-		}
+		public override Task Parse(BinaryReader br, SourceDemo demo)
+			=> Task.CompletedTask;
+		public override Task Export(BinaryWriter bw, SourceDemo demo)
+			=> Task.CompletedTask;
 	}
 }

@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public byte SignonState { get; set; }
 		public int SpawnCount { get; set; }
-		
-		public NetSignonStateMessage(NetMessageType type) : base(type)
-		{
-		}
 
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{

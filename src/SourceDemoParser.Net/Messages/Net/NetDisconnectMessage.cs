@@ -6,10 +6,6 @@ namespace SourceDemoParser.Messages.Net
 	{
 		public string Reason { get; set; }
 		
-		public NetDisconnectMessage(NetMessageType type) : base(type)
-		{
-		}
-
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{
 			Reason = buf.ReadString();
