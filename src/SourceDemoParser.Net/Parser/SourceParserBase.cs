@@ -9,17 +9,19 @@ namespace SourceDemoParser
 	{
 		public ParsingMode Mode { get; set; }
 		public AdjustmentType AutoAdjustment { get; set; }
-		public bool AutoConfiguration { get; set; }
+		public Func<SourceDemo, SourceGame> ConfigBuilder { get; set; }
 
-		protected SourceParserBase(ParsingMode mode, AdjustmentType autoAdjustment, bool autoConfiguration)
+		protected SourceParserBase(
+			ParsingMode mode,
+			AdjustmentType autoAdjustment,
+			Func<SourceDemo, SourceGame> configBuilder)
 		{
 			Mode = mode;
 			AutoAdjustment = autoAdjustment;
-			AutoConfiguration = autoConfiguration;
+			ConfigBuilder = configBuilder ?? SourceGameBuilder.Default;
 		}
 
 		public abstract Task<SourceDemo> ParseAsync(Stream input);
 		public abstract Task<SourceDemo> ParseHeader(BinaryReader br, SourceDemo demo);
-		public abstract Task Configure(SourceDemo demo);
 	}
 }

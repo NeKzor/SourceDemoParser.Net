@@ -66,8 +66,9 @@ namespace SourceDemoParser
 
 		public uint ReadUBits(int count)
 		{
-			return (Endian == EndianType.Little) ? ReadUBitsLittleEndian(count)
-												 : ReadUBitsBigEndian(count);
+			return (Endian == EndianType.Little)
+				? ReadUBitsLittleEndian(count)
+				: ReadUBitsBigEndian(count);
 		}
 		public int ReadBits(int count)
 		{
@@ -89,7 +90,10 @@ namespace SourceDemoParser
 			if (_currentBit + 1 > _data.Count * 8)
 				throw new InvalidOperationException();
 
-			var result = (_data[_currentBit / 8] & (Endian == EndianType.Little ? 1 << _currentBit % 8 : 128 >> _currentBit % 8)) != 0;
+			var result = (_data[_currentBit / 8]
+				& ((Endian == EndianType.Little)
+					? 1 << _currentBit % 8
+					: 128 >> _currentBit % 8)) != 0;
 			_currentBit++;
 			return result;
 		}
@@ -160,8 +164,9 @@ namespace SourceDemoParser
 				str.Add(val);
 				length--;
 			}
-			return (encodeToAscii) ? Encoding.ASCII.GetString(str.ToArray())
-								   : Encoding.UTF8.GetString(str.ToArray());
+			return (encodeToAscii)
+				? Encoding.ASCII.GetString(str.ToArray())
+				: Encoding.UTF8.GetString(str.ToArray());
 		}
 		public string ReadString(bool encodeToAscii = true)
 		{
@@ -172,8 +177,9 @@ namespace SourceDemoParser
 				if (val == 0x00) break;
 				str.Add(val);
 			}
-			return (encodeToAscii) ? Encoding.ASCII.GetString(str.ToArray())
-								   : Encoding.UTF8.GetString(str.ToArray());
+			return (encodeToAscii)
+				? Encoding.ASCII.GetString(str.ToArray())
+				: Encoding.UTF8.GetString(str.ToArray());
 		}
 
 		private uint ReadUBitsBigEndian(int count)

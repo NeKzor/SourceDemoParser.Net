@@ -24,9 +24,6 @@ namespace SourceDemoParser
 		public List<IDemoMessage> Messages { get; set; }
 
 		// Configuration
-		public SourceGame Game { get; private set; }
-
-		public SourceDemo()
-			=> Game = new SourceGame();
+		public SourceGame Game { get; set; }
 	}
 }

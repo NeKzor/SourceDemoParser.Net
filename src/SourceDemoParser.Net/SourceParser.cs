@@ -13,8 +13,8 @@ namespace SourceDemoParser
 		public SourceParser(
 			ParsingMode mode = default,
 			AdjustmentType autoAdjustment = default,
-			bool autoConfiguration = true)
-			: base(mode, autoAdjustment, autoConfiguration)
+			Func<SourceDemo, SourceGame> configBuilder = default)
+			: base(mode, autoAdjustment, configBuilder)
 		{
 		}
 
@@ -25,8 +25,8 @@ namespace SourceDemoParser
 			{
 				demo = await ParseHeader(br, new SourceDemo()).ConfigureAwait(false);
 				
-				if (AutoConfiguration)
-					await Configure(demo).ConfigureAwait(false);
+				if (ConfigBuilder != null)
+					await Task.Run(() => demo.Game = ConfigBuilder.Invoke(demo)).ConfigureAwait(false);
 				
 				if (Mode == ParsingMode.HeaderOnly)
 					return demo;
@@ -85,32 +85,6 @@ namespace SourceDemoParser
 			demo.Messages = new List<IDemoMessage>();
 
 			return Task.FromResult(demo);
-		}
-		public override Task Configure(SourceDemo demo)
-		{
-			switch (demo.Protocol)
-			{
-				case 2:
-				case 3:
-					demo.Game.HasAlignmentByte = false;
-					demo.Game.DefaultMessages = DemoMessages.OldEngine;
-					break;
-				case 4:
-					break;
-				default:
-					throw new ProtocolException(demo.Protocol);
-			}
-			switch (demo.GameDirectory)
-			{
-				case "portal2":
-				case "aperturetag":
-				case "portal_stories":
-				case "infra":
-					demo.Game.MaxSplitscreenClients = 2;
-					demo.Game.DefaultNetMessages = NetMessages.Portal2;
-					break;
-			}
-			return Task.CompletedTask;
 		}
 
 		public async Task<SourceDemo> ParseFileAsync(string filePath)

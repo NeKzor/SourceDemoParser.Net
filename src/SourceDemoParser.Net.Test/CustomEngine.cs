@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -62,21 +63,37 @@ public static class ExampleDemoMessages
   }
 }
 
-public class ExampleParser : SourceParser
+public class ExampleGameBuilder : SourceGameBuilder
 {
-  // Detect your custom demo here
-  public override Task Configure(SourceDemo demo)
+  public new static readonly Func<SourceDemo, SourceGame> Default = (demo)
+    => new ExampleGameBuilder().Build(demo);
+
+  public override SourceGame Build(SourceDemo demo)
   {
-    _ = base.Configure(demo);
+    // Handle default games
+	// Note: Might throw ProtocolException
+    _ = base.Build(demo);
 
     switch (demo.GameDirectory)
     {
       case "example_mod":
-        // Overwrite default game messages with yours
-        demo.Game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
+        // Overwrite default game messages
+        _game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
         break;
     }
-    return Task.CompletedTask;
+	return _game;
+  }
+}
+
+public class ExampleParser : SourceParser
+{
+  public ExampleParser(
+    ParsingMode mode = default,
+	AdjustmentType autoAdjustment = default,
+	Func<SourceDemo, SourceGame> configBuilder = default)
+	: base(mode, autoAdjustment, configBuilder)
+  {
+    configBuilder = configBuilder ?? ExampleGameBuilder.Default;
   }
 }
 }

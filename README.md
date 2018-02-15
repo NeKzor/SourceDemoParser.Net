@@ -26,9 +26,9 @@ Parse any protocol version 4 Source Engine demo.
 
 ## Main Features
 - Multiple parsing modes
-- Parses almost everything
-- Demo header fix
-- Adjustment for special demo rules, defined by speedrunning communities
+- Fix negative ticks in header and messages
+- Adjust time for special demo rules, defined by speedrunning communities
+- Export modified demos
 
 ## C# Docs
 
@@ -51,7 +51,10 @@ using SourceDemoParser;
 var parser = new SourceParser
 (
   ParsingMode.Everything, // Parse useful information too
-  AdjustmentType.Exact // Fix time in header
+  AdjustmentType.Exact, // Fix time in header
+  (_) => new SourceGameBuilder() // Overwrite configurator
+    .Build(demo) // Default (checks demo protocol version and dir)
+    .WithAlignmentByte(true) // Force to always read alignment byte
 );
 
 var demo = await parser.ParseFileAsync("rank2.dem");
@@ -168,6 +171,7 @@ await exporter.ExportFileAsync("h4ck3r.dem");
 
 | Name | Type | Description |
 | --- | --- | --- |
+| ExampleGameBuilder | SourceGameBuilder | Handler for detecting game specific stuff, used for the parser. |
 | ExampleParser | SourceParser | New example parser. |
 | Example | DemoMessageType | The new message type which should be handled as 0x0A byte. |
 | ExampleMessage | DemoMessage | The actual message which handles parsing and exporting functionality. |
@@ -241,25 +245,41 @@ public static class ExampleDemoMessages
     ExampleEngine.Add(new Example(0x0A));
   }
 }
+
+public class ExampleGameBuilder : SourceGameBuilder
+{
+  public new static readonly Func<SourceDemo, SourceGame> Default = (demo)
+    => new ExampleGameBuilder().Build(demo);
+
+  public override SourceGame Build(SourceDemo demo)
+  {
+    // Handle default games
+	// Note: Might throw ProtocolException
+    _ = base.Build(demo);
+
+    switch (demo.GameDirectory)
+    {
+      case "example_mod":
+        // Overwrite default game messages
+        _game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
+        break;
+    }
+	return _game;
+  }
+}
 ```
 
 #### Parser
 ```cs
 public class ExampleParser : SourceParser
 {
-  // Detect your custom demo here
-  public override Task Configure(SourceDemo demo)
+  public ExampleParser(
+    ParsingMode mode = default,
+	AdjustmentType autoAdjustment = default,
+	Func<SourceDemo, SourceGame> configBuilder = default)
+	: base(mode, autoAdjustment, configBuilder)
   {
-    _ = base.Configure(demo);
-
-    switch (demo.GameDirectory)
-    {
-      case "example_mod":
-        // Overwrite default game messages with yours
-        demo.Game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
-        break;
-    }
-    return Task.CompletedTask;
+    configBuilder = configBuilder ?? ExampleGameBuilder.Default;
   }
 }
 ```
