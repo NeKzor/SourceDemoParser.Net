@@ -198,7 +198,7 @@ public class ExampleFrame : IDemoFrame
 
 #### Demo Message
 ```cs
-public class ExampleDemoMessage : DemoMessage
+public class ExampleDemoMessage : DemoMessage<ExampleFrame>
 {
   public override Task Parse(BinaryReader br, SourceDemo demo)
   {
@@ -234,7 +234,8 @@ public static class ExampleDemoMessages
 
   static ExampleDemoMessages()
   {
-    // Note: 0x07 is always "stop" for the parser
+    // Note: Message name "Stop" should always be the last
+    // message of the demo
     ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
     ExampleEngine.Add(new Example(0x0A));

@@ -8,9 +8,9 @@ namespace SourceDemoParser.Messages
 	{
 		public override Task Parse(BinaryReader br, SourceDemo demo)
 		{
-			var temp = br.ReadBytes(((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8);
-			br.ReadBytes(br.ReadInt32()).AppendTo(ref temp);
-			Data = temp;
+			var temp = br.ReadBytes(((demo.Game.MaxSplitscreenClients ?? 1) * 76) + 8).ToList();
+			temp.AddRange(br.ReadBytes(br.ReadInt32()));
+			Data = temp.ToArray();
 			return Task.CompletedTask;
 		}
 		public override Task Export(BinaryWriter bw, SourceDemo demo)

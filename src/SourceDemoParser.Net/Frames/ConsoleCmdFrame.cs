@@ -6,7 +6,6 @@ namespace SourceDemoParser
 	public class ConsoleCmdFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-
 		public string ConsoleCommand { get; set; }
 
 		Task IDemoFrame.Parse(SourceDemo demo)

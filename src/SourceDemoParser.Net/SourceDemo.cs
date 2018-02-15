@@ -23,7 +23,7 @@ namespace SourceDemoParser
 		// Data
 		public List<IDemoMessage> Messages { get; set; }
 
-		// For the parser
+		// Configuration
 		public SourceGame Game { get; private set; }
 
 		public SourceDemo()

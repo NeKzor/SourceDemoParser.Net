@@ -9,7 +9,6 @@ namespace SourceDemoParser
 	public class StringTablesFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-
 		public List<StringTable> Tables { get; set; }
 
 		public StringTablesFrame()

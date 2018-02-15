@@ -5,7 +5,6 @@ namespace SourceDemoParser
 	public class CustomDataFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-		
 		public int Unknown1 { get; set; }
 		public string Unknown2 { get; set; }
 

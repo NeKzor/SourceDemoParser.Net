@@ -11,11 +11,9 @@ namespace SourceDemoParser
 	public class PacketFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-
 		public List<PacketInfo> Infos { get; set; }
 		public int InSequence { get; set; }
 		public int OutSequence { get; set; }
-
 		public List<INetMessage> NetMessages { get; set; }
 
 		public PacketFrame()
@@ -90,7 +88,10 @@ namespace SourceDemoParser
 			}
 			InSequence.ToBytes().AppendTo(ref data);
 			OutSequence.ToBytes().AppendTo(ref data);
-			return Task.FromResult(data);
+			var bw = new BitWriter(data);
+			foreach (var msg in NetMessages)
+				_ = msg.Export(bw, demo).ConfigureAwait(false);
+			return Task.FromResult(bw.Data);
 		}
 	}
 }

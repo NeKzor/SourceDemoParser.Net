@@ -2,7 +2,7 @@ namespace SourceDemoParser
 {
 	public abstract class NetMessageType
 	{
-		public static NetMessageType Empty = default(NetMessageType);
+		public static readonly NetMessageType Empty = default(NetMessageType);
 
 		public int MessageType { get; }
 		public string Name { get; }

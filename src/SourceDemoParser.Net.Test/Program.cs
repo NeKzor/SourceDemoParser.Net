@@ -6,6 +6,7 @@ namespace SourceDemoParser.Tests
 	internal static class Paths
 	{
 		public const string Demos = "demos/public/";
+		public const string Test = "demos/private/";
 		public const string Export = "export/";
 		public const string Logs = "logs/";
 	}

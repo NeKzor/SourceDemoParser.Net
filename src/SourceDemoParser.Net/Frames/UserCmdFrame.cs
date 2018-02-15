@@ -9,7 +9,6 @@ namespace SourceDemoParser
 	public class UserCmdFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-
 		public UserCmdInfo Cmd { get; set; }
 
 		Task IDemoFrame.Parse(SourceDemo demo)

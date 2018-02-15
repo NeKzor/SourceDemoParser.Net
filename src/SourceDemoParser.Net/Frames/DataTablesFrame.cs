@@ -6,7 +6,6 @@ namespace SourceDemoParser
 	public class DataTablesFrame : IDemoFrame
 	{
 		public byte[] Data { get; set; }
-
 		public List<SendTable> Tables { get; set; }
 		public List<ServerClassInfo> Classes { get; set; }
 

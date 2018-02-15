@@ -78,7 +78,7 @@ namespace SourceDemoParser.Tests
 			var demo = await parser.ParseFileAsync(Paths.Demos + source);
 			var demo2 = default(SourceDemo);
 
-			await exporter.ExportFileAsync(demo, destination);
+			await exporter.ExportFileAsync(demo, Paths.Export + destination);
 			try
 			{
 				
@@ -96,7 +96,8 @@ namespace SourceDemoParser.Tests
 						}
 					}
 				} */
-				demo2 = await parser.ParseFileAsync(destination);
+				Console.WriteLine("Parsing exported demo...");
+				demo2 = await parser.ParseFileAsync(Paths.Export + destination);
 			}
 			catch (Exception ex)
 			{

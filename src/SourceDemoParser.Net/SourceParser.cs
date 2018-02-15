@@ -24,12 +24,12 @@ namespace SourceDemoParser
 			using (var br = new BinaryReader(input))
 			{
 				demo = await ParseHeader(br, new SourceDemo()).ConfigureAwait(false);
-
-				if (Mode == ParsingMode.HeaderOnly)
-					return demo;
-
+				
 				if (AutoConfiguration)
 					await Configure(demo).ConfigureAwait(false);
+				
+				if (Mode == ParsingMode.HeaderOnly)
+					return demo;
 
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
