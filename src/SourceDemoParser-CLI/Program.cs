@@ -1,191 +1,160 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandLine;
 using SourceDemoParser;
 using SourceDemoParser.Extensions;
 
 namespace SourceDemoParser_CLI
 {
-	internal static class Program
+	internal class Options
 	{
-		private static SourceParser _parser;
-		private static SourceDemo _demo;
-		private static bool _discovered;
+		[Option('p', "parsing-mode", HelpText = "Parsing mode for the parser. 0 = Default, 1 = HeaderOnly, 2 = Everything")]
+		public ParsingMode Mode { get; set; }
+		[Value(0, HelpText = "Demo file path to parse.", Required = true)]
+		public string FilePath { get; set; }
+		[Option('o', "output", HelpText = "Output parsed commands for demo info.")]
+		public IEnumerable<string> OutputCommands { get; set; }
+	}
+	
+	internal class Tool
+	{
+		private SourceDemo _demo;
+		private bool _discovered;
 
-		private static async Task Main(string[] args)
+		public async Task ParseArgsAsync(Options options)
 		{
-			string ParseCommand(string command)
-			{
-				var count = 0;
-				var filter = default(string[]);
-				if ((command.StartsWith("messages")
-					|| command.StartsWith("commands")
-					|| command.StartsWith("packets")) && (command.Contains("=")))
-				{
-					var msgargs = command.Split('=');
-					if (msgargs.Length == 2)
-					{
-						if ((!int.TryParse(msgargs[1], out count))
-							&& (command.StartsWith("commands")))
-						{
-							count = 1;
-							filter = msgargs[1].Split(',');
-						}
-					}
-					command = command.Substring(0, command.IndexOf("="));
-				}
-				var start = 0;
-				var end = 0;
-				if ((command.StartsWith("adj")) && (command.Contains("=")))
-				{
-					var adjargs = command.Split('=');
-					if (adjargs.Length == 2)
-					{
-						if (int.TryParse(adjargs[1], out end))
-						{
-						}
-						else if (adjargs[1].Contains(","))
-						{
-							var ticks = adjargs[1].Split(',');
-							if (ticks.Length == 2)
-							{
-								int.TryParse(ticks[0], out start);
-								int.TryParse(ticks[1], out end);
-							}
-						}
-					}
-					command = command.Substring(0, command.IndexOf("="));
-				}
-				switch (command.ToLower())
-				{
-					case "header":
-						return $"HeaderId\t{_demo.HeaderId}\n" +
-							$"Protocol\t{_demo.Protocol}\n" +
-							$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
-							$"GameDirectory\t{_demo.GameDirectory}\n" +
-							$"MapName\t{_demo.MapName}\n" +
-							$"ServerName\t{_demo.ServerName}\n" +
-							$"ClientName\t{_demo.ClientName}\n" +
-							$"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}\n" +
-							$"PlaybackTicks\t{_demo.PlaybackTicks}\n" +
-							$"PlaybackFrames\t{_demo.PlaybackFrames}\n" +
-							$"SignOnLength\t{_demo.SignOnLength}";
-					case "header-id":
-						return $"FileStamp\t{_demo.HeaderId}";
-					case "protocol":
-						return $"Protocol\t{_demo.Protocol}";
-					case "netproc":
-					case "net-protocol":
-						return $"NetworkProtocol\t{_demo.NetworkProtocol}";
-					case "dir":
-					case "game-dir":
-						return $"GameDirectory\t{_demo.GameDirectory}";
-					case "map":
-					case "map-name":
-						return $"MapName\t{_demo.MapName}";
-					case "server":
-					case "server-name":
-						return $"ServerName\t{_demo.ServerName}";
-					case "client":
-					case "client-name":
-						return $"ClientName\t{_demo.ClientName}";
-					case "time":
-						return $"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}";
-					case "ticks":
-						return $"PlaybackTicks\t{_demo.PlaybackTicks}";
-					case "frames":
-						return $"FrameCount\t{_demo.PlaybackFrames}";
-					case "signon":
-					case "signonlength":
-						return $"SignOnLength\t{_demo.SignOnLength}";
-					// Data
-					case "tickrate":
-						return $"Tickrate\t{_demo.GetTickrate()}";
-					case "tps":
-					case "ticks-per-second":
-						return $"TicksPerSecond\t{_demo.GetTicksPerSecond().ToString("N3")}";
-					case "messages":
-						return (count > 0) ? $"Messages\n{string.Join("\n", _demo.Messages.Take(count))}"
-								: $"Messages\n{string.Join("\n", _demo.Messages)}";
-					case "commands":
-						return (filter == default(string[]))
-							? (count == 0)
-								? $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType("ConsoleCmd"))}"
-								: $"ConsoleCommands\n{string.Join("\n", _demo.GetMessagesByType("ConsoleCmd").Take(count))}"
-							: "ConsoleCommands\n" + string.Join("\n", _demo.GetMessagesByType("ConsoleCmd").Where(m =>
-							{
-								var cmd = (m.Frame as ConsoleCmdFrame).ConsoleCommand;
-								foreach (var f in filter)
-									if (cmd.StartsWith(f))
-										return false;
-								return true;
-							}));
-					case "packets":
-						return (count > 0)
-							? $"Packets\n{string.Join("\n", _demo.GetMessagesByType("Packet").Take(count))}"
-							: $"Packets\n{string.Join("\n", _demo.GetMessagesByType("Packet"))}";
-					// Returns nothing
-					case "adj":
-					case "adjust":
-						_demo.AdjustExact(startTick: start, endTick: end).GetAwaiter().GetResult();
-						break;
-					case "adj-sf":
-					case "adjust-sf":
-						_demo.AdjustFlagAsync().GetAwaiter().GetResult();
-						break;
-					case "adj2":
-					case "adjust2":
-						if (!_discovered)
-						{
-							Adjustments.DiscoverAsync().GetAwaiter().GetResult();
-							_discovered = true;
-						}
-						_demo.AdjustAsync().GetAwaiter().GetResult();
-						break;
-				}
-				return default(string);
-			}
-
 			try
 			{
-				if (args != null)
+				if (File.Exists(options.FilePath))
 				{
-					if (args.Length == 1)
+					_demo = await new SourceParser(options.Mode)
+						.ParseFileAsync(options.FilePath);
+					
+					if (_demo != null)
 					{
-						if (File.Exists(args[0]))
+						if (options.OutputCommands.Any())
 						{
-							_parser = new SourceParser(ParsingMode.Everything);
-							_demo = await _parser.ParseFileAsync(args[0]);
-							Console.Write(ParseCommand("header"));
-						}
-					}
-					else if (args.Length >= 2)
-					{
-						var file = string.Join(" ", args.Skip(1));
-						if (File.Exists(file))
-						{
-							_parser = new SourceParser(ParsingMode.Everything);
-							_demo = await _parser.ParseFileAsync(file);
-							var output = string.Empty;
-							foreach (var command in args[0].Split(';'))
+							var result = string.Empty;
+							foreach (var command in options.OutputCommands)
 							{
-								var temp = ParseCommand(command);
-								output += (temp != default(string))
-									? $"{temp}\n"
-									: string.Empty;
+								var info = await ParseCommandAsync(command);
+								if (info == default) continue;
+								result += $"{info}\n";
 							}
-							Console.Write((output != string.Empty)
-								? output.Substring(0, output.Length - 1)
-								: "Could not parse any commands!");
+							if (result != string.Empty)
+								Console.WriteLine("Could not parse any commands!");
+							else
+								Console.Write(result);
+						}
+						else
+						{
+							var command = string.Empty;
+							while (command != "exit")
+							{
+								Console.Write("> ");
+								var result = await ParseCommandAsync(command = Console.ReadLine());
+								if (!string.IsNullOrEmpty(result)) Console.WriteLine(result);
+							}
 						}
 					}
+					else
+						Console.WriteLine("Failed to parse demo.");
 				}
+				else
+					Console.WriteLine("File does not exist.");
 			}
 			catch (Exception ex)
 			{
-				Console.Write(ex.ToString());
+				Console.WriteLine($"{ex}");
 			}
+		}
+
+		public async Task<string> ParseCommandAsync(string command)
+		{
+			switch (command.ToLower())
+			{
+				case "header":
+					return $"HeaderId\t{_demo.HeaderId}\n" +
+						$"Protocol\t{_demo.Protocol}\n" +
+						$"NetworkProtocol\t{_demo.NetworkProtocol}\n" +
+						$"GameDirectory\t{_demo.GameDirectory}\n" +
+						$"MapName\t{_demo.MapName}\n" +
+						$"ServerName\t{_demo.ServerName}\n" +
+						$"ClientName\t{_demo.ClientName}\n" +
+						$"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}\n" +
+						$"PlaybackTicks\t{_demo.PlaybackTicks}\n" +
+						$"PlaybackFrames\t{_demo.PlaybackFrames}\n" +
+						$"SignOnLength\t{_demo.SignOnLength}";
+				case "header-id":
+					return $"HeaderId\t{_demo.HeaderId}";
+				case "protocol":
+					return $"Protocol\t{_demo.Protocol}";
+				case "netproc":
+				case "net-protocol":
+					return $"NetworkProtocol\t{_demo.NetworkProtocol}";
+				case "dir":
+				case "game-dir":
+					return $"GameDirectory\t{_demo.GameDirectory}";
+				case "map":
+				case "map-name":
+					return $"MapName\t{_demo.MapName}";
+				case "server":
+				case "server-name":
+					return $"ServerName\t{_demo.ServerName}";
+				case "client":
+				case "client-name":
+					return $"ClientName\t{_demo.ClientName}";
+				case "time":
+					return $"PlaybackTime\t{_demo.PlaybackTime.ToString("N3")}";
+				case "ticks":
+					return $"PlaybackTicks\t{_demo.PlaybackTicks}";
+				case "frames":
+					return $"FrameCount\t{_demo.PlaybackFrames}";
+				case "signon":
+				case "signonlength":
+					return $"SignOnLength\t{_demo.SignOnLength}";
+				// Data
+				case "tickrate":
+					return $"Tickrate\t{_demo.GetTickrate()}";
+				case "ipt":
+				case "interval-per-tick":
+					return $"IntervalPerTick\t{_demo.GetIntervalPerTick().ToString("N3")}";
+				// Returns nothing
+				case "adj":
+				case "adjust":
+					await _demo.AdjustExact();
+					break;
+				case "adj-sf":
+				case "adjust-sf":
+					await _demo.AdjustFlagAsync();
+					break;
+				case "adj2":
+				case "adjust2":
+					if (!_discovered)
+					{
+						await Adjustments.DiscoverAsync();
+						_discovered = true;
+					}
+					await _demo.AdjustAsync();
+					break;
+			}
+			return default;
+		}
+	}
+
+	internal static class Program
+	{
+		private static void Main(string[] args)
+		{
+			var result = Parser.Default
+				.ParseArguments<Options>(args)
+				.WithParsed(options => new Tool()
+					.ParseArgsAsync(options)
+					.GetAwaiter()
+					.GetResult());
 		}
 	}
 }

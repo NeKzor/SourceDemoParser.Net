@@ -6,6 +6,7 @@ Parse any protocol version 4 Source Engine demo.
 
 ## Overview
 - [Main Features](#main-features)
+- [Examples](#examples)
 - [C# Documentation](#c--documentation)
   - [Namespaces](#namespaces)
   - [Parsing](#parsing)
@@ -17,18 +18,27 @@ Parse any protocol version 4 Source Engine demo.
   - [Parse, Edit & Export](#parse-edit--export)
   - [Custom Engine](#custom-engine)
     - [Structure](#structure)
-	- [Message Frame](#message-frame)
-	- [Demo Message](#demo-message)
-	- [Message Type](#message-type)
-	- [Configuration](#configuration)
-	- [Parser](#parser)
-- [Examples](#examples)
+    - [Message Frame](#message-frame)
+    - [Demo Message](#demo-message)
+    - [Message Type](#message-type)
+    - [Configuration](#configuration)
+    - [Parser](#parser)
 
 ## Main Features
 - Multiple parsing modes
 - Fix negative ticks in header and messages
 - Adjust time for special demo rules, defined by speedrunning communities
 - Export modified demos
+
+## Examples
+
+### [SourceDemoParser-CLI](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-CLI)
+Simple tool for command line interfaces.
+
+Example: `dotnet SourceDemoParser-CLI.dll segment_42.dem`.
+
+### [SourceDemoParser-DS](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
+[![Showcase](showcase.gif)](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
 
 ## C# Docs
 
@@ -53,7 +63,7 @@ var parser = new SourceParser
   ParsingMode.Everything, // Parse useful information too
   AdjustmentType.Exact, // Fix time in header
   (_) => new SourceGameBuilder() // Overwrite configurator
-    .Build(demo) // Default (checks demo protocol version and dir)
+    .Build(demo) // Default (checks demo protocol version and game directory)
     .WithAlignmentByte(true) // Force to always read alignment byte
 );
 
@@ -254,7 +264,7 @@ public class ExampleGameBuilder : SourceGameBuilder
   public override SourceGame Build(SourceDemo demo)
   {
     // Handle default games
-	// Note: Might throw ProtocolException
+    // Note: Might throw ProtocolException
     _ = base.Build(demo);
 
     switch (demo.GameDirectory)
@@ -264,7 +274,7 @@ public class ExampleGameBuilder : SourceGameBuilder
         _game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
         break;
     }
-	return _game;
+    return _game;
   }
 }
 ```
@@ -275,21 +285,11 @@ public class ExampleParser : SourceParser
 {
   public ExampleParser(
     ParsingMode mode = default,
-	AdjustmentType autoAdjustment = default,
-	Func<SourceDemo, SourceGame> configBuilder = default)
-	: base(mode, autoAdjustment, configBuilder)
+    AdjustmentType autoAdjustment = default,
+    Func<SourceDemo, SourceGame> configBuilder = default)
+    : base(mode, autoAdjustment, configBuilder)
   {
     configBuilder = configBuilder ?? ExampleGameBuilder.Default;
   }
 }
 ```
-
-## Examples
-
-### [CLI Tool](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-CLI)
-Simple tool for command line interfaces.
-
-Example: `dotnet SourceDemoParser-CLI.dll header segment_42.dem`.
-
-### [SourceDemoParser-DS](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
-[![Showcase](showcase.gif)](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)

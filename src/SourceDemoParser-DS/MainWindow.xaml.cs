@@ -111,7 +111,7 @@ namespace SourceDemoParser_DS
 				return;
 
 			var dispatcher = (Dispatcher)d;
-			var tps = _ds.GetTps();
+			var ipt = _ds.GetIpt();
 
 			var tick = _jumpTick;
 			while (!_source.IsCancellationRequested)
@@ -197,7 +197,7 @@ namespace SourceDemoParser_DS
 					}
 
 					// Oh well, this isn't accurate :(
-					Thread.Sleep(TimeSpan.FromSeconds(tps / _sleepFactor));
+					Thread.Sleep(TimeSpan.FromSeconds(ipt / _sleepFactor));
 				}
 				if (!_isPlaying)
 					break;

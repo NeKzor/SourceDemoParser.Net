@@ -11,7 +11,7 @@ namespace SourceDemoParser.Extensions
 		// Header
 		public static int GetTickrate(this SourceDemo demo)
 			=> (int)Math.Round(demo.PlaybackTicks / demo.PlaybackTime);
-		public static float GetTicksPerSecond(this SourceDemo demo)
+		public static float GetIntervalPerTick(this SourceDemo demo)
 			=> demo.PlaybackTime / demo.PlaybackTicks;
 
 		// Data
@@ -63,9 +63,9 @@ namespace SourceDemoParser.Extensions
 			if (delta < 0)
 				throw new Exception("Start tick is greater than end tick.");
 
-			var tps = demo.GetTicksPerSecond();
+			var ipt = demo.GetIntervalPerTick();
 			demo.PlaybackTicks = delta;
-			demo.PlaybackTime = tps * delta;
+			demo.PlaybackTime = ipt * delta;
 			return Task.FromResult(demo);
 		}
 		public static async Task<SourceDemo> AdjustFlagAsync(this SourceDemo demo, string saveFlag = "echo #SAVE#")

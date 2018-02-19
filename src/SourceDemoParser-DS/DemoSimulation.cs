@@ -20,8 +20,8 @@ namespace SourceDemoParser_DS
 
 		public void SetTick(int tick)
 			=> _currentTick = tick;
-		public float GetTps()
-			=> Demo.GetTicksPerSecond();
+		public float GetIpt()
+			=> Demo.GetIntervalPerTick();
 
 		public (List<string> Commands, List<PacketInfo> Info, List<UserCmd> User) GetNextData()
 		{
