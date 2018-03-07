@@ -28,7 +28,7 @@ namespace SourceDemoParser
 				if (ConfigBuilder != null)
 					await Task.Run(() => demo.Game = ConfigBuilder.Invoke(demo)).ConfigureAwait(false);
 				
-				if (Mode == ParsingMode.HeaderOnly)
+				if (!Mode.HasFlag(ParsingMode.Header))
 					return demo;
 
 				while (br.BaseStream.Position != br.BaseStream.Length)
@@ -52,13 +52,27 @@ namespace SourceDemoParser
 					if (demo.Game.HasAlignmentByte) br.ReadByte();
 
 					await message.Parse(br, demo).ConfigureAwait(false);
-					
-					if ((Mode == ParsingMode.Everything) && (message.Frame != null))
-						await message.Frame.Parse(demo).ConfigureAwait(false);
-
 					demo.Messages.Add(message);
 				}
 
+				if (Mode == ParsingMode.Everything)
+					await demo.ParseAllFrames().ConfigureAwait(false);
+				else
+				{
+					if (Mode.HasFlag(ParsingMode.ConsoleCmd))
+						await demo.GetMessagesByType("ConsoleCmd").ParseFrames(demo).ConfigureAwait(false);
+					if (Mode.HasFlag(ParsingMode.CustomData))
+						await demo.GetMessagesByType("CustomData").ParseFrames(demo).ConfigureAwait(false);
+					if (Mode.HasFlag(ParsingMode.DataTables))
+						await demo.GetMessagesByType("DataTables").ParseFrames(demo).ConfigureAwait(false);
+					if (Mode.HasFlag(ParsingMode.Packet))
+						await demo.GetMessagesByType("Packet").ParseFrames(demo).ConfigureAwait(false);
+					if (Mode.HasFlag(ParsingMode.StringTables))
+						await demo.GetMessagesByType("StringTables").ParseFrames(demo).ConfigureAwait(false);
+					if (Mode.HasFlag(ParsingMode.UserCmd))
+						await demo.GetMessagesByType("UserCmd").ParseFrames(demo).ConfigureAwait(false);
+				}
+				
 				if (AutoAdjustment == AdjustmentType.Exact)
 					await demo.AdjustExact().ConfigureAwait(false);
 			}

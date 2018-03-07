@@ -56,7 +56,7 @@ public static class ExampleDemoMessages
   static ExampleDemoMessages()
   {
     // Note: Message name "Stop" should always be the last
-	// message of the demo
+    // message of the demo
     ExampleEngine = DemoMessages.Default;
     // New message handled at 0x0A
     ExampleEngine.Add(new Example(0x0A));
@@ -71,17 +71,17 @@ public class ExampleGameBuilder : SourceGameBuilder
   public override SourceGame Build(SourceDemo demo)
   {
     // Handle default games
-	// Note: Might throw ProtocolException
+    // Note: Might throw ProtocolException
     _ = base.Build(demo);
 
     switch (demo.GameDirectory)
     {
       case "example_mod":
         // Overwrite default game messages
-        _game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
+        _game.WithDefaultDemoMessages(ExampleDemoMessages.ExampleEngine);
         break;
     }
-	return _game;
+    return _game;
   }
 }
 
@@ -89,9 +89,9 @@ public class ExampleParser : SourceParser
 {
   public ExampleParser(
     ParsingMode mode = default,
-	AdjustmentType autoAdjustment = default,
-	Func<SourceDemo, SourceGame> configBuilder = default)
-	: base(mode, autoAdjustment, configBuilder)
+    AdjustmentType autoAdjustment = default,
+    Func<SourceDemo, SourceGame> configBuilder = default)
+    : base(mode, autoAdjustment, configBuilder)
   {
     configBuilder = configBuilder ?? ExampleGameBuilder.Default;
   }

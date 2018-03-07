@@ -15,25 +15,37 @@ namespace SourceDemoParser.Extensions
 			=> demo.PlaybackTime / demo.PlaybackTicks;
 
 		// Data
-		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
+		public static IEnumerable<IDemoMessage> GetMessagesByType(this SourceDemo demo, DemoMessageType type)
 			=> demo.Messages
-				.Where(message => message.Type == type)
-				.ToList();
-		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, string typeName)
+				.Where(message => message.Type == type);
+		public static IEnumerable<IDemoMessage> GetMessagesByType(this SourceDemo demo, string typeName)
 			=> demo.Messages
-				.Where(message => message.Type.Name == typeName)
-				.ToList();
-		public static IReadOnlyCollection<IDemoMessage> GetMessagesByType(this SourceDemo demo, int typeCode)
+				.Where(message => message.Type.Name == typeName);
+		public static IEnumerable<IDemoMessage> GetMessagesByType(this SourceDemo demo, int typeCode)
 			=> demo.Messages
-				.Where(message => message.Type.MessageType == typeCode)
-				.ToList();
-		public static IReadOnlyCollection<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
+				.Where(message => message.Type.MessageType == typeCode);
+		public static IEnumerable<IDemoMessage> GetMessagesByTick(this SourceDemo demo, int tick)
 			=> demo.Messages
-				.Where(message => message.Tick == tick)
-				.ToList();
-		public static Task ParseFrames(this SourceDemo demo)
-			=> Task.Run(() => demo.Messages
-				.ForEach(async (m) => await m.Frame.Parse(demo).ConfigureAwait(false)));
+				.Where(message => message.Tick == tick);
+		public static Task ParseAllFrames(this SourceDemo demo)
+		{
+			return Task.Run(async() =>
+			{
+				foreach (var msg in demo.Messages)
+				{
+					if (msg.Frame == null) continue;
+					await msg.Frame.Parse(demo).ConfigureAwait(false);
+				}
+			});
+		}
+		public static Task ParseFrames(this IEnumerable<IDemoMessage> messages, SourceDemo demo)
+		{
+			return Task.Run(async() =>
+			{
+				foreach (var msg in messages)
+					await msg.Frame.Parse(demo).ConfigureAwait(false);
+			});
+		}
 
 		// Adjustments
 		public static Task<SourceDemo> AdjustExact(this SourceDemo demo, int endTick = 0, int startTick = 0)

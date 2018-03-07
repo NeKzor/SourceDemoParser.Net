@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SourceDemoParser
 {
@@ -12,14 +13,35 @@ namespace SourceDemoParser
 		public SourceGameBuilder()
 			=> _game = SourceGame.Default;
 		
+		public SourceGameBuilder WithMaxSplitscreenClients(int maxSplitscreenClients)
+		{
+			_game.WithMaxSplitscreenClients(maxSplitscreenClients);
+			return this;
+		}
+		public SourceGameBuilder WithAlignmentByte(bool hasAlignmentByte)
+		{
+			_game.WithAlignmentByte(hasAlignmentByte);
+			return this;
+		}
+		public SourceGameBuilder WithDefaultDemoMessages(List<DemoMessageType> defaultMessages)
+		{
+			_game.WithDefaultDemoMessages(defaultMessages);
+			return this;
+		}
+		public SourceGameBuilder WithDefaultNetMessages(List<NetMessageType> defaultNetMessages)
+		{
+			_game.WithDefaultNetMessages(defaultNetMessages);
+			return this;
+		}
+		
 		public virtual SourceGame Build(SourceDemo demo)
 		{
 			switch (demo.Protocol)
 			{
 				case 2:
 				case 3:
-					_game.HasAlignmentByte = false;
-					_game.DefaultMessages = DemoMessages.OldEngine;
+					_game.WithAlignmentByte(false);
+					_game.WithDefaultDemoMessages(DemoMessages.OldEngine);
 					break;
 				case 4:
 					break;
@@ -32,8 +54,12 @@ namespace SourceDemoParser
 				case "aperturetag":
 				case "portal_stories":
 				case "infra":
-					_game.MaxSplitscreenClients = 2;
-					_game.DefaultNetMessages = NetMessages.Portal2;
+					_game.WithMaxSplitscreenClients(2);
+					_game.WithDefaultNetMessages(NetMessages.Portal2);
+					break;
+				case "csgo":
+					_game.WithMaxSplitscreenClients(2);
+					_game.WithDefaultNetMessages(NetMessages.Csgo);
 					break;
 			}
 			return _game;

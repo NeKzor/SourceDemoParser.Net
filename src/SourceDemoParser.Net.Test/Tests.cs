@@ -28,37 +28,37 @@ namespace SourceDemoParser.Tests
 			var parser = new SourceParser();
 			var demo = await parser.ParseFileAsync(Paths.Demos + source);
 		}
-		// Note: Bad benchmarking example
+		// TODO: Real benchmarking
 		public async Task Timing()
 		{
 			const string source = "portal2_sp.dem";
 
 			var watch = new Stopwatch();
-			var demo = new SourceDemo();
 
 			var fast = new SourceParser(ParsingMode.Default);
 			var slow = new SourceParser(ParsingMode.Everything);
-			var headeronly = new SourceParser(ParsingMode.HeaderOnly);
-
-			// Default
-			watch = Stopwatch.StartNew();
-			demo = await fast.ParseFileAsync(Paths.Demos + source);
-			watch.Stop();
-			var result1 = watch.Elapsed.TotalMilliseconds;
-			Console.WriteLine("Default: " + watch.Elapsed.TotalMilliseconds.ToString() + "ms");
+			var headeronly = new SourceParser(ParsingMode.Header);
 
 			// Everything
 			watch = Stopwatch.StartNew();
-			demo = await slow.ParseFileAsync(Paths.Demos + source);
+			_ = await slow.ParseFileAsync(Paths.Demos + source);
 			watch.Stop();
 			var result2 = watch.Elapsed.TotalMilliseconds;
-			Console.WriteLine($"Everything: {result2}ms ({(int)(result2 / result1)} times slower)");
+
+			// Default
+			watch = Stopwatch.StartNew();
+			_ = await fast.ParseFileAsync(Paths.Demos + source);
+			watch.Stop();
+			var result1 = watch.Elapsed.TotalMilliseconds;
 
 			// Header only
 			watch = Stopwatch.StartNew();
-			demo = await headeronly.ParseFileAsync(Paths.Demos + source);
+			_ = await headeronly.ParseFileAsync(Paths.Demos + source);
 			watch.Stop();
 			var result3 = watch.Elapsed.TotalMilliseconds;
+
+			Console.WriteLine($"Default: {result1}ms");
+			Console.WriteLine($"Everything: {result2}ms ({(int)(result2 / result1)} times slower)");
 			Console.WriteLine($"Header only: {result3}ms ({(int)(result1 / result3)} times faster)");
 
 			/*	Random Result

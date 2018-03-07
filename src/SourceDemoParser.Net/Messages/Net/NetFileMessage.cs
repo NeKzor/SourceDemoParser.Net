@@ -7,6 +7,8 @@ namespace SourceDemoParser.Messages.Net
 		public uint TransferId { get; set; }
 		public string FileName { get; set; }
 		public bool FileRequested { get; set; }
+		//public bool IsReplayDemoFile { get; set; }
+		//public bool Deny { get; set; }
 
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
 		{

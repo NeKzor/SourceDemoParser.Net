@@ -7,7 +7,7 @@ Parse any protocol version 4 Source Engine demo.
 ## Overview
 - [Main Features](#main-features)
 - [Examples](#examples)
-- [C# Documentation](#c--documentation)
+- [C# Documentation](#c-documentation)
   - [Namespaces](#namespaces)
   - [Parsing](#parsing)
   - [Extensions](#extensions)
@@ -40,7 +40,7 @@ Example: `dotnet SourceDemoParser-CLI.dll segment_42.dem`.
 ### [SourceDemoParser-DS](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
 [![Showcase](showcase.gif)](https://github.com/NeKzor/SourceDemoParser.Net/tree/master/src/SourceDemoParser-DS)
 
-## C# Docs
+## C# Documentation
 
 ### Namespaces
 
@@ -63,7 +63,7 @@ var parser = new SourceParser
   ParsingMode.Everything, // Parse useful information too
   AdjustmentType.Exact, // Fix time in header
   (_) => new SourceGameBuilder() // Overwrite configurator
-    .Build(demo) // Default (checks demo protocol version and game directory)
+    .Build(demo) // Checks demo protocol version and game directory
     .WithAlignmentByte(true) // Force to always read alignment byte
 );
 
@@ -271,7 +271,7 @@ public class ExampleGameBuilder : SourceGameBuilder
     {
       case "example_mod":
         // Overwrite default game messages
-        _game.DefaultMessages = ExampleDemoMessages.ExampleEngine;
+        _game.WithDefaultDemoMessages(ExampleDemoMessages.ExampleEngine);
         break;
     }
     return _game;

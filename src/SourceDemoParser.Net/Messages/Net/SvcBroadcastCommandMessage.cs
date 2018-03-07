@@ -2,19 +2,11 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetDisconnectMessage : NetMessage
+	public class SvcBroadcastCommandMessage : NetMessage
 	{
-		public string Text { get; set; }
-		
 		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
-		{
-			Text = buf.ReadString();
-			return Task.CompletedTask;
-		}
+			=> Task.CompletedTask;
 		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
-		{
-			bw.WriteString(Text);
-			return Task.CompletedTask;
-		}
+			=> Task.FromResult(default(byte[]));
 	}
 }

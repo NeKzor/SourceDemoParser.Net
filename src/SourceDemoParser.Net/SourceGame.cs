@@ -6,10 +6,10 @@ namespace SourceDemoParser
 	{
 		public static readonly SourceGame Default = new SourceGame();
 
-		public int? MaxSplitscreenClients { get; set; }
-		public bool HasAlignmentByte { get; set; }
-		public List<DemoMessageType> DefaultMessages { get; set; }
-		public List<NetMessageType> DefaultNetMessages { get; set; }
+		public int? MaxSplitscreenClients { get; private set; }
+		public bool HasAlignmentByte { get; private set; }
+		public List<DemoMessageType> DefaultMessages { get; private set; }
+		public List<NetMessageType> DefaultNetMessages { get; private set; }
 
 		public SourceGame()
 		{
