@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ "$1" = "lib" ]; then
+    dotnet build src/SourceDemoParser.Net/ -c Release
+elif [ "$1" = "cli" ]; then
+  dotnet build src/SourceDemoParser-CLI/ -c Release
+else
+  dotnet build src/SourceDemoParser.Net.Test/ -c ${1-PARSE_T}
+fi

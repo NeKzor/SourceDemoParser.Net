@@ -2,34 +2,35 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class SvcUpdateStringTableMessage : NetMessage
-	{
-		public int Id { get; set; }
-		public bool EntriesChanged { get; set; }
-		public short ChangedEntries { get; set; }
-		public int Length { get; set; }
-		public byte[] Data { get; set; }
+    public class SvcUpdateStringTableMessage : NetMessage
+    {
+        public int TableId { get; set; }
+        public short? NumChangedEntries { get; set; }
+        public byte[] StringData { get; set; }
 
-		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
-		{
-			Id = buf.ReadBits(5);
-			EntriesChanged = buf.ReadBoolean();
-			ChangedEntries = (EntriesChanged)
-				? buf.ReadInt16()
-				: (short)1;
-			Length = buf.ReadBits(20);
-			buf.SeekBits(Length);
-			//Data = buf.ReadBytes(Length);
-			return Task.CompletedTask;
-		}
-		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
-		{
-			bw.WriteBits(Id, 5);
-			bw.WriteBoolean(EntriesChanged);
-			if (EntriesChanged) bw.WriteInt16(ChangedEntries);
-			bw.WriteBits(Length, 20);
-			//bw.WriteBytes(Data);
-			return Task.CompletedTask;
-		}
-	}
+        public override Task Parse(SourceBufferReader buf, SourceDemo demo)
+        {
+            TableId = buf.ReadBits(5);
+            if (buf.ReadBoolean())
+                NumChangedEntries = buf.ReadInt16();
+            buf.SeekBits(buf.ReadBits(20));
+            return Task.CompletedTask;
+        }
+        public override Task Export(SourceBufferWriter bw, SourceDemo demo)
+        {
+            bw.WriteBits(TableId, 5);
+            if (NumChangedEntries.HasValue)
+            {
+                bw.WriteBoolean(true);
+                bw.WriteInt16(NumChangedEntries.Value);
+            }
+            else
+            {
+                bw.WriteBoolean(false);
+            }
+            bw.WriteBits(StringData.Length, 20);
+            bw.WriteBytes(StringData);
+            return Task.CompletedTask;
+        }
+    }
 }

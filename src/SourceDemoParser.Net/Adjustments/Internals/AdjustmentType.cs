@@ -1,8 +1,8 @@
 namespace SourceDemoParser.Extensions
 {
-	internal enum AdjustmentType
-	{
-		Start,
-		End
-	}
+    internal enum AdjustmentType
+    {
+        Start,
+        End
+    }
 }

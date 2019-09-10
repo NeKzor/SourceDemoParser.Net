@@ -2,19 +2,19 @@ using System.Threading.Tasks;
 
 namespace SourceDemoParser.Messages.Net
 {
-	public class NetStringCmdMessage : NetMessage
-	{
-		public string Command { get; set; }
-		
-		public override Task Parse(ISourceBufferUtil buf, SourceDemo demo)
-		{
-			Command = buf.ReadString(256); // 256 MAX_COMMAND_LEN
-			return Task.CompletedTask;
-		}
-		public override Task Export(ISourceWriterUtil bw, SourceDemo demo)
-		{
-			bw.WriteString(Command);
-			return Task.CompletedTask;
-		}
-	}
+    public class NetStringCmdMessage : NetMessage
+    {
+        public string Command { get; set; }
+
+        public override Task Parse(SourceBufferReader buf, SourceDemo demo)
+        {
+            Command = buf.ReadString();
+            return Task.CompletedTask;
+        }
+        public override Task Export(SourceBufferWriter bw, SourceDemo demo)
+        {
+            bw.WriteString(Command);
+            return Task.CompletedTask;
+        }
+    }
 }

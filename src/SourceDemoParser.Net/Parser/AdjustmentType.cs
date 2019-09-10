@@ -1,8 +1,8 @@
 namespace SourceDemoParser
 {
-	public enum AdjustmentType
-	{
-		None,
-		Exact
-	}
+    public enum AdjustmentType
+    {
+        None,
+        Exact
+    }
 }
