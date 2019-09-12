@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ "$1" = "cli" ]; then
+  shift
+  dotnet run -p cli/ -c Release --no-build -- "$@"
+else
+  dotnet run -p test/ -c ${1-PARSE_T} --no-build
+fi

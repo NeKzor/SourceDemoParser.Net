@@ -1,7 +1,0 @@
-#!/bin/bash
-if [ "$1" = "cli" ]; then
-  shift
-  dotnet run -p src/SourceDemoParser-CLI/ -c Release --no-build -- "$@"
-else
-  dotnet run -p src/SourceDemoParser.Net.Test/ -c ${1-PARSE_T} --no-build
-fi

@@ -1,14 +1,15 @@
 language: csharp
 mono: none
-dotnet: 2.0.0
-dist: trusty
-solution: SourceDemoParser.Net.sln
+dotnet: 2.2
+dist: xenial
 script:
-  - dotnet restore
-  - dotnet build src/SourceDemoParser.Net/ -c Release -f netstandard1.4
+  - dotnet restore src/
+  - dotnet build src/ -c Release
 # Test
-  - dotnet build src/SourceDemoParser.Net.Test/ -c PARSE_T -f netcoreapp1.1
-  - dotnet run -p src/SourceDemoParser.Net.Test/ -c PARSE_T -f netcoreapp1.1 --no-build
+  - dotnet restore test/
+  - dotnet build test/ -c PARSE_T
+  - dotnet run -p test/ -c PARSE_T --no-build
 # CLI Test
-  - dotnet build src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1
-  - dotnet run -p src/SourceDemoParser-CLI/ -c Release -f netcoreapp1.1 --no-build -- demos/public/portal2_sp.dem -o ticks adj ticks
+  - dotnet restore cli/
+  - dotnet build cli/ -c Release
+  - dotnet run -p cli/ -c Release --no-build -- demos/public/portal2_sp.dem -o ticks adj ticks
